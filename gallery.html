@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gallery — SP3FCK</title>
+  <meta name="title-pl" content="Galeria — SP3FCK">
+  <meta name="description" content="SP3FCK gallery: ham radio awards (POTA, LLOTA, CQ WW, CQ WPX) and photos of the station and home-made antennas.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="gallery">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">Shack · Awards</span>
+        <h1><span lang="en">Gallery</span><span lang="pl">Galeria</span></h1>
+        <p lang="en">Awards from contests and activity programmes, plus my station and antennas.</p>
+        <p lang="pl">Dyplomy z zawodów i programów aktywności oraz moja stacja i anteny.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="tabs" role="group" aria-label="Category">
+          <button type="button" data-cat="all" aria-pressed="true"><span lang="en">All</span><span lang="pl">Wszystko</span><span data-count="all"></span></button>
+          <button type="button" data-cat="station" aria-pressed="false"><span lang="en">Station &amp; antennas</span><span lang="pl">Stacja i anteny</span><span data-count="station"></span></button>
+          <button type="button" data-cat="awards" aria-pressed="false"><span lang="en">Awards</span><span lang="pl">Dyplomy</span><span data-count="awards"></span></button>
+        </div>
+        <div class="grid-gallery" data-lightbox data-gallery></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="data/gallery.js"></script>
+  <script src="assets/js/media.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

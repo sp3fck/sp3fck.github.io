@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /qrz/
+Disallow: /data/
+Disallow: /scripts/

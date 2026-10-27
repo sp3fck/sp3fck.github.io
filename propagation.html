@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propagation &amp; Weather — SP3FCK</title>
+  <meta name="title-pl" content="Propagacja i pogoda — SP3FCK">
+  <meta name="description" content="Current HF and VHF propagation conditions (N0NBH / HamQSL), the grayline and a weather map with a forecast.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="propagation">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">WX · PROP</span>
+        <h1><span lang="en">Propagation &amp; weather</span><span lang="pl">Propagacja i pogoda</span></h1>
+        <p lang="en">Current HF and VHF band conditions and the weather over Świebodzin – or anywhere else.</p>
+        <p lang="pl">Aktualne warunki na pasmach KF i UKF oraz pogoda nad Świebodzinem – albo gdziekolwiek indziej.</p>
+      </div>
+    </section>
+
+    <!-- PROPAGACJA -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow"><span lang="en">Propagation</span><span lang="pl">Propagacja</span></span><h2><span lang="en">HF &amp; VHF band conditions</span><span lang="pl">Warunki na pasmach KF i UKF</span></h2></div>
+          <a href="https://www.hamqsl.com/solar.html" target="_blank" rel="noopener"><span lang="en">Source: N0NBH / HamQSL →</span><span lang="pl">Źródło: N0NBH / HamQSL →</span></a>
+        </div>
+        <figure class="prop-banner">
+          <a href="https://www.hamqsl.com/solar.html" target="_blank" rel="noopener">
+            <img src="https://www.hamqsl.com/solar101vhfpic.php" fetchpriority="high" alt="Current solar-terrestrial data and HF (day/night) and VHF band conditions — N0NBH" data-pl-alt="Aktualne dane słoneczno-ziemskie i warunki na pasmach KF (dzień/noc) oraz UKF — N0NBH" width="615" height="148">
+          </a>
+          <figcaption>
+            <span lang="en">Good / Fair / Poor ratings for HF bands by day and night, VHF phenomena and solar indices. Updated hourly.</span>
+            <span lang="pl">Ocena warunków (Good / Fair / Poor) dla pasm KF w dzień i w nocy, zjawiska na UKF oraz indeksy słoneczne. Dane aktualizowane co godzinę.</span>
+          </figcaption>
+        </figure>
+
+        <div class="two-col prop-grid">
+          <figure>
+            <img src="https://www.hamqsl.com/solarmap.php" alt="World map with day/night terminator (grayline) and current solar indices — N0NBH" data-pl-alt="Mapa świata z podziałem na dzień i noc (szara linia) oraz indeksy słoneczne — N0NBH" width="400" height="200">
+            <figcaption>
+              <span lang="en">Grayline – the day/night boundary. Paths along it are often exceptionally good on the low bands.</span>
+              <span lang="pl">Szara linia – granica dnia i nocy. Łączności wzdłuż niej są często wyjątkowo dobre na niższych pasmach.</span>
+            </figcaption>
+          </figure>
+          <dl class="station prose-dd" aria-label="Indices">
+            <div><dt>SFI</dt><dd><span lang="en">10.7 cm solar flux – the higher, the better the upper bands (15–10 m) open</span><span lang="pl">strumień słoneczny 10,7 cm – im wyższy, tym lepiej otwarte wyższe pasma (15–10 m)</span></dd></div>
+            <div><dt>SN</dt><dd><span lang="en">sunspot number</span><span lang="pl">liczba plam słonecznych</span></dd></div>
+            <div><dt>A / K</dt><dd><span lang="en">geomagnetic indices – lower is calmer; K ≥ 5 means a geomagnetic storm</span><span lang="pl">indeksy geomagnetyczne – im niższe, tym spokojniej; K ≥ 5 oznacza burzę magnetyczną</span></dd></div>
+            <div><dt>X-Ray</dt><dd><span lang="en">X-ray flux; M and X class flares can black out HF</span><span lang="pl">promieniowanie rentgenowskie; rozbłyski klasy M i X mogą zamknąć pasma KF</span></dd></div>
+            <div><dt>Geomag</dt><dd><span lang="en">state of the Earth's magnetic field (QUIET = calm)</span><span lang="pl">stan pola magnetycznego Ziemi (QUIET = spokojne)</span></dd></div>
+            <div><dt>Sig Noise</dt><dd><span lang="en">estimated noise level in S-units</span><span lang="pl">szacowany poziom szumów w skali S</span></dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- POGODA -->
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow"><span lang="en">Weather</span><span lang="pl">Pogoda</span></span><h2><span lang="en">Weather map &amp; forecast</span><span lang="pl">Mapa pogody i prognoza</span></h2></div>
+          <a id="wx-open" href="https://www.windy.com/52.247/15.533?52.247,15.533,8" target="_blank" rel="noopener"><span lang="en">Open in Windy.com →</span><span lang="pl">Otwórz w Windy.com →</span></a>
+        </div>
+        <form class="wx-search" id="wx-search" role="search" aria-label="Weather for a place">
+          <label for="wx-q"><span lang="en">Place</span><span lang="pl">Miejscowość</span></label>
+          <div class="wx-search-row">
+            <input id="wx-q" name="q" type="search" placeholder="e.g. Zielona Góra" data-pl-placeholder="np. Zielona Góra" autocomplete="off" required>
+            <button class="btn" type="submit"><span lang="en">Show weather</span><span lang="pl">Pokaż pogodę</span></button>
+            <button class="btn ghost" type="button" id="wx-home">Świebodzin</button>
+          </div>
+          <p class="wx-status" role="status" aria-live="polite"><span lang="en">Showing:</span><span lang="pl">Pokazuję:</span> <strong>Świebodzin</strong>, Lubuskie, Poland</p>
+          <div class="wx-results" hidden></div>
+        </form>
+        <div class="wx-box">
+          <iframe id="wx-map" title="Weather map and forecast — Windy.com" data-src="https://embed.windy.com/embed2.html?lat=52.247&amp;lon=15.533&amp;detailLat=52.247&amp;detailLon=15.533&amp;width=650&amp;height=450&amp;zoom=7&amp;level=surface&amp;overlay=rain&amp;product=ecmwf&amp;menu=&amp;message=true&amp;marker=true&amp;calendar=now&amp;pressure=true&amp;type=map&amp;location=coordinates&amp;detail=true&amp;metricWind=km%2Fh&amp;metricTemp=%C2%B0C&amp;radarRange=-1"></iframe>
+        </div>
+        <p class="note" style="margin-top:16px">
+          <span lang="en">Disconnect and ground your antennas before a storm. Live lightning: <a href="https://map.blitzortung.org/#7/52.25/15.53" target="_blank" rel="noopener">Blitzortung</a>.</span>
+          <span lang="pl">Przed burzą odłącz i uziem anteny. Wyładowania na żywo: <a href="https://map.blitzortung.org/#7/52.25/15.53" target="_blank" rel="noopener">Blitzortung</a>.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ŹRÓDŁA -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head"><div><span class="eyebrow"><span lang="en">More</span><span lang="pl">Więcej</span></span><h2><span lang="en">Useful sources</span><span lang="pl">Przydatne źródła</span></h2></div></div>
+        <ul class="links">
+          <li><a href="https://www.hamqsl.com/solar.html" target="_blank" rel="noopener"><strong>HamQSL — N0NBH</strong><span lang="en">Solar-terrestrial data and band conditions</span><span lang="pl">Dane słoneczno-ziemskie i warunki propagacji</span></a></li>
+          <li><a href="https://www.voacap.com/hf/" target="_blank" rel="noopener"><strong>VOACAP Online</strong><span lang="en">HF propagation prediction for a chosen path</span><span lang="pl">Prognoza propagacji KF na wybranej trasie</span></a></li>
+          <li><a href="https://www.dxsummit.fi/" target="_blank" rel="noopener"><strong>DX Summit</strong><span lang="en">DX cluster – what's on the bands right now</span><span lang="pl">Klaster DX – co słychać teraz na pasmach</span></a></li>
+          <li><a href="https://pskreporter.info/pskmap.html" target="_blank" rel="noopener"><strong>PSK Reporter</strong><span lang="en">Who hears whom – live digital-mode spots</span><span lang="pl">Kto kogo słyszy – spoty emisji cyfrowych na żywo</span></a></li>
+          <li><a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener"><strong>NOAA SWPC</strong><span lang="en">Space weather: flares, geomagnetic storms</span><span lang="pl">Pogoda kosmiczna: rozbłyski, burze geomagnetyczne</span></a></li>
+          <li><a href="https://meteo.imgw.pl/" target="_blank" rel="noopener"><strong>IMGW-PIB Meteo</strong><span lang="en">Forecasts and weather warnings for Poland</span><span lang="pl">Prognozy i ostrzeżenia meteorologiczne dla Polski</span></a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/weather.js"></script>
+</body>
+</html>
