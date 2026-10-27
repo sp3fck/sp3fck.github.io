@@ -1,5 +1,5 @@
 window.__HAM_MAP_QSO_DATA__ = {
-  "updatedAt": "2026-10-26T11:21:08.702Z",
+  "updatedAt": "2026-10-27T20:19:00.759Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -273,7 +273,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 15,
       "ituz": 28,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T12:02:00.000Z-PJ4K-15m-USB",
@@ -1215,7 +1215,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 17,
       "ituz": 31,
       "cont": "AS",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T07:01:00.000Z-4X9A-10m-USB",
@@ -1375,7 +1375,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 15,
       "ituz": 28,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T06:17:00.000Z-UA6LUQ-20m-LSB",
@@ -1487,7 +1487,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 20,
       "ituz": 39,
       "cont": "AS",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T05:55:00.000Z-YO4NF-20m-USB",
@@ -1519,7 +1519,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 20,
       "ituz": 39,
       "cont": "AS",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T05:54:00.000Z-IG9ITO-20m-USB",
@@ -2027,7 +2027,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 16,
       "ituz": 29,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T16:47:00.000Z-9A3K-40m-USB",
@@ -2375,7 +2375,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 14,
       "ituz": 37,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T10:41:00.000Z-UW5Y-20m-USB",
@@ -2391,7 +2391,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 16,
       "ituz": 29,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T10:40:00.000Z-YU4IZZ-20m-USB",
@@ -2439,7 +2439,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 14,
       "ituz": 27,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T10:37:00.000Z-M5P-20m-USB",
@@ -2725,7 +2725,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 14,
       "ituz": 27,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T08:36:00.000Z-LN2T-20m-LSB",
@@ -3205,7 +3205,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 20,
       "ituz": 39,
       "cont": "AS",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T02:55:00.000Z-IB9T-40m-USB",
@@ -3571,7 +3571,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 15,
       "ituz": 28,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T01:02:00.000Z-EU4E-80m-USB",
