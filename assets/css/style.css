@@ -126,8 +126,9 @@ h3 { font-size: 1.15rem; }
 .hero .wrap { position: relative; display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
 .hero-call {
   margin: 0 0 18px; font: 800 clamp(3.4rem, 11vw, 7.5rem)/.9 var(--mono); letter-spacing: .04em;
-  color: transparent; -webkit-text-stroke: clamp(1.5px, .25vw, 2.5px) var(--accent);
-  text-shadow: 0 0 40px color-mix(in srgb, var(--accent) 25%, transparent);
+  /* pełne litery: obrys (text-stroke) pokazywał wewnętrzne kontury nakładających się kształtów fontu */
+  color: var(--accent);
+  text-shadow: 0 0 28px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .hero h2 { font-size: clamp(1.3rem, 2.6vw, 1.8rem); font-weight: 600; }
 .hero p { color: var(--ink-soft); margin: 0 0 1.4em; max-width: 56ch; font-size: 1.05rem; }
@@ -159,7 +160,7 @@ h3 { font-size: 1.15rem; }
 .page-head::after {
   content: ""; position: absolute; right: -10px; bottom: -26px; pointer-events: none;
   width: clamp(300px, 44vw, 580px); aspect-ratio: 600 / 130;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 130'%3E%3Ctext x='0' y='112' font-family='Consolas,monospace' font-size='138' font-weight='800' letter-spacing='4' fill='none' stroke='%23e0a64e' stroke-opacity='.10' stroke-width='2'%3ESP3FCK%3C/text%3E%3C/svg%3E") no-repeat right bottom / contain;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 130'%3E%3Ctext x='0' y='112' font-family='Consolas,monospace' font-size='138' font-weight='800' letter-spacing='4' fill='%23e0a64e' fill-opacity='.06'%3ESP3FCK%3C/text%3E%3C/svg%3E") no-repeat right bottom / contain;
 }
 
 /* ---------- sekcje ---------- */
