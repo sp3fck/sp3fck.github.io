@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Q codes &amp; CW shortcuts — SP3FCK</title>
+  <meta name="title-pl" content="Kody Q i skróty CW — SP3FCK">
+  <meta name="description" content="Q codes, CW shortcuts, prosigns and cut numbers used on the air – a quick reference with search.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="q-codes">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">CW · Q codes</span>
+        <h1><span lang="en">Q codes &amp; CW shortcuts</span><span lang="pl">Kody Q i skróty CW</span></h1>
+        <p lang="en">The codes and shortcuts you actually hear on the air. Type what you copied to find it.</p>
+        <p lang="pl">Kody i skróty, które naprawdę słychać w eterze. Wpisz, co odebrałeś, żeby szybko znaleźć znaczenie.</p>
+      </div>
+    </section>
+
+    <div class="cw-tools">
+      <div class="wrap">
+        <input type="search" data-cw-search placeholder="FB, QSL, 5NN…" aria-label="Search a code or shortcut" data-pl-aria-label="Szukaj kodu lub skrótu" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="tabs" role="group" aria-label="Group" data-pl-aria-label="Grupa">
+          <button type="button" data-cw-group="" aria-pressed="true"><span lang="en">All</span><span lang="pl">Wszystko</span></button>
+          <button type="button" data-cw-group="q" aria-pressed="false"><span lang="en">Q codes</span><span lang="pl">Kody Q</span></button>
+          <button type="button" data-cw-group="abbr" aria-pressed="false"><span lang="en">Shortcuts</span><span lang="pl">Skróty</span></button>
+          <button type="button" data-cw-group="pro" aria-pressed="false"><span lang="en">Prosigns</span><span lang="pl">Znaki proceduralne</span></button>
+          <button type="button" data-cw-group="num" aria-pressed="false"><span lang="en">Cut numbers</span><span lang="pl">Liczby skrócone</span></button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap" data-cw-list aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="data/cw-codes.js?v=20261028"></script>
+  <script src="assets/js/cw-codes.js?v=20261028"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@
   const TOOLS = [
     ['ham-map', 'ham-map.html', t('QSO Map', 'Mapa łączności')],
     ['propagation', 'propagation.html', t('Propagation &amp; Weather', 'Propagacja i pogoda')],
+    ['q-codes', 'q-codes.html', t('Q Codes &amp; CW Shortcuts', 'Kody Q i skróty CW')],
     ['qrz-builder', 'qrz-builder/', t('QRZ Page Builder', 'Kreator strony QRZ')],
   ];
   const NAV = [

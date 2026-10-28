@@ -7,6 +7,7 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
 - `index.html` – strona główna (o mnie z animowanym globem QSO, pasek danych stacji, mapa łączności bez filtrów, najnowsze filmy, pasek galerii)- `ham-tools.html` – przegląd narzędzi; w menu „Ham Tools” jest podmenu:
   - `ham-map.html` – pełna mapa łączności z filtrami i statystykami DXCC/WAZ/ITU
   - `propagation.html` – propagacja (N0NBH/HamQSL) i pogoda (Windy + wyszukiwarka Open-Meteo)
+  - `q-codes.html` – ściąga: kody Q, skróty CW, znaki proceduralne i liczby skrócone z wyszukiwarką (dane w `data/cw-codes.js`, logika w `assets/js/cw-codes.js`)
   - `qrz-builder/` – kreator strony bio na QRZ.com
 - `gallery.html`, `youtube.html`, `other.html`, `contact.html`, `privacy.html`, `404.html`
 - `ham-map-embed.html` – sama mapa (ramka na stronie głównej; zoom tylko Ctrl + kółko / dwa palce)
