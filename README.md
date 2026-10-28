@@ -4,8 +4,7 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
 
 ## Struktura
 
-- `index.html` – strona główna (o mnie, stacja, mapa łączności bez filtrów, najnowsze filmy, pasek galerii)
-- `ham-tools.html` – przegląd narzędzi; w menu „Ham Tools” jest podmenu:
+- `index.html` – strona główna (o mnie z animowanym globem QSO, pasek danych stacji, mapa łączności bez filtrów, najnowsze filmy, pasek galerii)- `ham-tools.html` – przegląd narzędzi; w menu „Ham Tools” jest podmenu:
   - `ham-map.html` – pełna mapa łączności z filtrami i statystykami DXCC/WAZ/ITU
   - `propagation.html` – propagacja (N0NBH/HamQSL) i pogoda (Windy + wyszukiwarka Open-Meteo)
   - `qrz-builder/` – kreator strony bio na QRZ.com
@@ -15,6 +14,7 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
 - `qrz/` – materiały robocze do strony QRZ (`qrz_bio.html` itd.)
 - `assets/js/components.js` – wspólny pasek stacji, header i footer (`<body data-page="...">` = aktywne menu)
 - `assets/css/style.css` – motyw „Night Shack”; `assets/css/ham-map.css` – mapa
+- `assets/js/qso-globe.js` – glob w hero strony głównej; lista łączności wpisana na stałe w `CONFIG` (wybrana raz z logu, nie synchronizuje się), kontury lądów w `data/qso-globe-world.js`
 
 ## Dwujęzyczność
 

@@ -132,7 +132,19 @@ h3 { font-size: 1.15rem; }
 }
 .hero h2 { font-size: clamp(1.3rem, 2.6vw, 1.8rem); font-weight: 600; }
 .hero p { color: var(--ink-soft); margin: 0 0 1.4em; max-width: 56ch; font-size: 1.05rem; }
-@media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } }
+/* glob QSO (assets/js/qso-globe.js); ujemny margines pozwala poświacie wyjść poza kolumnę */
+.hero-globe { position: relative; aspect-ratio: 1 / 1; margin: -48px -24px; }
+.hero-globe canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* dane stacji jako pasek pod obiema kolumnami hero */
+.station.station-strip { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); }
+.station.station-strip > div { display: block; border: 0; background: var(--card); }
+.station.station-strip dt { padding: 10px 14px 0; }
+.station.station-strip dd { padding: 2px 14px 10px; }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; }
+  .hero-globe { margin: 0 auto; width: min(100%, 420px); }
+  .station.station-strip { grid-template-columns: repeat(2, 1fr); }
+}
 
 .btns { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn {
@@ -152,7 +164,6 @@ h3 { font-size: 1.15rem; }
 .station dt { padding: 9px 14px; color: var(--accent); text-transform: uppercase; font-size: .72rem; letter-spacing: .1em; align-self: center; }
 .station dd { margin: 0; padding: 9px 14px; color: var(--ink); }
 .station.prose-dd dd { font-family: var(--font); font-size: .92rem; color: var(--ink-soft); }
-.two-col h3 { margin-bottom: 12px; }
 
 /* ---------- nagłówek podstrony ---------- */
 .page-head { background: var(--bg-2); border-bottom: 1px solid var(--line); padding: 44px 0 38px; position: relative; overflow: hidden; }
