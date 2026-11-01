@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-31T05:00:26.632Z",
+  "updatedAt": "2026-11-01T05:31:56.332Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -1279,7 +1279,7 @@
       "cqz": 34,
       "ituz": 38,
       "cont": "AF",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T06:48:00.000Z-R8LA-10m-USB",
@@ -1471,7 +1471,7 @@
       "cqz": 15,
       "ituz": 28,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T05:57:00.000Z-TC3X-20m-USB",
@@ -1853,7 +1853,7 @@
       "cqz": 16,
       "ituz": 29,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T17:57:00.000Z-LN2T-80m-USB",
