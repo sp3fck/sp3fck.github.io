@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CW Trainer — SP3FCK</title>
+  <meta name="title-pl" content="Trener CW — SP3FCK">
+  <meta name="description" content="A simple Morse code (CW) training game: learn characters with the Koch method, then copy callsigns, CW abbreviations and Q-codes.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="cw-trainer">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">Ham Tools · CW</span>
+        <h1><span lang="en">CW trainer</span><span lang="pl">Trener CW</span></h1>
+        <p lang="en">Listen, copy, score. Learn new characters the Koch way, then copy callsigns and the abbreviations you hear on the air.</p>
+        <p lang="pl">Słuchaj, odbieraj, zbieraj punkty. Ucz się nowych znaków metodą Kocha, potem odbieraj znaki wywoławcze i skróty, które słychać na pasmach.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap cw" data-cw-root>
+        <div class="tabs" role="group" aria-label="Mode / Tryb">
+          <button type="button" data-mode="koch" aria-pressed="true"><span lang="en">Koch – characters</span><span lang="pl">Koch – znaki</span></button>
+          <button type="button" data-mode="calls" aria-pressed="false"><span lang="en">Callsigns</span><span lang="pl">Znaki wywoławcze</span></button>
+          <button type="button" data-mode="abbr" aria-pressed="false"><span lang="en">Abbreviations &amp; Q-codes</span><span lang="pl">Skróty i kody Q</span></button>
+        </div>
+
+        <div class="cw-layout">
+          <div>
+            <div class="cw-rig" data-cw="rig" tabindex="-1">
+              <div class="cw-readout">
+                <div><small>WPM</small><b data-cw="wpm">20</b></div>
+                <div><small><span lang="en">Round</span><span lang="pl">Runda</span></small><b data-cw="progress">0/30</b></div>
+                <div><small><span lang="en">Streak</span><span lang="pl">Seria</span></small><b data-cw="streak">0</b></div>
+                <div><small><span lang="en">Score</span><span lang="pl">Wynik</span></small><b data-cw="score">0</b></div>
+                <div><small><span lang="en">Best</span><span lang="pl">Rekord</span></small><b data-cw="best">0</b></div>
+              </div>
+
+              <div class="cw-screen" aria-live="polite">
+                <span class="cw-led" data-cw="led" aria-hidden="true">RX</span>
+                <div class="cw-glyph" data-cw="glyph">CW</div>
+                <div class="cw-pattern" data-cw="pattern">−·−· ·−−</div>
+                <div class="cw-msg" data-cw="msg"></div>
+              </div>
+
+              <form class="cw-copy" data-cw="form" autocomplete="off" hidden>
+                <label class="sr-only" for="cw-input"><span lang="en">Your copy</span><span lang="pl">Twój odbiór</span></label>
+                <input id="cw-input" data-cw="input" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12"
+                       placeholder="Type what you hear + Enter" data-pl-placeholder="Wpisz, co słyszysz + Enter">
+                <button type="submit" class="btn ghost">Enter</button>
+              </form>
+              <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki"></div>
+
+              <div class="cw-actions">
+                <button type="button" class="btn" data-cw="start">Start</button>
+                <button type="button" class="btn ghost" data-cw="replay"><span lang="en">↻ Replay</span><span lang="pl">↻ Powtórz</span></button>
+                <span class="cw-keys" data-cw="keys"></span>
+              </div>
+            </div>
+            <ol class="cw-log" data-cw="log" aria-label="Log"></ol>
+          </div>
+
+          <aside class="cw-settings" aria-label="Settings / Ustawienia">
+            <h2><span lang="en">Settings</span><span lang="pl">Ustawienia</span></h2>
+            <label class="cw-field">
+              <span><span lang="en">Speed</span><span lang="pl">Tempo</span> <output data-cw-out="wpm"></output></span>
+              <input type="range" name="wpm" min="5" max="45" step="1">
+            </label>
+            <label class="cw-field">
+              <span><span lang="en">Effective speed (Farnsworth)</span><span lang="pl">Tempo efektywne (Farnsworth)</span> <output data-cw-out="eff"></output></span>
+              <input type="range" name="eff" min="5" max="45" step="1">
+            </label>
+            <label class="cw-field">
+              <span><span lang="en">Tone</span><span lang="pl">Ton</span> <output data-cw-out="tone"></output></span>
+              <input type="range" name="tone" min="400" max="1000" step="10">
+            </label>
+            <label class="cw-field">
+              <span><span lang="en">Volume</span><span lang="pl">Głośność</span> <output data-cw-out="vol"></output></span>
+              <input type="range" name="vol" min="0" max="100" step="5">
+            </label>
+            <label class="cw-check"><input type="checkbox" name="qrn"> <span lang="en">Band noise (QRN)</span><span lang="pl">Szum pasma (QRN)</span></label>
+
+            <div class="cw-field" data-cw="levelbox">
+              <span><span lang="en">Koch characters</span><span lang="pl">Znaki Kocha</span> <output data-cw="levelnum"></output></span>
+              <div class="cw-level">
+                <button type="button" class="btn ghost" data-cw="lvldown" aria-label="Fewer characters / Mniej znaków">−</button>
+                <span data-cw="levelnew"></span>
+                <button type="button" class="btn ghost" data-cw="lvlup" aria-label="More characters / Więcej znaków">+</button>
+              </div>
+            </div>
+
+            <h2><span lang="en">Records</span><span lang="pl">Rekordy</span></h2>
+            <dl class="station">
+              <div><dt>Koch</dt><dd data-cw-best="koch">—</dd></div>
+              <div><dt><span lang="en">Callsigns</span><span lang="pl">Znaki</span></dt><dd data-cw-best="calls">—</dd></div>
+              <div><dt><span lang="en">Abbrev.</span><span lang="pl">Skróty</span></dt><dd data-cw-best="abbr">—</dd></div>
+            </dl>
+
+            <p class="cw-tip" lang="en">Tip: learn at full character speed (20+ WPM) and add Farnsworth spacing instead of slowing the characters down – you learn the sound of each character, not counting dots.</p>
+            <p class="cw-tip" lang="pl">Wskazówka: ucz się od razu w pełnym tempie znaków (20+ WPM), a zamiast zwalniać znaki wydłuż odstępy Farnswortha – zapamiętujesz brzmienie znaku, a nie liczysz kropki.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-head">
+          <h2><span lang="en">Morse code chart</span><span lang="pl">Alfabet Morse'a</span></h2>
+          <span class="status"><span lang="en">Click a character to hear it</span><span lang="pl">Kliknij znak, żeby go usłyszeć</span></span>
+        </div>
+        <div class="cw-chart" data-cw-chart></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/cw-trainer.js"></script>
+</body>
+</html>

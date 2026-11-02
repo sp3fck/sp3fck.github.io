@@ -9,6 +9,7 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
   - `propagation.html` – propagacja (N0NBH/HamQSL) i pogoda (Windy + wyszukiwarka Open-Meteo)
   - `q-codes.html` – ściąga: kody Q, skróty CW, znaki proceduralne i liczby skrócone z wyszukiwarką (dane w `data/cw-codes.js`, logika w `assets/js/cw-codes.js`)
   - `qrz-builder/` – kreator strony bio na QRZ.com
+  - `cw-trainer.html` – gra do nauki CW: Koch, znaki wywoławcze, skróty i kody Q (`assets/js/cw-trainer.js`, Web Audio; ustawienia i rekordy w `localStorage` `sp3fck-cw`)
 - `gallery.html`, `youtube.html`, `other.html`, `contact.html`, `privacy.html`, `404.html`
 - `ham-map-embed.html` – sama mapa (ramka na stronie głównej; zoom tylko Ctrl + kółko / dwa palce)
 - `ham-map-qrz.html` – statyczna mapa bez JS do osadzenia na QRZ.com (generowana)
