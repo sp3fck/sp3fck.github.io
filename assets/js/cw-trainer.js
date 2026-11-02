@@ -2,6 +2,8 @@
    Tryby: Koch (pojedyncze znaki; kolejny odblokowuje runda z wynikiem ≥ 90%), znaki wywoławcze, skróty i kody Q.
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
+  // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
+  const VERSION = '1.0.0';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -126,13 +128,13 @@
   // ---------- dźwięk ----------
   let ac = null, master = null, voice = null, noise = null, ledTimer = 0, keepAlive = null;
   // iOS (każda przeglądarka to tam WebKit): Web Audio działa w sesji „ambient” i milknie przy przełączniku
-  // wyciszenia. Sesja „playback” gra jak odtwarzacz muzyki. Starsze iOS bez navigator.audioSession
-  // przełącza na nią cichy dźwięk z <audio> zapętlony w tle (wstrzymywany, gdy karta jest ukryta).
+  // wyciszenia. Sesja „playback” gra jak odtwarzacz muzyki. Samo navigator.audioSession nie wystarcza
+  // np. w Chrome na iOS 27, więc na iOS dodatkowo gra zapętlony cichy dźwięk z <audio> — odtwarzany
+  // element multimedialny przełącza sesję na „playback” (wstrzymywany, gdy karta jest ukryta).
   const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   function playbackSession() {
     if (navigator.audioSession) {
       try { navigator.audioSession.type = 'playback'; } catch (e) {}
-      return;
     }
     if (!IOS || keepAlive) return;
     // 0,5 s ciszy jako WAV 8 kHz / 8 bit
@@ -151,8 +153,10 @@
     });
   }
   function audio() {
+    if (!ac) playbackSession();
+    // cichy <audio> rusza przed Web Audio; play() bywa odrzucone poza gestem — ponawiane przy każdym dźwięku
+    if (keepAlive && keepAlive.paused && !document.hidden) keepAlive.play().catch(() => {});
     if (!ac) {
-      playbackSession();
       ac = new (window.AudioContext || window.webkitAudioContext)();
       master = ac.createGain();
       master.connect(ac.destination);
@@ -160,8 +164,6 @@
     master.gain.value = S.vol / 100;
     // iOS zostawia kontekst także w stanie „interrupted” (np. po zablokowaniu ekranu)
     if (ac.state !== 'running') ac.resume();
-    // play() bywa odrzucone poza gestem — ponawiane przy każdym dźwięku
-    if (keepAlive && keepAlive.paused && !document.hidden) keepAlive.play().catch(() => {});
     return ac;
   }
   function gaps() {
@@ -558,6 +560,9 @@
       if (b && !active()) play(b.dataset.ch);
     });
   }
+
+  const version = document.querySelector('[data-cw-version]');
+  if (version) version.textContent = 'v' + VERSION;
 
   renderSettings();
   renderMode();

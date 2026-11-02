@@ -407,6 +407,7 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-chart button:hover { border-color: var(--accent); }
 .cw-chart b { font: 700 1.1rem/1 var(--mono); }
 .cw-chart .cw-code { color: var(--accent); font-size: .8rem; }
+.cw-version { margin: 24px 0 0; font: .78rem/1 var(--mono); letter-spacing: .06em; color: var(--ink-soft); }
 
 /* status (mapa) */
 .status { color: var(--ink-soft); font-size: .9rem; }
