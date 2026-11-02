@@ -3,7 +3,7 @@
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.0.0';
+  const VERSION = '1.1.0';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -410,6 +410,8 @@
     const ch = KOCH[S.level - 1];
     el.levelnum.textContent = `${S.level} / ${KOCH.length}`;
     el.levelnew.innerHTML = `${t('newest', 'najnowszy')} <b>${ch}</b> <span class="cw-pat">${pattern(ch)}</span>`;
+    // wszystkie znaki poziomu, najnowszy wyróżniony
+    el.levelset.innerHTML = KOCH.slice(0, S.level).map((c, i) => i === S.level - 1 ? `<b>${c}</b>` : c).join(' ');
   }
   function renderStats() {
     el.wpm.textContent = S.eff < S.wpm ? `${S.wpm}/${S.eff}` : S.wpm;
