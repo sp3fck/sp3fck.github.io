@@ -396,7 +396,7 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-level-new { font-size: .85rem; color: var(--ink-soft); }
 .cw-level-new b { font-family: var(--mono); color: var(--ink); }
 .cw-settings .station { font-size: .85rem; }
-.cw-settings .station div { grid-template-columns: 6.5em 1fr; }
+.cw-settings .station div { grid-template-columns: 9.5em 1fr; }
 .cw-tip { margin: 0; font-size: .85rem; color: var(--ink-soft); }
 /* ściągawka z alfabetem */
 .cw-chart { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
