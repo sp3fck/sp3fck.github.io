@@ -124,15 +124,44 @@
   const inputs = root.querySelectorAll('.cw-settings input[name]');
 
   // ---------- dźwięk ----------
-  let ac = null, master = null, voice = null, noise = null, ledTimer = 0;
+  let ac = null, master = null, voice = null, noise = null, ledTimer = 0, keepAlive = null;
+  // iOS (każda przeglądarka to tam WebKit): Web Audio działa w sesji „ambient” i milknie przy przełączniku
+  // wyciszenia. Sesja „playback” gra jak odtwarzacz muzyki. Starsze iOS bez navigator.audioSession
+  // przełącza na nią cichy dźwięk z <audio> zapętlony w tle (wstrzymywany, gdy karta jest ukryta).
+  const IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function playbackSession() {
+    if (navigator.audioSession) {
+      try { navigator.audioSession.type = 'playback'; } catch (e) {}
+      return;
+    }
+    if (!IOS || keepAlive) return;
+    // 0,5 s ciszy jako WAV 8 kHz / 8 bit
+    const n = 4000, buf = new ArrayBuffer(44 + n), v = new DataView(buf);
+    const str = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+    str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 8000, true); v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+    str(36, 'data'); v.setUint32(40, n, true);
+    new Uint8Array(buf, 44).fill(128);
+    keepAlive = new Audio(URL.createObjectURL(new Blob([buf], { type: 'audio/wav' })));
+    keepAlive.loop = true;
+    keepAlive.setAttribute('playsinline', '');
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) keepAlive.pause(); else keepAlive.play().catch(() => {});
+    });
+  }
   function audio() {
     if (!ac) {
+      playbackSession();
       ac = new (window.AudioContext || window.webkitAudioContext)();
       master = ac.createGain();
       master.connect(ac.destination);
     }
     master.gain.value = S.vol / 100;
-    if (ac.state === 'suspended') ac.resume();
+    // iOS zostawia kontekst także w stanie „interrupted” (np. po zablokowaniu ekranu)
+    if (ac.state !== 'running') ac.resume();
+    // play() bywa odrzucone poza gestem — ponawiane przy każdym dźwięku
+    if (keepAlive && keepAlive.paused && !document.hidden) keepAlive.play().catch(() => {});
     return ac;
   }
   function gaps() {
