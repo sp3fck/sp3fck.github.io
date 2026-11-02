@@ -390,12 +390,11 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-field > span:first-child { display: flex; justify-content: space-between; gap: 10px; color: var(--ink-soft); }
 .cw-field output { font-family: var(--mono); color: var(--accent); white-space: nowrap; }
 .cw-settings input[type="range"] { width: 100%; accent-color: var(--accent); }
-.cw-check { display: flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--ink-soft); cursor: pointer; }
-.cw-check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
 .cw-level { display: flex; align-items: center; gap: 10px; }
-.cw-level .btn { padding: 4px 14px; font-family: var(--mono); }
-.cw-level > span { flex: 1; text-align: center; font-size: .9rem; color: var(--ink-soft); }
-.cw-level b { font-family: var(--mono); color: var(--ink); }
+.cw-level .btn { flex: none; padding: 4px 12px; font-family: var(--mono); }
+.cw-level input[type="range"] { flex: 1; min-width: 0; }
+.cw-level-new { font-size: .85rem; color: var(--ink-soft); }
+.cw-level-new b { font-family: var(--mono); color: var(--ink); }
 .cw-settings .station { font-size: .85rem; }
 .cw-settings .station div { grid-template-columns: 6.5em 1fr; }
 .cw-tip { margin: 0; font-size: .85rem; color: var(--ink-soft); }

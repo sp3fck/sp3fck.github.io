@@ -104,12 +104,16 @@
   const KEY = 'sp3fck-cw';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, qrn: false, level: 2, best: {} }, saved);
+  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, best: {} }, saved);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
+  // dawniej szum był tylko włącz/wyłącz (qrn: true/false)
+  if (saved.qrn && saved.noise == null) S.noise = 50;
+  delete S.qrn;
   S.wpm = clamp(S.wpm, 5, 45);
   S.eff = clamp(S.eff, 5, S.wpm);
   S.tone = clamp(S.tone, 400, 1000);
   S.vol = clamp(S.vol, 0, 100);
+  S.noise = clamp(S.noise, 0, 100);
   S.level = Math.round(clamp(S.level, 2, KOCH.length));
   if (!MODES[S.mode]) S.mode = 'koch';
   if (!S.best || typeof S.best !== 'object') S.best = {};
@@ -185,7 +189,10 @@
     led(dur);
     return dur;
   }
-  // Szum pasma: biały szum przepuszczony przez filtr wokół częstotliwości tonu
+  // Szum pasma: biały szum przepuszczony przez filtr wokół częstotliwości tonu.
+  // 100% ≈ odstęp sygnał/szum ok. 3 dB, 50% ≈ 9 dB.
+  const noiseGain = () => 2.4 * S.noise / 100;
+  let noisePreview = 0;
   function setNoise(on) {
     if (on && !noise) {
       audio();
@@ -198,10 +205,10 @@
       bp.frequency.value = S.tone;
       bp.Q.value = 0.8;
       g.gain.value = 0;
-      g.gain.setTargetAtTime(1.2, ac.currentTime, 0.2);
+      g.gain.setTargetAtTime(noiseGain(), ac.currentTime, 0.2);
       src.connect(bp).connect(g).connect(master);
       src.start();
-      noise = { src, bp };
+      noise = { src, bp, g };
     } else if (!on && noise) {
       noise.src.stop();
       noise = null;
@@ -246,7 +253,7 @@
     G = { n: 0, ok: 0, score: 0, streak: 0, missed: {}, item: null, state: 'wait', timer: 0, heardAt: 0 };
     el.log.innerHTML = '';
     el.start.innerHTML = 'Stop';
-    setNoise(S.qrn);
+    setNoise(S.noise > 0);
     renderMode();
     focusGame();
     nextItem();
@@ -363,11 +370,12 @@
   const out = (name, html) => { root.querySelector(`[data-cw-out="${name}"]`).innerHTML = html; };
   function renderSettings() {
     root.querySelector('input[name="eff"]').max = S.wpm;
-    inputs.forEach(i => { if (i.type === 'checkbox') i.checked = S[i.name]; else i.value = S[i.name]; });
+    inputs.forEach(i => { i.value = S[i.name]; });
     out('wpm', `${S.wpm} WPM`);
     out('eff', S.eff < S.wpm ? `${S.eff} WPM` : t('off', 'wył.'));
     out('tone', `${S.tone} Hz`);
     out('vol', `${S.vol}%`);
+    out('noise', S.noise ? `${S.noise}%` : t('off', 'wył.'));
     const ch = KOCH[S.level - 1];
     el.levelnum.textContent = `${S.level} / ${KOCH.length}`;
     el.levelnew.innerHTML = `${t('newest', 'najnowszy')} <b>${ch}</b> <span class="cw-pat">${pattern(ch)}</span>`;
@@ -391,6 +399,7 @@
     el.levelbox.hidden = m.typed;
     el.lvldown.disabled = busy || S.level <= 2;
     el.lvlup.disabled = busy || S.level >= KOCH.length;
+    el.levelrange.disabled = busy;
     el.keys.innerHTML = m.typed
       ? t('<kbd>Enter</kbd> confirm · empty <kbd>Enter</kbd> replay / next · <kbd>Esc</kbd> stop',
           '<kbd>Enter</kbd> zatwierdź · pusty <kbd>Enter</kbd> powtórz / dalej · <kbd>Esc</kbd> stop')
@@ -443,21 +452,32 @@
     save();
     renderMode();
     renderSettings();
-    if (d > 0) play(KOCH[S.level - 1]);
+    play(KOCH[S.level - 1]);
   }
   el.lvlup.addEventListener('click', () => setLevel(1));
   el.lvldown.addEventListener('click', () => setLevel(-1));
+  // suwak poziomu: klawiatura znaków zmienia się na bieżąco, najnowszy znak gra po puszczeniu suwaka
+  el.levelrange.addEventListener('change', () => play(KOCH[S.level - 1]));
 
   root.querySelector('.cw-settings').addEventListener('input', e => {
     const i = e.target;
     if (!i.name) return;
     const farnsworthOff = S.eff >= S.wpm;
-    S[i.name] = i.type === 'checkbox' ? i.checked : +i.value;
+    S[i.name] = +i.value;
     if (i.name === 'wpm' && farnsworthOff) S.eff = S.wpm;
     S.eff = Math.min(S.eff, S.wpm);
     if (master) master.gain.value = S.vol / 100;
-    if (noise) noise.bp.frequency.value = S.tone;
-    if (i.name === 'qrn' && active()) setNoise(S.qrn);
+    if (noise) {
+      noise.bp.frequency.value = S.tone;
+      noise.g.gain.setTargetAtTime(noiseGain(), ac.currentTime, 0.05);
+    }
+    if (i.name === 'noise') {
+      setNoise(S.noise > 0);
+      // poza rundą: krótki odsłuch szumu, żeby łatwo dobrać poziom
+      clearTimeout(noisePreview);
+      if (!active()) noisePreview = setTimeout(() => { if (!active()) setNoise(false); }, 1500);
+    }
+    if (i.name === 'level') renderMode();
     save();
     renderSettings();
     renderStats();

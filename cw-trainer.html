@@ -86,15 +86,19 @@
               <span><span lang="en">Volume</span><span lang="pl">Głośność</span> <output data-cw-out="vol"></output></span>
               <input type="range" name="vol" min="0" max="100" step="5">
             </label>
-            <label class="cw-check"><input type="checkbox" name="qrn"> <span lang="en">Band noise (QRN)</span><span lang="pl">Szum pasma (QRN)</span></label>
+            <label class="cw-field">
+              <span><span lang="en">Band noise (QRN)</span><span lang="pl">Szum pasma (QRN)</span> <output data-cw-out="noise"></output></span>
+              <input type="range" name="noise" min="0" max="100" step="5">
+            </label>
 
             <div class="cw-field" data-cw="levelbox">
-              <span><span lang="en">Koch characters</span><span lang="pl">Znaki Kocha</span> <output data-cw="levelnum"></output></span>
+              <span><label for="cw-level"><span lang="en">Koch level</span><span lang="pl">Poziom Kocha</span></label> <output data-cw="levelnum"></output></span>
               <div class="cw-level">
                 <button type="button" class="btn ghost" data-cw="lvldown" aria-label="Fewer characters / Mniej znaków">−</button>
-                <span data-cw="levelnew"></span>
+                <input id="cw-level" type="range" name="level" min="2" max="41" step="1" data-cw="levelrange">
                 <button type="button" class="btn ghost" data-cw="lvlup" aria-label="More characters / Więcej znaków">+</button>
               </div>
+              <span class="cw-level-new" data-cw="levelnew"></span>
             </div>
 
             <h2><span lang="en">Records</span><span lang="pl">Rekordy</span></h2>
