@@ -1,5 +1,5 @@
 window.__HAM_MAP_QSO_DATA__ = {
-  "updatedAt": "2026-11-01T05:31:56.332Z",
+  "updatedAt": "2026-11-02T05:29:15.738Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -1247,7 +1247,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 17,
       "ituz": 30,
       "cont": "AS",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-25T06:58:00.000Z-4L0G-10m-USB",
@@ -2837,7 +2837,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 15,
       "ituz": 28,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T08:23:00.000Z-EA3CI-20m-LSB",
