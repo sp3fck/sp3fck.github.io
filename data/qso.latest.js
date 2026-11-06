@@ -1,5 +1,5 @@
 window.__HAM_MAP_QSO_DATA__ = {
-  "updatedAt": "2026-11-05T06:06:35.899Z",
+  "updatedAt": "2026-11-06T06:00:06.648Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -3921,7 +3921,7 @@ window.__HAM_MAP_QSO_DATA__ = {
       "cqz": 14,
       "ituz": 37,
       "cont": "EU",
-      "confirmed": false
+      "confirmed": true
     },
     {
       "id": "2026-10-24T00:08:00.000Z-YO7WC-80m-USB",
