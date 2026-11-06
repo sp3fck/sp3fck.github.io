@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CW Trainer — SP3FCK</title>
   <meta name="title-pl" content="Trener CW — SP3FCK">
-  <meta name="description" content="A simple Morse code (CW) training game: learn characters with the Koch method, then copy callsigns, CW shortcuts and Q-codes.">
+  <meta name="description" content="A simple Morse code (CW) training game: learn characters with the Koch method, then copy callsigns, CW shortcuts and Q-codes; two arcade games for copying and sending with a paddle.">
   <meta name="theme-color" content="#0e1418">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -20,8 +20,8 @@
       <div class="wrap">
         <span class="eyebrow">Ham Tools · CW</span>
         <h1><span lang="en">CW trainer</span><span lang="pl">Trener CW</span></h1>
-        <p lang="en">Listen, copy, score. Learn new characters the Koch way, then copy callsigns and the CW shortcuts you hear on the air.</p>
-        <p lang="pl">Słuchaj, odbieraj, zbieraj punkty. Ucz się nowych znaków metodą Kocha, potem odbieraj znaki wywoławcze i skróty, które słychać na pasmach.</p>
+        <p lang="en">Listen, copy, score. Learn new characters the Koch way, then copy callsigns and the CW shortcuts you hear on the air. Two arcade games test your speed: Quick finger for copying, Morse Sea for sending with a paddle.</p>
+        <p lang="pl">Słuchaj, odbieraj, zbieraj punkty. Ucz się nowych znaków metodą Kocha, potem odbieraj znaki wywoławcze i skróty, które słychać na pasmach. Dwie gry zręcznościowe sprawdzą refleks: Szybki palec w odbiorze, Morze Morse'a w nadawaniu kluczem.</p>
       </div>
     </section>
 
@@ -31,6 +31,8 @@
           <button type="button" data-mode="koch" aria-pressed="true"><span lang="en">Koch – characters</span><span lang="pl">Koch – znaki</span></button>
           <button type="button" data-mode="calls" aria-pressed="false"><span lang="en">Callsigns</span><span lang="pl">Znaki wywoławcze</span></button>
           <button type="button" data-mode="abbr" aria-pressed="false"><span lang="en">CW Shortcuts &amp; Q-codes</span><span lang="pl">Skróty i kody Q</span></button>
+          <button type="button" data-mode="quick" aria-pressed="false"><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></button>
+          <button type="button" data-mode="sea" aria-pressed="false"><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></button>
         </div>
 
         <div class="cw-layout">
@@ -38,17 +40,19 @@
             <div class="cw-rig" data-cw="rig" tabindex="-1">
               <div class="cw-readout">
                 <div><small>WPM</small><b data-cw="wpm">20</b></div>
-                <div><small><span lang="en">Round</span><span lang="pl">Runda</span></small><b data-cw="progress">0/30</b></div>
+                <div><small data-cw="plabel"><span lang="en">Round</span><span lang="pl">Runda</span></small><b data-cw="progress">0/30</b></div>
                 <div><small><span lang="en">Streak</span><span lang="pl">Seria</span></small><b data-cw="streak">0</b></div>
                 <div><small><span lang="en">Score</span><span lang="pl">Wynik</span></small><b data-cw="score">0</b></div>
                 <div><small><span lang="en">Best</span><span lang="pl">Rekord</span></small><b data-cw="best">0</b></div>
               </div>
 
-              <div class="cw-screen" aria-live="polite">
+              <div class="cw-screen" data-cw="screen" aria-live="polite">
+                <canvas class="cw-sky" data-cw="field" hidden aria-label="Morse Sea / Morze Morse'a"></canvas>
                 <span class="cw-led" data-cw="led" aria-hidden="true">RX</span>
                 <div class="cw-glyph" data-cw="glyph">CW</div>
                 <div class="cw-pattern" data-cw="pattern">−·−· ·−−</div>
                 <div class="cw-msg" data-cw="msg"></div>
+                <div class="cw-timer" data-cw="timer" hidden><i data-cw="timerbar"></i></div>
               </div>
 
               <form class="cw-copy" data-cw="form" autocomplete="off" hidden>
@@ -58,6 +62,15 @@
                 <button type="submit" class="btn ghost">Enter</button>
               </form>
               <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki"></div>
+              <div class="cw-choices" data-cw="choices" role="group" aria-label="Answers / Odpowiedzi" hidden></div>
+              <div class="cw-keybox" data-cw="keybox" hidden>
+                <div class="cw-keying" aria-live="polite"><span data-cw="keying"></span><b data-cw="decoded"></b></div>
+                <div class="cw-paddles">
+                  <button type="button" class="cw-key" data-paddle="L">· <span lang="en">DIT</span><span lang="pl">KROPKA</span><small>Z ←</small></button>
+                  <button type="button" class="cw-key" data-paddle="R">− <span lang="en">DAH</span><span lang="pl">KRESKA</span><small>X →</small></button>
+                </div>
+                <label class="cw-check"><input type="checkbox" data-cw="swap"> <span lang="en">Swap dit and dah (left hand)</span><span lang="pl">Zamień kropkę i kreskę (lewa ręka)</span></label>
+              </div>
 
               <div class="cw-actions">
                 <button type="button" class="btn" data-cw="start">Start</button>
@@ -107,6 +120,8 @@
               <div><dt>Koch</dt><dd data-cw-best="koch">—</dd></div>
               <div><dt><span lang="en">Callsigns</span><span lang="pl">Znaki</span></dt><dd data-cw-best="calls">—</dd></div>
               <div><dt><span lang="en">CW Shortcuts</span><span lang="pl">Skróty</span></dt><dd data-cw-best="abbr">—</dd></div>
+              <div><dt><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></dt><dd data-cw-best="quick">—</dd></div>
+              <div><dt><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></dt><dd data-cw-best="sea">—</dd></div>
             </dl>
 
             <p class="cw-tip" lang="en">Tip: learn at full character speed (20+ WPM) and add Farnsworth spacing instead of slowing the characters down – you learn the sound of each character, not counting dots.</p>

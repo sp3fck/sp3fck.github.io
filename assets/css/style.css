@@ -367,6 +367,39 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-pad button.new { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); color: var(--accent); }
 .cw-pad button.ok { background: color-mix(in srgb, var(--ok) 25%, var(--card-2)); border-color: var(--ok); }
 .cw-pad button.bad { background: color-mix(in srgb, var(--bad) 25%, var(--card-2)); border-color: var(--bad); }
+/* Szybki palec: cztery odpowiedzi i pasek czasu na dole ekranu */
+.cw-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 560px) { .cw-choices { grid-template-columns: repeat(2, 1fr); } }
+.cw-choices button {
+  position: relative; font: 800 1.8rem/1 var(--mono); padding: 20px 0; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--card-2); color: var(--ink); cursor: pointer; transition: background .15s, border-color .15s;
+}
+.cw-choices button:hover { border-color: var(--accent); }
+.cw-choices small { position: absolute; top: 6px; left: 8px; font: 600 .7rem/1 var(--mono); color: var(--ink-soft); }
+.cw-choices button.ok { background: color-mix(in srgb, var(--ok) 25%, var(--card-2)); border-color: var(--ok); }
+.cw-choices button.bad { background: color-mix(in srgb, var(--bad) 25%, var(--card-2)); border-color: var(--bad); }
+.cw-timer { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--line); overflow: hidden; border-radius: 0 0 6px 6px; }
+.cw-timer i { display: block; width: 100%; height: 100%; background: var(--accent); }
+.cw-timer.low i { background: var(--bad); }
+/* Morze Morse'a: płótno gry w wyższym ekranie i klucz podwójny */
+.cw-screen.tall { min-height: 400px; }
+.cw-sky { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: inherit; }
+.cw-keybox { display: grid; gap: 10px; }
+.cw-keying { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 2.4rem; font-size: 1.3rem; color: var(--accent); }
+.cw-keying b { font: 800 1.7rem/1 var(--mono); color: var(--ink); }
+.cw-keying b.ok { color: var(--ok); }
+.cw-keying b.bad { color: var(--bad); }
+.cw-paddles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cw-key {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 26px 0; cursor: pointer;
+  font: 800 1.05rem/1 var(--mono); letter-spacing: .14em; color: var(--ink-soft);
+  background: var(--card-2); border: 1px solid var(--line); border-radius: 8px;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: none;
+}
+.cw-key small { font-size: .7rem; letter-spacing: .1em; opacity: .7; }
+.cw-key.on { background: color-mix(in srgb, var(--accent) 22%, var(--card-2)); border-color: var(--accent); color: var(--accent); }
+.cw-check { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: .88rem; color: var(--ink-soft); cursor: pointer; }
+.cw-check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
 .cw-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
 .cw-keys { margin-left: auto; font-size: .82rem; color: var(--ink-soft); }
 .cw kbd { font: 600 .78rem/1 var(--mono); padding: 2px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--field); color: var(--ink); }
