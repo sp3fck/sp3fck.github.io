@@ -10,6 +10,8 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
   - `q-codes.html` – ściąga: kody Q, skróty CW, znaki proceduralne i liczby skrócone z wyszukiwarką (dane w `data/cw-codes.js`, logika w `assets/js/cw-codes.js`)
   - `qrz-builder/` – kreator strony bio na QRZ.com
   - `cw-trainer.html` – gra do nauki CW: Koch, znaki wywoławcze, skróty i kody Q oraz gry zręcznościowe Szybki palec i Morze Morse'a (klucz podwójny: Z/← kropka, X/→ kreska albo przyciski na ekranie, z zamianą stron dla leworęcznych; keyer jambiczny w JS) (`assets/js/cw-trainer.js`, Web Audio; ustawienia i rekordy w `localStorage` `sp3fck-cw`; wersja w stałej `VERSION` na początku skryptu, widoczna pod alfabetem – podbijaj przy każdej zmianie gry)
+    - prawdziwy klucz (panel „Klucz” na górze ustawień: połączenie i zamiana łopatek; nadaje się w Morzu Morse'a): klawiatura (także lewy/prawy Ctrl), Arduino przez Web Serial (Chrome/Edge), ESP32 jako klawiatura Bluetooth
+- `klucz/` – interfejsy klucza CW do pobrania ze strony trenera: `arduino/` (szkic `paddle_uno.ino` + README PL/EN), `esp32/` (README z planem CYD, szkic w przygotowaniu)
 - `gallery.html`, `youtube.html`, `other.html`, `contact.html`, `privacy.html`, `404.html`
 - `ham-map-embed.html` – sama mapa (ramka na stronie głównej; zoom tylko Ctrl + kółko / dwa palce)
 - `ham-map-qrz.html` – statyczna mapa bez JS do osadzenia na QRZ.com (generowana)

@@ -2,10 +2,11 @@
    Tryby: Koch (pojedyncze znaki; kolejny odblokowuje runda z wynikiem ≥ 90%), znaki wywoławcze, skróty i kody Q
    oraz gry zręcznościowe na 3 życia: Szybki palec (wybór usłyszanego znaku na czas) i Morze Morse'a (nadawanie
    spadających znaków kluczem podwójnym — klawisze albo przyciski na ekranie, keyer jambiczny w JS).
+   Prawdziwy klucz: Arduino przez Web Serial albo ESP32 jako klawiatura Bluetooth (szkice i instrukcje w klucz/).
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.4.0';
+  const VERSION = '1.5.0';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -116,7 +117,7 @@
   const KEY = 'sp3fck-cw';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, best: {} }, saved);
+  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, keySource: 'keyboard', fold: {}, best: {} }, saved);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
   // dawniej szum był tylko włącz/wyłącz (qrn: true/false)
   if (saved.qrn && saved.noise == null) S.noise = 50;
@@ -128,8 +129,10 @@
   S.noise = clamp(S.noise, 0, 100);
   S.level = Math.round(clamp(S.level, 2, KOCH.length));
   S.swap = S.swap === true;
+  if (!['keyboard', 'arduino', 'esp32'].includes(S.keySource)) S.keySource = 'keyboard';
   if (!MODES[S.mode]) S.mode = 'koch';
   if (!S.best || typeof S.best !== 'object') S.best = {};
+  if (!S.fold || typeof S.fold !== 'object') S.fold = {};
   // „Jonosfera” z wersji roboczych 1.2–1.3 to teraz „Morze Morse'a” — rekord przechodzi pod nową nazwę
   if (S.best.iono) {
     S.best.sea = Math.max(S.best.sea || 0, S.best.iono);
@@ -497,7 +500,8 @@
   // Lewa łopatka = kropki, prawa = kreski (S.swap zamienia je dla leworęcznych), obie naraz (squeeze) = na przemian.
   // Keyer w trybie A z pamięcią: przeciwny element wciśnięty w trakcie nadawania zostanie nadany po bieżącym.
   // Długości elementów z „Tempa”, litera kończy się po ok. 2,5 kropki ciszy.
-  const PADDLE = { KeyZ: 'L', ArrowLeft: 'L', BracketLeft: 'L', KeyX: 'R', ArrowRight: 'R', BracketRight: 'R' };
+  // lewy/prawy Ctrl: tak nadaje ESP32 jako klawiatura Bluetooth (i inne interfejsy udające klawiaturę)
+  const PADDLE = { KeyZ: 'L', ArrowLeft: 'L', BracketLeft: 'L', ControlLeft: 'L', KeyX: 'R', ArrowRight: 'R', BracketRight: 'R', ControlRight: 'R' };
   const pads = { L: root.querySelector('[data-paddle="L"]'), R: root.querySelector('[data-paddle="R"]') };
   const elementOf = side => (side === 'L') !== S.swap ? '.' : '-';
   // busy – keyer nadaje (element albo przerwa po nim); on – trwa sam element (ton, dioda TX, fale radiowe łódki)
@@ -563,6 +567,117 @@
     pads.L.innerHTML = `${PAD_LABEL[elementOf('L')]}<small>Z ←</small>`;
     pads.R.innerHTML = `${PAD_LABEL[elementOf('R')]}<small>X →</small>`;
     el.swap.checked = S.swap;
+  }
+
+  // ---------- źródła klucza ----------
+  // Wszystkie trafiają do paddle(strona, wciśnięta): klawiatura i przyciski na ekranie (wyżej), Arduino przez Web Serial,
+  // ESP32 na razie jako klawiatura BLE (lewy/prawy Ctrl). Urządzenia podają bajt stanu jak szkic klucz/arduino/paddle_uno.ino:
+  // bit 1 = styk kropki (tip, lewa łopatka), bit 2 = styk kreski (ring, prawa).
+  // Przyszły tryb Web Bluetooth (ESP32 z własną usługą GATT) dostanie w SOURCES własne connect/disconnect i będzie
+  // wołać applyState(bajt) z powiadomień charakterystyki stanu — reszta zostaje bez zmian.
+  const hasSerial = 'serial' in navigator;
+  const BUILD = t('<a href="#klucz">How to build it →</a>', '<a href="#klucz">Jak to zbudować →</a>');
+  const SOURCES = {
+    keyboard: {
+      info: t('Paddle on the keyboard: left – <kbd>Z</kbd> <kbd>←</kbd> or left <kbd>Ctrl</kbd>, right – <kbd>X</kbd> <kbd>→</kbd> or right <kbd>Ctrl</kbd>. On a phone use the DIT / DAH buttons in Morse Sea.',
+        'Łopatki na klawiaturze: lewa – <kbd>Z</kbd> <kbd>←</kbd> albo lewy <kbd>Ctrl</kbd>, prawa – <kbd>X</kbd> <kbd>→</kbd> albo prawy <kbd>Ctrl</kbd>. Na telefonie przyciski KROPKA / KRESKA w Morzu Morse\'a.'),
+    },
+    arduino: {
+      info: (hasSerial
+        ? t('Paddle through an Arduino Uno/Nano on USB: click Connect, pick its COM port and wait about 2 s.',
+            'Klucz przez Arduino Uno/Nano na USB: kliknij Połącz, wybierz jego port COM i poczekaj ok. 2 s.')
+        : t('This browser has no Web Serial – use Chrome or Edge on a computer.',
+            'Ta przeglądarka nie obsługuje Web Serial – użyj Chrome lub Edge na komputerze.')) + ' ' + BUILD,
+      connect: serialConnect,
+      disconnect: () => serialClose(t('Disconnected.', 'Rozłączono.')),
+    },
+    esp32: {
+      info: t('ESP32 as a Bluetooth keyboard: pair “CW Paddle” in the system Bluetooth settings – the paddle then sends left <kbd>Ctrl</kbd> (dit) and right <kbd>Ctrl</kbd> (dah), on phones too. The interface is in preparation.',
+        'ESP32 jako klawiatura Bluetooth: sparuj „CW Paddle” w ustawieniach Bluetooth systemu – łopatki wysyłają wtedy lewy <kbd>Ctrl</kbd> (kropka) i prawy <kbd>Ctrl</kbd> (kreska), także na telefonie. Interfejs jest w przygotowaniu.') + ' ' + BUILD,
+    },
+  };
+  // bajt stanu z urządzenia → obie łopatki
+  function applyState(s) {
+    paddle('L', !!(s & 1));
+    paddle('R', !!(s & 2));
+  }
+  function keyStatus(html, cls) {
+    el.keystatus.innerHTML = html;
+    el.keystatus.className = 'cw-keystatus' + (cls ? ' ' + cls : '');
+  }
+  function renderSource() {
+    const src = SOURCES[S.keySource], connected = !!serial.port;
+    root.querySelectorAll('[data-source]').forEach(b => b.setAttribute('aria-pressed', b.dataset.source === S.keySource));
+    el.sourceinfo.innerHTML = src.info;
+    el.serialbox.hidden = !src.connect;
+    el.connect.hidden = connected;
+    el.connect.disabled = !hasSerial;
+    el.disconnect.hidden = !connected;
+  }
+
+  // Arduino przez Web Serial (115200 bd, protokół jak w szkicu)
+  const serial = { port: null, reader: null, loop: null, timer: 0, closing: false };
+  async function serialConnect() {
+    audio(); // kliknięcie „Połącz” odblokowuje też dźwięk
+    let port;
+    try {
+      port = await navigator.serial.requestPort();
+    } catch (e) {
+      return keyStatus(t('No port selected.', 'Nie wybrano portu.'));
+    }
+    try {
+      await port.open({ baudRate: 115200 });
+    } catch (e) {
+      // najczęściej port zajęty, np. przez Serial Monitor w Arduino IDE
+      return keyStatus(t(`Could not open the port (${esc(e.message)}). Is the Arduino IDE Serial Monitor open?`,
+        `Nie udało się otworzyć portu (${esc(e.message)}). Czy nie jest otwarty Serial Monitor w Arduino IDE?`), 'bad');
+    }
+    serial.port = port;
+    renderSource();
+    keyStatus(t('Connected – the Uno restarts, wait about 2 s…', 'Połączono – Uno się restartuje, poczekaj ok. 2 s…'));
+    serial.loop = serialRead(port);
+    // Uno restartuje się po otwarciu portu, więc o bieżący stan („?”) pytamy dopiero po ok. 2 s
+    serial.timer = setTimeout(async () => {
+      if (serial.port !== port) return;
+      try {
+        const w = port.writable.getWriter();
+        await w.write(new Uint8Array([63]));
+        w.releaseLock();
+      } catch (e) {}
+      keyStatus(t('Ready – press the paddle.', 'Gotowe – naciskaj łopatki.'), 'ok');
+    }, 2000);
+  }
+  async function serialRead(port) {
+    while (port.readable && !serial.closing) {
+      const reader = serial.reader = port.readable.getReader();
+      let done = false;
+      try {
+        while (!done) {
+          const r = await reader.read();
+          done = r.done;
+          if (r.value) for (const b of r.value) if (b >= 48 && b <= 51) applyState(b - 48);
+        }
+      } catch (e) {
+        // po utracie urządzenia port.readable znika i pętla się kończy; po drobnych błędach transmisji czytamy dalej
+      } finally {
+        reader.releaseLock();
+      }
+      if (done) break;
+    }
+    if (!serial.closing && serial.port === port) serialClose(t('Disconnected – was the cable unplugged?', 'Rozłączono – wyjęty kabel?'), 'bad', true);
+  }
+  async function serialClose(msg, cls, fromLoop) {
+    const port = serial.port;
+    if (!port || serial.closing) return;
+    serial.closing = true;
+    clearTimeout(serial.timer);
+    applyState(0); // obie łopatki puszczone, żeby ton nie wisiał
+    try { if (serial.reader) await serial.reader.cancel(); } catch (e) {}
+    if (!fromLoop) await serial.loop;
+    try { await port.close(); } catch (e) {}
+    Object.assign(serial, { port: null, reader: null, loop: null, closing: false });
+    renderSource();
+    keyStatus(msg, cls);
   }
 
   // ---------- Morze Morse'a ----------
@@ -922,6 +1037,35 @@
     renderMode();
     el.rig.focus({ preventScroll: true });
   });
+  // połączenie klucza: wybór źródła (zapamiętany), Połącz / Rozłącz, wyjęcie kabla
+  root.querySelectorAll('[data-source]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.source === S.keySource) return;
+    if (serial.port) serialClose(t('Disconnected.', 'Rozłączono.'));
+    S.keySource = b.dataset.source;
+    save();
+    renderSource();
+  }));
+  el.connect.addEventListener('click', () => SOURCES[S.keySource].connect());
+  el.disconnect.addEventListener('click', () => SOURCES[S.keySource].disconnect());
+  // „?” przy połączeniu klucza: podpowiedź do wybranego źródła
+  el.help.addEventListener('click', () => {
+    const show = el.sourceinfo.hidden;
+    el.sourceinfo.hidden = !show;
+    el.help.setAttribute('aria-expanded', show);
+  });
+  // zwijane sekcje panelu (Klucz, Ustawienia, Rekordy); zwinięte zostają zwinięte po odświeżeniu
+  root.querySelectorAll('details[data-fold]').forEach(d => {
+    if (S.fold[d.dataset.fold] === false) d.open = false;
+    d.addEventListener('toggle', () => {
+      S.fold[d.dataset.fold] = d.open;
+      save();
+    });
+  });
+  if (hasSerial) {
+    navigator.serial.addEventListener('disconnect', e => {
+      if (e.target === serial.port) serialClose(t('Disconnected – the cable was unplugged.', 'Rozłączono – wyjęty kabel.'), 'bad');
+    });
+  }
   window.addEventListener('resize', () => { if (G && G.state === 'play' && G.ctx) fitField(); });
 
   function setLevel(d) {
@@ -973,16 +1117,17 @@
   });
 
   document.addEventListener('keydown', e => {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.key === 'Escape' && active()) return stopRound();
-    if (e.target.matches('input[type="text"], textarea, select')) return;
-    // Morze Morse'a: klawisze klucza (także przed startem, do ćwiczeń); strzałki na suwakach zostają suwakom
-    const side = S.mode === 'sea' && PADDLE[e.code];
-    if (side && !e.target.matches('input')) {
+    // Morze Morse'a: klawisze klucza (także przed startem, do ćwiczeń); strzałki na suwakach zostają suwakom.
+    // Sprawdzane przed modyfikatorami, bo lewy/prawy Ctrl też jest łopatką (ESP32 jako klawiatura Bluetooth).
+    const side = S.mode === 'sea' && !e.metaKey && !e.altKey && PADDLE[e.code];
+    if (side && !e.target.matches('input, textarea, select')) {
       e.preventDefault();
       if (!e.repeat) paddle(side, true);
       return;
     }
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Escape' && active()) return stopRound();
+    if (e.target.matches('input[type="text"], textarea, select')) return;
     if (!active()) {
       if (e.key === 'Enter' && !e.target.closest('button, a')) { e.preventDefault(); startRound(); }
       return;
@@ -1037,6 +1182,10 @@
 
   renderSettings();
   renderPaddles();
+  renderSource();
+  // bez Web Serial komunikat zostaje widoczny przy nieaktywnym „Połącz”, nie tylko pod „?”
+  if (hasSerial) keyStatus(t('Not connected.', 'Nie połączono.'));
+  else keyStatus(t('Needs Chrome or Edge on a computer.', 'Wymaga Chrome lub Edge na komputerze.'), 'bad');
   renderMode();
   renderStats();
   renderBest();

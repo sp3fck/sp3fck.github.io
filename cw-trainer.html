@@ -69,7 +69,6 @@
                   <button type="button" class="cw-key" data-paddle="L">· <span lang="en">DIT</span><span lang="pl">KROPKA</span><small>Z ←</small></button>
                   <button type="button" class="cw-key" data-paddle="R">− <span lang="en">DAH</span><span lang="pl">KRESKA</span><small>X →</small></button>
                 </div>
-                <label class="cw-check"><input type="checkbox" data-cw="swap"> <span lang="en">Swap dit and dah (left hand)</span><span lang="pl">Zamień kropkę i kreskę (lewa ręka)</span></label>
               </div>
 
               <div class="cw-actions">
@@ -82,50 +81,80 @@
           </div>
 
           <aside class="cw-settings" aria-label="Settings / Ustawienia">
-            <h2><span lang="en">Settings</span><span lang="pl">Ustawienia</span></h2>
-            <label class="cw-field">
-              <span><span lang="en">Speed</span><span lang="pl">Tempo</span> <output data-cw-out="wpm"></output></span>
-              <input type="range" name="wpm" min="5" max="45" step="1">
-            </label>
-            <label class="cw-field">
-              <span><span lang="en">Effective speed (Farnsworth)</span><span lang="pl">Tempo efektywne (Farnsworth)</span> <output data-cw-out="eff"></output></span>
-              <input type="range" name="eff" min="5" max="45" step="1">
-            </label>
-            <label class="cw-field">
-              <span><span lang="en">Tone</span><span lang="pl">Ton</span> <output data-cw-out="tone"></output></span>
-              <input type="range" name="tone" min="400" max="1000" step="10">
-            </label>
-            <label class="cw-field">
-              <span><span lang="en">Volume</span><span lang="pl">Głośność</span> <output data-cw-out="vol"></output></span>
-              <input type="range" name="vol" min="0" max="100" step="5">
-            </label>
-            <label class="cw-field">
-              <span><span lang="en">Band noise (QRN)</span><span lang="pl">Szum pasma (QRN)</span> <output data-cw-out="noise"></output></span>
-              <input type="range" name="noise" min="0" max="100" step="5">
-            </label>
-
-            <div class="cw-field" data-cw="levelbox">
-              <span><label for="cw-level"><span lang="en">Koch level</span><span lang="pl">Poziom Kocha</span></label> <output data-cw="levelnum"></output></span>
-              <div class="cw-level">
-                <button type="button" class="btn ghost" data-cw="lvldown" aria-label="Fewer characters / Mniej znaków">−</button>
-                <input id="cw-level" type="range" name="level" min="2" max="41" step="1" data-cw="levelrange">
-                <button type="button" class="btn ghost" data-cw="lvlup" aria-label="More characters / Więcej znaków">+</button>
+            <details class="cw-panel" data-fold="key" open>
+              <summary><h2><span lang="en">Key</span><span lang="pl">Klucz</span></h2></summary>
+              <div class="cw-panel-body">
+                <div class="cw-field cw-source">
+                  <span><span><span lang="en">Key connection</span><span lang="pl">Połączenie klucza</span></span>
+                    <button type="button" class="cw-help" data-cw="help" aria-expanded="false" aria-controls="cw-sourceinfo" aria-label="Help / Pomoc">?</button></span>
+                  <div class="tabs" role="group" aria-label="Key connection / Połączenie klucza">
+                    <button type="button" data-source="keyboard" aria-pressed="true"><span lang="en">Keyboard</span><span lang="pl">Klawiatura</span></button>
+                    <button type="button" data-source="arduino" aria-pressed="false">Arduino (USB)</button>
+                    <button type="button" data-source="esp32" aria-pressed="false">ESP32 (Bluetooth)</button>
+                  </div>
+                  <p class="cw-hint" id="cw-sourceinfo" data-cw="sourceinfo" hidden></p>
+                  <div class="cw-serial" data-cw="serialbox" hidden>
+                    <button type="button" class="btn" data-cw="connect"><span lang="en">Connect</span><span lang="pl">Połącz</span></button>
+                    <button type="button" class="btn ghost" data-cw="disconnect" hidden><span lang="en">Disconnect</span><span lang="pl">Rozłącz</span></button>
+                    <span class="cw-keystatus" data-cw="keystatus" aria-live="polite"></span>
+                  </div>
+                </div>
+                <label class="cw-check"><input type="checkbox" data-cw="swap"> <span lang="en">Swap dit and dah (left hand)</span><span lang="pl">Zamień kropkę i kreskę (lewa ręka)</span></label>
               </div>
-              <span class="cw-level-new" data-cw="levelnew"></span>
-              <span class="cw-level-set" data-cw="levelset"></span>
-            </div>
+            </details>
 
-            <h2><span lang="en">Records</span><span lang="pl">Rekordy</span></h2>
-            <dl class="station">
-              <div><dt>Koch</dt><dd data-cw-best="koch">—</dd></div>
-              <div><dt><span lang="en">Callsigns</span><span lang="pl">Znaki</span></dt><dd data-cw-best="calls">—</dd></div>
-              <div><dt><span lang="en">CW Shortcuts</span><span lang="pl">Skróty</span></dt><dd data-cw-best="abbr">—</dd></div>
-              <div><dt><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></dt><dd data-cw-best="quick">—</dd></div>
-              <div><dt><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></dt><dd data-cw-best="sea">—</dd></div>
-            </dl>
+            <details class="cw-panel" data-fold="settings" open>
+              <summary><h2><span lang="en">Settings</span><span lang="pl">Ustawienia</span></h2></summary>
+              <div class="cw-panel-body">
+                <label class="cw-field">
+                  <span><span lang="en">Speed</span><span lang="pl">Tempo</span> <output data-cw-out="wpm"></output></span>
+                  <input type="range" name="wpm" min="5" max="45" step="1">
+                </label>
+                <label class="cw-field">
+                  <span><span lang="en">Effective speed (Farnsworth)</span><span lang="pl">Tempo efektywne (Farnsworth)</span> <output data-cw-out="eff"></output></span>
+                  <input type="range" name="eff" min="5" max="45" step="1">
+                </label>
+                <label class="cw-field">
+                  <span><span lang="en">Tone</span><span lang="pl">Ton</span> <output data-cw-out="tone"></output></span>
+                  <input type="range" name="tone" min="400" max="1000" step="10">
+                </label>
+                <label class="cw-field">
+                  <span><span lang="en">Volume</span><span lang="pl">Głośność</span> <output data-cw-out="vol"></output></span>
+                  <input type="range" name="vol" min="0" max="100" step="5">
+                </label>
+                <label class="cw-field">
+                  <span><span lang="en">Band noise (QRN)</span><span lang="pl">Szum pasma (QRN)</span> <output data-cw-out="noise"></output></span>
+                  <input type="range" name="noise" min="0" max="100" step="5">
+                </label>
 
-            <p class="cw-tip" lang="en">Tip: learn at full character speed (20+ WPM) and add Farnsworth spacing instead of slowing the characters down – you learn the sound of each character, not counting dots.</p>
-            <p class="cw-tip" lang="pl">Wskazówka: ucz się od razu w pełnym tempie znaków (20+ WPM), a zamiast zwalniać znaki wydłuż odstępy Farnswortha – zapamiętujesz brzmienie znaku, a nie liczysz kropki.</p>
+                <div class="cw-field" data-cw="levelbox">
+                  <span><label for="cw-level"><span lang="en">Koch level</span><span lang="pl">Poziom Kocha</span></label> <output data-cw="levelnum"></output></span>
+                  <div class="cw-level">
+                    <button type="button" class="btn ghost" data-cw="lvldown" aria-label="Fewer characters / Mniej znaków">−</button>
+                    <input id="cw-level" type="range" name="level" min="2" max="41" step="1" data-cw="levelrange">
+                    <button type="button" class="btn ghost" data-cw="lvlup" aria-label="More characters / Więcej znaków">+</button>
+                  </div>
+                  <span class="cw-level-new" data-cw="levelnew"></span>
+                  <span class="cw-level-set" data-cw="levelset"></span>
+                </div>
+
+                <p class="cw-tip" lang="en">Tip: learn at full character speed (20+ WPM) and add Farnsworth spacing instead of slowing the characters down – you learn the sound of each character, not counting dots.</p>
+                <p class="cw-tip" lang="pl">Wskazówka: ucz się od razu w pełnym tempie znaków (20+ WPM), a zamiast zwalniać znaki wydłuż odstępy Farnswortha – zapamiętujesz brzmienie znaku, a nie liczysz kropki.</p>
+              </div>
+            </details>
+
+            <details class="cw-panel" data-fold="records" open>
+              <summary><h2><span lang="en">Records</span><span lang="pl">Rekordy</span></h2></summary>
+              <div class="cw-panel-body">
+                <dl class="station">
+                  <div><dt>Koch</dt><dd data-cw-best="koch">—</dd></div>
+                  <div><dt><span lang="en">Callsigns</span><span lang="pl">Znaki</span></dt><dd data-cw-best="calls">—</dd></div>
+                  <div><dt><span lang="en">CW Shortcuts</span><span lang="pl">Skróty</span></dt><dd data-cw-best="abbr">—</dd></div>
+                  <div><dt><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></dt><dd data-cw-best="quick">—</dd></div>
+                  <div><dt><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></dt><dd data-cw-best="sea">—</dd></div>
+                </dl>
+              </div>
+            </details>
           </aside>
         </div>
       </div>
@@ -139,6 +168,39 @@
         </div>
         <div class="cw-chart" data-cw-chart></div>
         <p class="cw-version"><span lang="en">CW trainer</span><span lang="pl">Trener CW</span> <span data-cw-version></span></p>
+      </div>
+    </section>
+
+    <section class="section" id="klucz">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">CW · DIY</span><h2><span lang="en">Build your own key interface</span><span lang="pl">Zbuduj własny interfejs klucza</span></h2></div>
+        </div>
+        <div class="prose">
+          <p lang="en">Connect a real paddle to the Morse Sea game. The microcontroller only reports the paddle contacts – dits and dahs come from the keyer in the browser. Choose the interface in the “Key” panel next to the trainer.</p>
+          <p lang="pl">Podłącz prawdziwy klucz łopatkowy do gry Morze Morse'a. Mikrokontroler przekazuje tylko stan styków – kropki i kreski robi keyer w przeglądarce. Interfejs wybierasz w panelu „Klucz” obok trenera.</p>
+        </div>
+        <ul class="cards">
+          <li>
+            <span class="tag">USB · Web Serial</span>
+            <h3>Arduino Uno / Nano</h3>
+            <p lang="en">A 3.5 mm stereo jack and three wires: tip → D2, ring → D3, sleeve → GND. Works in Chrome and Edge on a computer.</p>
+            <p lang="pl">Gniazdo jack 3,5 mm stereo i trzy przewody: tip → D2, ring → D3, sleeve → GND. Działa w Chrome i Edge na komputerze.</p>
+            <div class="cw-dl">
+              <a class="btn" href="klucz/arduino/paddle_uno.ino" download><span lang="en">Sketch</span><span lang="pl">Szkic</span> .ino</a>
+              <a class="btn ghost" href="klucz/arduino/README.md" download="README-arduino.md"><span lang="en">Instructions</span><span lang="pl">Instrukcja</span> README</a>
+            </div>
+          </li>
+          <li>
+            <span class="tag">Bluetooth · BLE</span>
+            <h3>ESP32 (CYD)</h3>
+            <p lang="en">In preparation: the ESP32-2432S028R board as a Bluetooth keyboard “CW Paddle” – for computers and phones.</p>
+            <p lang="pl">W przygotowaniu: płytka ESP32-2432S028R jako klawiatura Bluetooth „CW Paddle” – dla komputerów i telefonów.</p>
+            <div class="cw-dl">
+              <a class="btn ghost" href="klucz/esp32/README.md" download="README-esp32.md"><span lang="en">Plan</span><span lang="pl">Plan</span> README</a>
+            </div>
+          </li>
+        </ul>
       </div>
     </section>
   </main>

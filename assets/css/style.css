@@ -400,6 +400,25 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-key.on { background: color-mix(in srgb, var(--accent) 22%, var(--card-2)); border-color: var(--accent); color: var(--accent); }
 .cw-check { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: .88rem; color: var(--ink-soft); cursor: pointer; }
 .cw-check input { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; }
+/* połączenie klucza: klawiatura / Arduino (Web Serial) / ESP32 (Bluetooth) */
+.cw-source { gap: 8px; }
+.cw-source > span:first-child { align-items: center; }
+.cw-settings .cw-check { justify-content: flex-start; }
+/* „?” – podpowiedź do wybranego źródła klucza */
+.cw-help {
+  flex: none; width: 22px; height: 22px; padding: 0; border: 1px solid var(--line); border-radius: 50%;
+  background: transparent; color: var(--ink-soft); font: 700 .8rem/1 var(--mono); cursor: pointer;
+}
+.cw-help:hover, .cw-help[aria-expanded="true"] { border-color: var(--accent); color: var(--accent); }
+.cw-hint { padding: 8px 10px; background: var(--field); border: 1px solid var(--line); border-radius: 6px; }
+.cw-source .tabs { margin: 0; gap: 6px; }
+.cw-source .tabs button { padding: 7px 12px; font-size: .82rem; }
+.cw-source p { margin: 0; font-size: .88rem; color: var(--ink-soft); }
+.cw-serial { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.cw-serial .btn { padding: 7px 14px; font-size: .9rem; }
+.cw-keystatus { font-size: .88rem; color: var(--ink-soft); }
+.cw-keystatus.ok { color: var(--ok); }
+.cw-keystatus.bad { color: var(--bad); }
 .cw-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
 .cw-keys { margin-left: auto; font-size: .82rem; color: var(--ink-soft); }
 .cw kbd { font: 600 .78rem/1 var(--mono); padding: 2px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--field); color: var(--ink); }
@@ -418,7 +437,15 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
   .cw-log .m { grid-column: 2 / -1; }
 }
 .cw-settings { display: grid; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
-.cw-settings h2 { font: 700 .74rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; margin: 6px 0 0; }
+.cw-settings h2 { font: 700 .74rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; margin: 0; }
+/* zwijane sekcje panelu: Klucz, Ustawienia, Rekordy */
+.cw-panel + .cw-panel { border-top: 1px solid var(--line); padding-top: 14px; }
+.cw-panel summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; list-style: none; }
+.cw-panel summary::-webkit-details-marker { display: none; }
+.cw-panel summary::after { content: "▾"; color: var(--ink-soft); transition: transform .2s; }
+.cw-panel:not([open]) summary::after { transform: rotate(-90deg); }
+.cw-panel summary:hover h2, .cw-panel summary:hover::after { color: var(--accent); }
+.cw-panel-body { display: grid; gap: 14px; padding-top: 14px; }
 .cw-field { display: grid; gap: 6px; font-size: .9rem; }
 .cw-field > span:first-child { display: flex; justify-content: space-between; gap: 10px; color: var(--ink-soft); }
 .cw-field output { font-family: var(--mono); color: var(--accent); white-space: nowrap; }
@@ -443,6 +470,10 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-chart b { font: 700 1.1rem/1 var(--mono); }
 .cw-chart .cw-code { color: var(--accent); font-size: .8rem; }
 .cw-version { margin: 24px 0 0; font: .78rem/1 var(--mono); letter-spacing: .06em; color: var(--ink-soft); }
+/* pliki interfejsów klucza do pobrania */
+#klucz .prose { margin-bottom: 20px; }
+.cw-dl { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 12px; }
+.cw-dl .btn { padding: 8px 14px; font-size: .9rem; }
 
 /* status (mapa) */
 .status { color: var(--ink-soft); font-size: .9rem; }
