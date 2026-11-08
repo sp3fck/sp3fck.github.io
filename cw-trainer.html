@@ -60,7 +60,7 @@
                 <label class="sr-only" for="cw-input"><span lang="en">Your copy</span><span lang="pl">Twój odbiór</span></label>
                 <input id="cw-input" data-cw="input" type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="12"
                        placeholder="Type what you hear + Enter" data-pl-placeholder="Wpisz, co słyszysz + Enter">
-                <button type="submit" class="btn ghost">Enter</button>
+                <button type="submit" class="btn ghost" data-cw="copyok">Enter</button>
               </form>
               <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki" translate="no"></div>
               <div class="cw-choices" data-cw="choices" role="group" aria-label="Answers / Odpowiedzi" translate="no" hidden></div>
@@ -72,6 +72,7 @@
                   <button type="button" data-foxlevel="3" aria-pressed="false"><span lang="en">Hard</span><span lang="pl">Trudny</span></button>
                 </div>
                 <label class="cw-switch"><input type="checkbox" data-cw="foxtimed" role="switch" checked><i></i><span lang="en">Against the clock</span><span lang="pl">Na czas</span></label>
+                <label class="cw-switch"><input type="checkbox" data-cw="foxblank" role="switch"><i></i><span lang="en">Blank guess</span><span lang="pl">Na ślepo</span></label>
                 <span class="cw-note" data-cw="foxnote"></span>
               </div>
               <div class="cw-keybox" data-cw="keybox" hidden>

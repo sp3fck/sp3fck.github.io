@@ -7,7 +7,7 @@
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.6.1';
+  const VERSION = '1.7.0';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -120,7 +120,7 @@
   const KEY = 'sp3fck-cw';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, letterGap: 2.5, foxLevel: 1, foxTimed: true, keySource: 'keyboard', fold: {}, best: {} }, saved);
+  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, letterGap: 2.5, foxLevel: 1, foxTimed: true, foxBlank: false, keySource: 'keyboard', fold: {}, best: {} }, saved);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
   // dawniej szum był tylko włącz/wyłącz (qrn: true/false)
   if (saved.qrn && saved.noise == null) S.noise = 50;
@@ -135,6 +135,7 @@
   S.letterGap = Math.round(4 * clamp(S.letterGap, 1.5, 5)) / 4;
   if (![1, 2, 3].includes(S.foxLevel)) S.foxLevel = 1;
   S.foxTimed = S.foxTimed !== false;
+  S.foxBlank = S.foxBlank === true;
   if (!['keyboard', 'arduino', 'esp32'].includes(S.keySource)) S.keySource = 'keyboard';
   // strona zawsze otwiera się na pierwszej zakładce (Koch); reszta ustawień jest pamiętana
   S.mode = 'koch';
@@ -340,11 +341,13 @@
       'Naciśnij Start: zagra znak – wybierz go z czterech, zanim skończy się czas.'),
     sea: t('Press Start and send the falling characters with the paddle before they fall into the sea. Try the paddle first – it works before the start too.',
       'Naciśnij Start i nadawaj kluczem spadające znaki, zanim wpadną do morza. Klucz działa też przed startem – możesz poćwiczyć.'),
-    fox: t('Pick a level and press Start. Five stations with real callsigns transmit on the band – their calls are on the tiles under the screen. Tune with the VFO knob, the paddle, the arrows or by dragging the band, and when you recognise a call, press its number. Watch out for other stations – a wrong number costs 10 s. From stage 4 the tile also shows an RST report, and somewhere on the band the same call sends a different one – find the right station.',
-      'Wybierz poziom i naciśnij Start. Na paśmie nadaje pięć stacji z prawdziwymi znakami – widzisz je na kafelkach pod ekranem. Strój gałką VFO, kluczem, strzałkami albo przeciągając pasmo, a gdy rozpoznasz znak, wciśnij jego numer. Uważaj na obce stacje – zły numer kosztuje 10 s. Od etapu 4 na kafelku jest też raport RST, a gdzieś na paśmie nadaje ten sam znak z innym raportem – znajdź właściwą stację.'),
+    fox: t('Pick a level and press Start. Five stations with real callsigns transmit on the band – their calls are on the tiles under the screen. Tune with the VFO knob, the paddle, the arrows or by dragging the band, and when you recognise a call, press its number. Each station found adds 30 s, a wrong number costs 10 s – watch out for other stations. From stage 4 the tile also shows an RST report, and somewhere on the band the same call sends a different one – find the right station.',
+      'Wybierz poziom i naciśnij Start. Na paśmie nadaje pięć stacji z prawdziwymi znakami – widzisz je na kafelkach pod ekranem. Strój gałką VFO, kluczem, strzałkami albo przeciągając pasmo, a gdy rozpoznasz znak, wciśnij jego numer. Każda znaleziona stacja to +30 s, zły numer kosztuje 10 s – uważaj na obce stacje. Od etapu 4 na kafelku jest też raport RST, a gdzieś na paśmie nadaje ten sam znak z innym raportem – znajdź właściwą stację.'),
+    foxBlank: t('Blank guess: pick a level and press Start. Stations with real callsigns transmit on the band, but nobody tells you which – tune around, copy each call, type it and press OK. Every station on the band counts; the list under the screen shows how many are left. Each correct call adds 30 s, a call that is not on the band costs 10 s.',
+      'Na ślepo: wybierz poziom i naciśnij Start. Na paśmie nadają stacje z prawdziwymi znakami, ale nikt nie podpowiada jakimi – strój, odbierz znak, wpisz go i kliknij OK. Liczą się wszystkie stacje na paśmie, a lista pod ekranem pokazuje, ilu jeszcze brakuje. Każdy dobry znak to +30 s, znak, którego nie ma na paśmie, kosztuje 10 s.'),
   };
   function idle() {
-    screen('CW', pattern('CW'), MODES[S.mode].typed ? IDLE.typed : IDLE[S.mode]);
+    screen('CW', pattern('CW'), MODES[S.mode].typed ? IDLE.typed : S.mode === 'fox' && S.foxBlank ? IDLE.foxBlank : IDLE[S.mode]);
   }
   const focusGame = () => (MODES[S.mode].typed ? el.input : el.rig).focus({ preventScroll: true });
 
@@ -470,8 +473,8 @@
         ? t(`Shot down: <b>${G.ok}</b> · wave <b>${G.wave}</b> · best streak <b>×${G.maxStreak}</b>`,
             `Zestrzelone: <b>${G.ok}</b> · fala <b>${G.wave}</b> · najlepsza seria <b>×${G.maxStreak}</b>`)
         : S.mode === 'fox'
-        ? t(`Stations found: <b>${G.ok}</b> · stage <b>${G.stage}</b> (${FOX_LEVEL[S.foxLevel - 1][0].toLowerCase()}) · mistakes <b>${G.wrong}</b>`,
-            `Znalezione stacje: <b>${G.ok}</b> · etap <b>${G.stage}</b> (poziom ${FOX_LEVEL[S.foxLevel - 1][1].toLowerCase()}) · pomyłki <b>${G.wrong}</b>`) +
+        ? t(`Stations found: <b>${G.ok}</b> · stage <b>${G.stage}</b> (${FOX_LEVEL[S.foxLevel - 1][0].toLowerCase()}${G.blank ? ', blank guess' : ''}) · mistakes <b>${G.wrong}</b>`,
+            `Znalezione stacje: <b>${G.ok}</b> · etap <b>${G.stage}</b> (poziom ${FOX_LEVEL[S.foxLevel - 1][1].toLowerCase()}${G.blank ? ', na ślepo' : ''}) · pomyłki <b>${G.wrong}</b>`) +
           (practice ? ` · ${t('time', 'czas')} <b>${clock(G.elapsed)}</b>` : '')
         : t(`Correct: <b>${G.ok}</b> of ${G.n} · best streak <b>×${G.maxStreak}</b>`,
             `Trafione: <b>${G.ok}</b> z ${G.n} · najlepsza seria <b>×${G.maxStreak}</b>`);
@@ -966,10 +969,12 @@
   // Na paśmie 80 m nadaje pięć stacji z prawdziwymi znakami (data/cw-calls.js), które widać na kafelkach („lisy” w kodzie).
   // VFO stroi się gałką, łopatkami / strzałkami, kółkiem myszy albo przeciągając panoramę. Każdy lis ma własny
   // oscylator: dostrojony gra tonem z ustawień, odstrojony wyżej albo niżej i ciszej (filtr CW ok. 500 Hz).
-  // Stację łapie się jej numerem, gdy jest w pobliżu VFO. Wszystkie złapane → kolejny etap (+30 s): dłuższe znaki,
+  // Stację łapie się jej numerem, gdy jest w pobliżu VFO. Wszystkie złapane → kolejny etap: dłuższe znaki,
   // dłuższe przerwy, słabsze sygnały, ciaśniej na paśmie, obce stacje (często z tym samym prefiksem), a od etapu 4
-  // raport RST na kafelku i „bliźniaki” — ten sam znak z innym raportem. Zły numer, obca stacja albo bliźniak: −10 s.
-  // Poziom wybiera etap startowy.
+  // raport RST na kafelku i „bliźniaki” — ten sam znak z innym raportem. Każda złapana stacja +30 s; zły numer,
+  // obca stacja albo bliźniak: −10 s. Poziom wybiera etap startowy.
+  // Na ślepo (S.foxBlank): bez kafelków — znak każdej odebranej stacji wpisuje się w pole i zatwierdza OK; liczą się
+  // wszystkie stacje na paśmie (bez bliźniaków), lista pod ekranem pokazuje znalezione i „?” za brakujące.
   // długości znaków pięciu stacji w kolejnych etapach (dalej jak w ostatnim)
   const STAGES = [[3, 3, 3, 3, 3], [3, 3, 3, 4, 4], [4, 4, 4, 5, 5], [4, 5, 5, 5, 6], [5, 5, 6, 6, 6], [5, 6, 6, 6, 7]];
   const RST_FROM = 4;
@@ -1010,7 +1015,7 @@
   function foxStart() {
     readColors();
     const n = parseInt(C.accent.slice(1), 16);
-    Object.assign(G, { state: 'play', stage: FOX_START[S.foxLevel - 1] - 1, left: MODES.fox.time, timed: S.foxTimed, elapsed: 0, vfo: (BAND[0] + BAND[1]) / 2,
+    Object.assign(G, { state: 'play', stage: FOX_START[S.foxLevel - 1] - 1, left: MODES.fox.time, timed: S.foxTimed, blank: S.foxBlank, elapsed: 0, vfo: (BAND[0] + BAND[1]) / 2,
       hold: 0, shift: 0, shiftRem: 0, src: [], taken: new Set(), fx: [], wrong: 0, drag: null,
       shown: -1, rgb: [n >> 16, (n >> 8) & 255, n & 255], last: performance.now() });
     meter.f = 0;
@@ -1055,7 +1060,8 @@
       const code = realCall(len, G.taken), r = rst ? pick(RSTS) : '';
       return { kind: 'fox', n: i + 1, code, rst: r, text: say(code, r) };
     });
-    const twins = shuffle(G.src.slice()).slice(0, rst ? Math.min(3, G.stage - RST_FROM + 1) : 0);
+    // na ślepo nie ma kafelka z raportem, więc nie ma też bliźniaków — w ich miejsce obce stacje
+    const twins = shuffle(G.src.slice()).slice(0, rst && !G.blank ? Math.min(3, G.stage - RST_FROM + 1) : 0);
     for (let i = 0; i < Math.min(3, s); i++) {
       if (twins[i]) {
         const f = twins[i], r = likeRst(f.rst);
@@ -1070,7 +1076,7 @@
       spans: [], nextAt: now + 300 + rnd(2500), sm: 0, caught: false, setOff: null, setTone: 0,
     }));
     G.pause = [Math.min(5000, 1000 + 1000 * s), Math.min(9000, 2200 + 1700 * s)];
-    if (G.stage > FOX_START[S.foxLevel - 1]) foxFx((pl() ? 'ETAP ' : 'STAGE ') + G.stage, C.accent, G.timed ? '+30 s' : '', true);
+    if (G.stage > FOX_START[S.foxLevel - 1]) foxFx((pl() ? 'ETAP ' : 'STAGE ') + G.stage, C.accent, '', true);
     renderMode(); // pokazuje przyciski z nowymi znakami
     renderStats();
   }
@@ -1169,41 +1175,70 @@
     G.raf = requestAnimationFrame(foxLoop);
   }
   function foxCatch(n) {
-    if (!G || G.state !== 'play' || S.mode !== 'fox') return;
+    if (!G || G.state !== 'play' || S.mode !== 'fox' || G.blank) return;
     const dist = x => Math.abs(x.freq - G.vfo);
     const near = G.src.filter(x => dist(x) <= CATCH).sort((a, b) => dist(a) - dist(b))[0];
     if (!near) return foxFx(pl() ? 'Tu nic nie ma' : 'Nothing here', C.soft, pl() ? 'dostrój się do sygnału' : 'tune in to a signal');
     if (near.caught) return foxFx(pl() ? `${near.code} – już znaleziona` : `${near.code} – already found`, C.soft);
-    if (near.kind === 'fox' && near.n === n) {
-      near.caught = true;
-      G.ok++;
-      // 100 pkt + do 50 za dokładne dostrojenie, więcej w dalszych etapach i przy szybszym tempie
-      const pts = Math.round((100 + 50 * (1 - dist(near) / CATCH)) * (1 + (G.stage - 1) / 2) * (S.wpm + S.eff) / 40);
-      G.score += pts;
-      foxFx(`+${pts}`, C.ok, `${near.code}${near.rst ? ' ' + near.rst : ''} ✓`);
-      foxQuiet(near);
-      renderFoxButtons();
-      renderStats();
-      if (G.src.every(x => x.kind !== 'fox' || x.caught)) { if (G.timed) G.left += 30; foxStage(); }
-      return;
-    }
-    if (G.timed) G.left = Math.max(0, G.left - 10);
-    G.wrong++;
-    const why = near.kind === 'twin'
+    // 100 pkt + do 50 za dokładne dostrojenie
+    if (near.kind === 'fox' && near.n === n) return foxFound(near, 100 + 50 * (1 - dist(near) / CATCH));
+    foxMiss(near.kind === 'twin'
       ? (pl() ? `${near.code}, ale RST ${near.rst} – na kafelku ${near.fox.rst}` : `${near.code}, but RST ${near.rst} – the tile says ${near.fox.rst}`)
       : near.kind === 'fox' ? (pl() ? `To nie ${G.src[n - 1].code}` : `That's not ${G.src[n - 1].code}`)
       : near.kind === 'fake' ? (pl() ? `Obca stacja – to był ${near.code}` : `Another station – that was ${near.code}`)
-      : (pl() ? `To ${near.code} woła CQ` : `${near.code} calling CQ`);
-    foxFx(G.timed ? '−10 s' : '✗', C.bad, why);
+      : (pl() ? `To ${near.code} woła CQ` : `${near.code} calling CQ`));
     flash(el.choices, String(n), 'bad');
+  }
+  // na ślepo: wpisany znak (raport po spacji pomijany) — dobry, jeśli nadaje go któraś stacja na paśmie
+  function foxGuess(raw) {
+    if (!G || G.state !== 'play' || S.mode !== 'fox' || !G.blank) return;
+    const call = raw.trim().toUpperCase().split(/\s+/)[0];
+    if (!call) return;
+    const x = G.src.find(s => s.code === call);
+    if (x && x.caught) return foxFx(pl() ? `${call} – już jest` : `${call} – already logged`, C.soft);
+    // bez kafelka nie ma premii za dostrojenie — pełne 150 pkt
+    if (x) return foxFound(x, 150);
+    foxMiss(pl() ? `Nie ma na paśmie: ${call}` : `Not on the band: ${call}`);
+  }
+  // znaleziona stacja: punkty (więcej w dalszych etapach i przy szybszym tempie), +30 s, cisza; wszystkie → kolejny etap
+  function foxFound(x, base) {
+    x.caught = true;
+    x.found = ++G.ok;
+    const pts = Math.round(base * (1 + (G.stage - 1) / 2) * (S.wpm + S.eff) / 40);
+    G.score += pts;
+    if (G.timed) G.left += 30;
+    foxFx(`+${pts}`, C.ok, `${x.code}${x.rst ? ' ' + x.rst : ''} ✓${G.timed ? ' · +30 s' : ''}`);
+    foxQuiet(x);
+    renderFoxButtons();
+    renderStats();
+    if (G.src.every(s => s.caught || !foxTarget(s))) foxStage();
+  }
+  // do znalezienia: stacje z kafelków, a na ślepo wszystkie na paśmie
+  const foxTarget = x => G.blank || x.kind === 'fox';
+  function foxMiss(why) {
+    if (G.timed) G.left = Math.max(0, G.left - 10);
+    G.wrong++;
+    foxFx(G.timed ? '−10 s' : '✗', C.bad, why);
     renderStats();
   }
   function foxFx(text, color, sub, big) {
     G.fx.push({ text, color, sub, big, t: performance.now() });
   }
-  // kafelki: znaki pięciu stacji (znalezione na zielono), od etapu RST_FROM pod znakiem raport
+  // kafelki: znaki pięciu stacji (znalezione na zielono), od etapu RST_FROM pod znakiem raport.
+  // Na ślepo: znalezione w kolejności odbioru, za brakujące „?”, a po grze także znaki, których zabrakło
+  // (data-ch — numer stacji w G.src, po grze kliknięcie odtwarza jej znak).
   function renderFoxButtons() {
-    el.choices.innerHTML = (G && G.src ? G.src.filter(x => x.kind === 'fox') : []).map(x =>
+    const src = G && G.src ? G.src : [];
+    if (G && G.blank) {
+      const done = G.state !== 'play';
+      const list = src.map((x, i) => ({ x, i })).sort((a, b) => (a.x.found || 99) - (b.x.found || 99));
+      el.choices.innerHTML = list.map(({ x, i }) => x.caught || done
+        ? `<button type="button" data-ch="${i + 1}"${x.caught ? ' class="ok"' : ''}><small>${x.caught ? '✓' : ''}</small>${x.code}` +
+          (x.rst ? `<span class="r">${x.rst}</span>` : '') + '</button>'
+        : `<button type="button" class="q" data-ch="${i + 1}" tabindex="-1"><small></small>?</button>`).join('');
+      return;
+    }
+    el.choices.innerHTML = src.filter(x => x.kind === 'fox').map(x =>
       `<button type="button" data-ch="${x.n}"${x.caught ? ' class="ok"' : ''}><small>${x.n}${x.caught ? ' ✓' : ''}</small>${x.code}` +
       (x.rst ? `<span class="r">${x.rst}</span>` : '') + '</button>').join('');
   }
@@ -1393,13 +1428,21 @@
       '<kbd>1</kbd>–<kbd>4</kbd> wybór · <kbd>Spacja</kbd> powtórz · <kbd>Esc</kbd> stop'),
     fox: t('<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> tune · mouse wheel · <kbd>1</kbd>–<kbd>5</kbd> fox · <kbd>Esc</kbd> stop',
       '<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> strojenie · kółko myszy · <kbd>1</kbd>–<kbd>5</kbd> lis · <kbd>Esc</kbd> stop'),
+    foxBlank: t('<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> tune · mouse wheel · type a call + <kbd>Enter</kbd> · <kbd>Esc</kbd> stop',
+      '<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> strojenie · kółko myszy · wpisz znak + <kbd>Enter</kbd> · <kbd>Esc</kbd> stop'),
   };
   const KEY_NAME = { '.': t('dit', 'kropka'), '-': t('dah', 'kreska') };
   const seaKeys = () => `<kbd>Z</kbd> <kbd>←</kbd> ${KEY_NAME[elementOf('L')]} · <kbd>X</kbd> <kbd>→</kbd> ${KEY_NAME[elementOf('R')]} · <kbd>Esc</kbd> stop`;
   function renderMode() {
     const m = MODES[S.mode], busy = active(), sea = S.mode === 'sea', fox = S.mode === 'fox', canvas = sea || fox;
     root.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === S.mode));
-    el.form.hidden = !m.typed;
+    // pole na odbiór: tryby z wpisywaniem, a w Symulatorze pasma na ślepo — znak stacji zatwierdzany OK
+    el.form.hidden = !m.typed && !(fox && busy && G.blank);
+    const ph = fox ? ['Callsign you copied + OK', 'Odebrany znak + OK'] : ['Type what you hear + Enter', 'Wpisz, co słyszysz + Enter'];
+    el.input.dataset.enPlaceholder = ph[0];
+    el.input.dataset.plPlaceholder = ph[1];
+    el.input.placeholder = ph[pl() ? 1 : 0];
+    if (el.copyok) el.copyok.textContent = fox ? 'OK' : 'Enter'; // stary HTML z pamięci przeglądarki go nie ma
     el.pad.hidden = S.mode !== 'koch';
     // Symulator pasma: znaki stacji są znane dopiero po starcie; przed startem wybór poziomu
     el.choices.hidden = S.mode !== 'quick' && !(fox && G && G.src);
@@ -1410,9 +1453,12 @@
       t('Starts at stage 3: 4–5 character calls and other stations on the band.', 'Start od etapu 3: znaki 4–5-znakowe i obce stacje na paśmie.'),
       t('Starts at stage 5: longer calls, weak signals and RST reports – the same call also sends a different report.',
         'Start od etapu 5: dłuższe znaki, słabe sygnały i raporty RST – ten sam znak nadaje też z innym raportem.'),
-    ][S.foxLevel - 1] + (S.foxTimed ? '' : ' ' + t('Without the clock: practice with no time limit and no penalties – Stop ends it, the score is not a record.',
+    ][S.foxLevel - 1] + (S.foxBlank ? ' ' + t('Blank guess: no tiles – type the call of every station you copy and press OK.',
+      'Na ślepo: bez kafelków – wpisz znak każdej odebranej stacji i kliknij OK.') : '') +
+      (S.foxTimed ? '' : ' ' + t('Without the clock: practice with no time limit and no penalties – Stop ends it, the score is not a record.',
       'Bez czasu: trening bez limitu i kar – Stop kończy grę, a wynik nie trafia do rekordów.'));
     el.foxtimed.checked = S.foxTimed;
+    if (el.foxblank) el.foxblank.checked = S.foxBlank;
     el.choices.classList.toggle('five', fox);
     el.timer.hidden = S.mode !== 'quick';
     // Symulator pasma: zamiast łopatek na ekranie i podglądu kluczowania — S-metr i gałka VFO
@@ -1433,7 +1479,7 @@
     el.lvldown.disabled = busy || S.level <= 2;
     el.lvlup.disabled = busy || S.level >= KOCH.length;
     el.levelrange.disabled = busy;
-    el.keys.innerHTML = m.typed ? KEYS.typed : sea ? seaKeys() : KEYS[S.mode];
+    el.keys.innerHTML = m.typed ? KEYS.typed : sea ? seaKeys() : fox && S.foxBlank ? KEYS.foxBlank : KEYS[S.mode];
     if (!busy) el.timerbar.style.width = '100%';
     el.pad.innerHTML = KOCH.slice(0, S.level).map((c, i) =>
       `<button type="button" data-ch="${c}"${i === S.level - 1 ? ' class="new"' : ''}>${c}</button>`).join('');
@@ -1467,8 +1513,14 @@
 
   el.form.addEventListener('submit', e => {
     e.preventDefault();
-    const got = el.input.value.toUpperCase().replace(/\s+/g, '');
+    const raw = el.input.value, got = raw.toUpperCase().replace(/\s+/g, '');
     el.input.value = '';
+    // Symulator pasma na ślepo: wpisany znak stacji; na telefonie klawiatura się chowa, żeby było widać gałkę
+    if (S.mode === 'fox') {
+      foxGuess(raw);
+      if (matchMedia('(pointer: coarse)').matches) el.input.blur();
+      return;
+    }
     if (!active()) return startRound();
     if (G.state === 'show' && !got) { clearTimeout(G.timer); return nextItem(); }
     if (!got) return playItem();
@@ -1486,6 +1538,8 @@
     const b = e.target.closest('button[data-ch]');
     // Symulator pasma: w grze łapie stację, po grze pozwala posłuchać jej znaku
     if (b && S.mode === 'fox') {
+      // na ślepo kafelki tylko pokazują znalezione — w grze klik prowadzi do pola na znak
+      if (active() && G.blank) return el.input.focus();
       if (active()) foxCatch(+b.dataset.ch);
       else if (G && G.src && G.src[b.dataset.ch - 1]) play(G.src[b.dataset.ch - 1].code);
       return el.rig.focus({ preventScroll: true });
@@ -1576,19 +1630,22 @@
     save();
     renderMode();
   }));
-  // gra na czas albo trening bez czasu (zapamiętane)
-  el.foxtimed.addEventListener('change', () => {
+  // gra na czas albo trening bez czasu, z kafelkami albo na ślepo (zapamiętane); w trakcie gry przełączniki są ukryte
+  const foxSwitch = () => {
     S.foxTimed = el.foxtimed.checked;
+    if (el.foxblank) S.foxBlank = el.foxblank.checked;
     save();
-    // po skończonej grze przełącznik przygotowuje nową — znika podsumowanie poprzedniej
-    if (G && !active()) {
+    // przełącznik przygotowuje nową grę — znika podsumowanie poprzedniej, opis pasuje do wybranej wersji
+    if (!active()) {
       G = null;
       el.start.innerHTML = 'Start';
       idle();
     }
     renderMode();
     renderStats();
-  });
+  };
+  el.foxtimed.addEventListener('change', foxSwitch);
+  if (el.foxblank) el.foxblank.addEventListener('change', foxSwitch);
   // gałka VFO: kręcenie palcem / myszą dookoła środka, kółko myszy nad gałką (50 Hz, z Shift 10 Hz)
   const foxPlaying = () => S.mode === 'fox' && G && G.state === 'play';
   el.knob.addEventListener('pointerdown', e => {
@@ -1675,7 +1732,9 @@
     // strzałki na suwakach zostają suwakom.
     // Sprawdzane przed modyfikatorami, bo lewy/prawy Ctrl też jest łopatką (ESP32 jako klawiatura Bluetooth).
     const side = (S.mode === 'sea' || S.mode === 'fox') && !e.metaKey && !e.altKey && PADDLE[e.code];
-    if (side && !e.target.matches('input, textarea, select')) {
+    // Symulator pasma na ślepo: w pustym polu na znak strzałki dalej stroją VFO
+    const field = e.target.matches('input, textarea, select');
+    if (side && (!field || (S.mode === 'fox' && e.target === el.input && !el.input.value && /^Arrow/.test(e.code)))) {
       e.preventDefault();
       if (!e.repeat) paddle(side, true);
       return;
@@ -1694,6 +1753,11 @@
     }
     if (S.mode === 'sea') return;
     if (S.mode === 'fox') {
+      // na ślepo litera lub cyfra wpisana poza polem trafia do pola (Z i X stroją, jak strzałki)
+      if (G.blank) {
+        if (e.key.length === 1 && e.key !== ' ') el.input.focus();
+        return;
+      }
       const n = '12345'.indexOf(e.key) + 1;
       if (n) {
         e.preventDefault();

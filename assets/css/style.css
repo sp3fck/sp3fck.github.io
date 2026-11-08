@@ -382,6 +382,8 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-choices.five { grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .cw-choices.five button { font-size: clamp(.78rem, 2.4vw, 1.1rem); letter-spacing: 0; padding: 22px 2px 14px; }
 .cw-choices.five button .r { display: block; margin-top: 5px; font-size: .78em; color: var(--accent); }
+/* na ślepo: stacje jeszcze nieodebrane */
+.cw-choices.five button.q { color: var(--ink-soft); border-style: dashed; cursor: text; }
 /* poziom Symulatora pasma (przed startem) */
 .cw-foxlevel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: .9rem; color: var(--ink-soft); }
 .cw .cw-foxlevel .tabs { margin: 0; gap: 6px; }
