@@ -1,12 +1,13 @@
 /* Trener CW — gra do nauki Morse'a (Web Audio, bez bibliotek).
    Tryby: Koch (pojedyncze znaki; kolejny odblokowuje runda z wynikiem ≥ 90%), znaki wywoławcze, skróty i kody Q
    oraz gry zręcznościowe na 3 życia: Szybki palec (wybór usłyszanego znaku na czas) i Morze Morse'a (nadawanie
-   spadających znaków kluczem podwójnym — klawisze albo przyciski na ekranie, keyer jambiczny w JS).
+   spadających znaków kluczem podwójnym — klawisze albo przyciski na ekranie, keyer jambiczny w JS) oraz Symulator pasma
+   na czas (strojenie VFO po paśmie i rozpoznawanie na ucho stacji o prawdziwych znakach i raportach RST).
    Prawdziwy klucz: Arduino przez Web Serial albo ESP32 jako klawiatura Bluetooth (szkice i instrukcje w klucz/).
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.5.1';
+  const VERSION = '1.6.0';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -93,13 +94,15 @@
     ['AR', 'end of message (prosign)', 'koniec wiadomości (znak specjalny)', 1],
   ].map(([text, en, pl, p]) => ({ text, en, pl, p: !!p }));
 
-  // len – liczba pozycji w rundzie; lives – gra na życia zamiast rundy; pause – przerwa po dobrej / złej odpowiedzi (ms)
+  // len – liczba pozycji w rundzie; lives – gra na życia zamiast rundy; time – gra na czas (s);
+  // pause – przerwa po dobrej / złej odpowiedzi (ms)
   const MODES = {
     koch: { len: 30, typed: false, pause: [450, 1300] },
     calls: { len: 20, typed: true, pause: [900, 2000] },
     abbr: { len: 20, typed: true, pause: [1700, 2600] },
     quick: { lives: 3, typed: false, pause: [500, 1400] },
     sea: { lives: 3, typed: false },
+    fox: { time: 180, typed: false },
   };
 
   // Kropki i kreski rysowane w CSS — znaki „·” i „−” wyglądają różnie (i często słabo) w różnych fontach
@@ -117,7 +120,7 @@
   const KEY = 'sp3fck-cw';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, letterGap: 2.5, keySource: 'keyboard', fold: {}, best: {} }, saved);
+  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, letterGap: 2.5, foxLevel: 1, foxTimed: true, keySource: 'keyboard', fold: {}, best: {} }, saved);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
   // dawniej szum był tylko włącz/wyłącz (qrn: true/false)
   if (saved.qrn && saved.noise == null) S.noise = 50;
@@ -130,6 +133,8 @@
   S.level = Math.round(clamp(S.level, 2, KOCH.length));
   S.swap = S.swap === true;
   S.letterGap = Math.round(4 * clamp(S.letterGap, 1.5, 5)) / 4;
+  if (![1, 2, 3].includes(S.foxLevel)) S.foxLevel = 1;
+  S.foxTimed = S.foxTimed !== false;
   if (!['keyboard', 'arduino', 'esp32'].includes(S.keySource)) S.keySource = 'keyboard';
   // strona zawsze otwiera się na pierwszej zakładce (Koch); reszta ustawień jest pamiętana
   S.mode = 'koch';
@@ -209,16 +214,11 @@
     }
     led(0);
   }
-  // Odtwarza tekst (spacja = przerwa między słowami); zwraca czas do końca ostatniego elementu w sekundach.
-  function play(text, prosign) {
-    audio();
-    hush();
+  // Kluczuje tekst na parametrze głośności od chwili t0 (spacja = przerwa między słowami); zwraca odcinki tonu
+  // [początek, koniec] i koniec ostatniego elementu — w czasie AudioContext (s).
+  function keyText(param, text, prosign, t0, amp) {
     const { dit, charGap, wordGap } = gaps();
-    const osc = ac.createOscillator(), env = ac.createGain();
-    osc.frequency.value = S.tone;
-    env.gain.value = 0;
-    osc.connect(env).connect(master);
-    const t0 = ac.currentTime + 0.05;
+    const spans = [];
     let at = t0, end = t0;
     for (const ch of text) {
       if (ch === ' ') { at += wordGap - charGap; continue; }
@@ -226,13 +226,26 @@
         if (i) at += dit;
         const len = sym === '.' ? dit : 3 * dit;
         // miękkie zbocza (~5 ms), bez trzasków kluczowania
-        env.gain.setTargetAtTime(0.5, at, 0.0015);
-        env.gain.setTargetAtTime(0, at + len, 0.0015);
+        param.setTargetAtTime(amp, at, 0.0015);
+        param.setTargetAtTime(0, at + len, 0.0015);
+        spans.push([at, at + len]);
         at += len;
         end = at;
       });
       at += prosign ? dit : charGap;
     }
+    return { spans, end };
+  }
+  // Odtwarza tekst (spacja = przerwa między słowami); zwraca czas do końca ostatniego elementu w sekundach.
+  function play(text, prosign) {
+    audio();
+    hush();
+    const osc = ac.createOscillator(), env = ac.createGain();
+    osc.frequency.value = S.tone;
+    env.gain.value = 0;
+    osc.connect(env).connect(master);
+    const t0 = ac.currentTime + 0.05;
+    const { end } = keyText(env.gain, text, prosign, t0, 0.5);
     osc.start(t0);
     osc.stop(end + 0.05);
     voice = { osc, env };
@@ -328,6 +341,8 @@
       'Naciśnij Start: zagra znak – wybierz go z czterech, zanim skończy się czas.'),
     sea: t('Press Start and send the falling characters with the paddle before they fall into the sea. Try the paddle first – it works before the start too.',
       'Naciśnij Start i nadawaj kluczem spadające znaki, zanim wpadną do morza. Klucz działa też przed startem – możesz poćwiczyć.'),
+    fox: t('Pick a level and press Start. Five stations with real callsigns transmit on the band – their calls are on the tiles under the screen. Tune with the VFO knob, the paddle, the arrows or by dragging the band, and when you recognise a call, press its number. Watch out for other stations – a wrong number costs 10 s. From stage 4 the tile also shows an RST report, and somewhere on the band the same call sends a different one – find the right station.',
+      'Wybierz poziom i naciśnij Start. Na paśmie nadaje pięć stacji z prawdziwymi znakami – widzisz je na kafelkach pod ekranem. Strój gałką VFO, kluczem, strzałkami albo przeciągając pasmo, a gdy rozpoznasz znak, wciśnij jego numer. Uważaj na obce stacje – zły numer kosztuje 10 s. Od etapu 4 na kafelku jest też raport RST, a gdzieś na paśmie nadaje ten sam znak z innym raportem – znajdź właściwą stację.'),
   };
   function idle() {
     screen('CW', pattern('CW'), MODES[S.mode].typed ? IDLE.typed : IDLE[S.mode]);
@@ -345,12 +360,13 @@
     setNoise(S.noise > 0 && S.mode !== 'sea');
     renderMode();
     focusGame();
-    if (S.mode === 'sea') seaStart(); else nextItem();
+    if (S.mode === 'sea') seaStart(); else if (S.mode === 'fox') foxStart(); else nextItem();
   }
   function stopRound() {
     clearTimeout(G.timer);
     cancelAnimationFrame(G.raf);
     hush();
+    foxSilence();
     setNoise(false);
     keyerReset();
     G = null;
@@ -440,20 +456,28 @@
     clearTimeout(G.timer);
     cancelAnimationFrame(G.raf);
     setNoise(false);
+    foxSilence();
     keyerReset();
     const m = MODES[S.mode];
-    const best = S.best[S.mode] || 0, record = G.score > best;
+    // Symulator pasma bez czasu to trening — wynik nie trafia do rekordów
+    const practice = S.mode === 'fox' && !G.timed;
+    const best = S.best[S.mode] || 0, record = G.score > best && !practice;
     if (record) S.best[S.mode] = G.score;
     const missed = Object.entries(G.missed).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const missedLine = missed.length
       ? `<span class="cw-mean">${t('Missed:', 'Pomyłki:')} ${missed.map(([c, n]) => `<b translate="no">${c}</b>×${n}`).join(' ')}</span>` : '';
-    if (m.lives) {
+    if (m.lives || m.time) {
       const stats = S.mode === 'sea'
         ? t(`Shot down: <b>${G.ok}</b> · wave <b>${G.wave}</b> · best streak <b>×${G.maxStreak}</b>`,
             `Zestrzelone: <b>${G.ok}</b> · fala <b>${G.wave}</b> · najlepsza seria <b>×${G.maxStreak}</b>`)
+        : S.mode === 'fox'
+        ? t(`Stations found: <b>${G.ok}</b> · stage <b>${G.stage}</b> (${FOX_LEVEL[S.foxLevel - 1][0].toLowerCase()}) · mistakes <b>${G.wrong}</b>`,
+            `Znalezione stacje: <b>${G.ok}</b> · etap <b>${G.stage}</b> (poziom ${FOX_LEVEL[S.foxLevel - 1][1].toLowerCase()}) · pomyłki <b>${G.wrong}</b>`) +
+          (practice ? ` · ${t('time', 'czas')} <b>${clock(G.elapsed)}</b>` : '')
         : t(`Correct: <b>${G.ok}</b> of ${G.n} · best streak <b>×${G.maxStreak}</b>`,
             `Trafione: <b>${G.ok}</b> z ${G.n} · najlepsza seria <b>×${G.maxStreak}</b>`);
-      screen(String(G.score), record ? t('New record!', 'Nowy rekord!') : `${t('Record', 'Rekord')} ${best}`,
+      screen(String(G.score), record ? t('New record!', 'Nowy rekord!')
+        : practice ? t('Practice – not counted as a record', 'Trening – bez rekordu') : `${t('Record', 'Rekord')} ${best}`,
         stats + missedLine, record ? 'ok' : '');
     } else {
       const acc = Math.round(100 * G.ok / m.len);
@@ -510,10 +534,11 @@
   const kr = { '.': false, '-': false, busy: false, on: false, cur: '', last: '', mem: '', code: '', timer: 0, gap: 0 };
   function paddle(side, down) {
     const p = elementOf(side);
-    if (kr[p] === down || (down && S.mode !== 'sea')) return;
+    if (kr[p] === down || (down && S.mode !== 'sea' && S.mode !== 'fox')) return;
     kr[p] = down;
     pads[side].classList.toggle('on', down);
-    if (!down) return;
+    // Symulator pasma: łopatki stroją VFO (lewa w dół, prawa w górę) — robi to pętla gry, keyer odpoczywa
+    if (!down || S.mode === 'fox') return;
     if (kr.busy) {
       if (p !== kr.cur) kr.mem = p;
     } else {
@@ -700,9 +725,12 @@
     G.ctx = el.field.getContext('2d');
     G.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
-  function seaStart() {
+  function readColors() {
     const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
     C = { ink: v('--ink'), soft: v('--ink-soft'), accent: v('--accent'), ok: v('--ok'), bad: v('--bad'), sea: v('--link'), mono: v('--mono') };
+  }
+  function seaStart() {
+    readColors();
     Object.assign(G, { state: 'play', items: [], fx: [], parts: [], sink: [], wave: 1, fall: 14, every: 3, spawnIn: 0.5, target: null, hitAt: -1e4, last: performance.now() });
     screen('', '', '');
     fitField();
@@ -911,6 +939,396 @@
     ctx.globalAlpha = 1;
   }
 
+  // ---------- Symulator pasma (w kodzie „fox”, dawniej Łowy na lisa) ----------
+  // Na paśmie 80 m nadaje pięć stacji z prawdziwymi znakami (data/cw-calls.js), które widać na kafelkach („lisy” w kodzie).
+  // VFO stroi się gałką, łopatkami / strzałkami, kółkiem myszy albo przeciągając panoramę. Każdy lis ma własny
+  // oscylator: dostrojony gra tonem z ustawień, odstrojony wyżej albo niżej i ciszej (filtr CW ok. 500 Hz).
+  // Stację łapie się jej numerem, gdy jest w pobliżu VFO. Wszystkie złapane → kolejny etap (+30 s): dłuższe znaki,
+  // dłuższe przerwy, słabsze sygnały, ciaśniej na paśmie, obce stacje (często z tym samym prefiksem), a od etapu 4
+  // raport RST na kafelku i „bliźniaki” — ten sam znak z innym raportem. Zły numer, obca stacja albo bliźniak: −10 s.
+  // Poziom wybiera etap startowy.
+  // długości znaków pięciu stacji w kolejnych etapach (dalej jak w ostatnim)
+  const STAGES = [[3, 3, 3, 3, 3], [3, 3, 3, 4, 4], [4, 4, 4, 5, 5], [4, 5, 5, 5, 6], [5, 5, 6, 6, 6], [5, 6, 6, 6, 7]];
+  const RST_FROM = 4;
+  const RSTS = ['599', '589', '579', '569', '559', '549', '539', '449', '439', '339'];
+  const FOX_START = [1, 3, 5]; // etap startowy na poziomie łatwym, średnim i trudnym
+  const FOX_LEVEL = [['Easy', 'Łatwy'], ['Medium', 'Średni'], ['Hard', 'Trudny']];
+  const CALLS = {};
+  for (const [len, list] of Object.entries(window.SP3FCK_CALLS || {})) CALLS[len] = list.trim().split(/\s+/);
+  // nieużyty w tej grze prawdziwy znak o danej długości; like — obca stacja z prefiksem jak u stacji z kafelka myli się łatwiej.
+  // Bez pliku ze znakami (np. stary HTML z pamięci przeglądarki) — losowy znak w tym samym formacie.
+  function realCall(len, taken, like) {
+    const pool = (CALLS[len] || []).filter(c => !taken.has(c));
+    const near = like ? pool.filter(c => c.slice(0, 2) === like.slice(0, 2) && c !== like) : [];
+    let c = near.length ? pick(near) : pool.length ? pick(pool) : '';
+    for (let i = 0; !c && i < 200; i++) {
+      const x = len === 3 ? pick(['K', 'N', 'W']) + rnd(10) + String.fromCharCode(65 + rnd(26)) : callsign();
+      if (x.length === len && !taken.has(x)) c = x;
+    }
+    c = c || callsign();
+    taken.add(c);
+    return c;
+  }
+  // inny, ale podobny raport (różni się zwykle jedną cyfrą) — dla „bliźniaka” stacji z kafelka
+  function likeRst(rst) {
+    const unlike = r => [...r].filter((ch, i) => ch !== rst[i]).length * 1000 + Math.abs(r - rst);
+    return pick(RSTS.filter(r => r !== rst).sort((a, b) => unlike(a) - unlike(b)).slice(0, 3));
+  }
+  const BAND = [3540000, 3580000]; // Hz
+  const SPAN = 5000; // szerokość panoramy, Hz
+  const CATCH = 300; // tak blisko VFO (Hz) musi być lis, żeby go złapać
+  const pass = off => Math.abs(off) > 1500 ? 0 : 1 / (1 + (off / 250) ** 4);
+  const pl = () => document.documentElement.lang === 'pl';
+  const kHz = f => { const s = (f / 1000).toFixed(2); return pl() ? s.replace('.', ',') : s; };
+  const clock = s => { s = Math.max(0, Math.ceil(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  // układ płótna (px od góry): nagłówek z VFO, S-metr, pasek pasma, panorama, wodospad
+  const FY = { meter: 44, band: 70, top: 90, bot: 166 };
+
+  function foxStart() {
+    readColors();
+    const n = parseInt(C.accent.slice(1), 16);
+    Object.assign(G, { state: 'play', stage: FOX_START[S.foxLevel - 1] - 1, left: MODES.fox.time, timed: S.foxTimed, elapsed: 0, vfo: (BAND[0] + BAND[1]) / 2,
+      hold: 0, shift: 0, shiftRem: 0, src: [], taken: new Set(), fx: [], wrong: 0, drag: null,
+      shown: -1, rgb: [n >> 16, (n >> 8) & 255, n & 255], last: performance.now() });
+    meter.f = 0;
+    screen('', '', '');
+    fitField();
+    foxWaterfall();
+    keyerReset();
+    foxStage();
+    G.raf = requestAnimationFrame(foxLoop);
+  }
+  // wodospad na osobnym płótnie w pikselach urządzenia: przesuwany w dół (czas) i na boki (strojenie)
+  function foxWaterfall() {
+    const dpr = window.devicePixelRatio || 1;
+    G.wf = document.createElement('canvas');
+    G.wf.width = Math.max(1, Math.round(G.W * dpr));
+    G.wf.height = Math.max(1, Math.round((G.H - FY.bot) * dpr));
+    G.wfc = G.wf.getContext('2d');
+    G.row = G.wfc.createImageData(G.wf.width, 1);
+    G.wfAcc = 0;
+  }
+  function foxStage() {
+    foxSilence();
+    G.stage++;
+    const s = G.stage - 1, now = performance.now();
+    // im dalej, tym ciaśniej na paśmie, słabiej, dłuższe przerwy i więcej stacji spoza kafelków
+    const gap = Math.max(700, 3000 - 900 * s), used = [];
+    const place = () => {
+      let f = 0;
+      for (let i = 0; i < 80; i++) {
+        f = BAND[0] + 1000 + Math.random() * (BAND[1] - BAND[0] - 2000);
+        if (used.every(x => Math.abs(x - f) >= gap) && Math.abs(f - G.vfo) > 1500) break;
+      }
+      used.push(f);
+      return Math.round(f / 10) * 10;
+    };
+    // od etapu RST_FROM każda stacja podaje też raport (obce także, żeby nie zdradzał ich brak raportu), raport stacji
+    // jest na kafelku, a gdzieś na paśmie nadaje „bliźniak”: ten sam znak z innym raportem (etap 4: 1, potem 2, 3)
+    const rst = G.stage >= RST_FROM;
+    const say = (c, r) => r ? `${c} ${c} ${r}` : `${c} ${c}`;
+    const lens = shuffle([...STAGES[Math.min(G.stage, STAGES.length) - 1]]);
+    G.src = lens.map((len, i) => {
+      const code = realCall(len, G.taken), r = rst ? pick(RSTS) : '';
+      return { kind: 'fox', n: i + 1, code, rst: r, text: say(code, r) };
+    });
+    const twins = shuffle(G.src.slice()).slice(0, rst ? Math.min(3, G.stage - RST_FROM + 1) : 0);
+    for (let i = 0; i < Math.min(3, s); i++) {
+      if (twins[i]) {
+        const f = twins[i], r = likeRst(f.rst);
+        G.src.push({ kind: 'twin', n: 0, code: f.code, rst: r, fox: f, text: say(f.code, r) });
+        continue;
+      }
+      const like = G.src[rnd(5)].code, c = realCall(like.length, G.taken, like), r = rst ? pick(RSTS) : '';
+      G.src.push(i < 2 ? { kind: 'fake', n: 0, code: c, text: say(c, r) } : { kind: 'cq', n: 0, code: c, text: `CQ DE ${c} ${c} K` });
+    }
+    G.src.forEach(x => Object.assign(x, foxVoice(), {
+      freq: place(), level: Math.max(0.25, 0.8 - 0.15 * s) + Math.random() * 0.2,
+      spans: [], nextAt: now + 300 + rnd(2500), sm: 0, caught: false, setOff: null, setTone: 0,
+    }));
+    G.pause = [Math.min(5000, 1000 + 1000 * s), Math.min(9000, 2200 + 1700 * s)];
+    if (G.stage > FOX_START[S.foxLevel - 1]) foxFx((pl() ? 'ETAP ' : 'STAGE ') + G.stage, C.accent, G.timed ? '+30 s' : '', true);
+    renderMode(); // pokazuje przyciski z nowymi znakami
+    renderStats();
+  }
+  // oscylator stacji → kluczowanie → filtr odbiornika (głośność zależna od odstrojenia) → wyjście
+  function foxVoice() {
+    const osc = ac.createOscillator(), key = ac.createGain(), filt = ac.createGain();
+    osc.frequency.value = S.tone;
+    key.gain.value = 0;
+    filt.gain.value = 0;
+    osc.connect(key).connect(filt).connect(master);
+    osc.start();
+    return { osc, key, filt };
+  }
+  function foxQuiet(x) {
+    if (!x.osc) return;
+    const now = ac.currentTime;
+    x.key.gain.cancelScheduledValues(now);
+    x.key.gain.setTargetAtTime(0, now, 0.004);
+    try { x.osc.stop(now + 0.05); } catch (e) {}
+    x.osc = null;
+    x.spans = [];
+  }
+  function foxSilence() {
+    if (!G || !G.src) return;
+    G.src.forEach(foxQuiet);
+    el.led.classList.remove('on');
+  }
+  function foxSend(x) {
+    const t0 = ac.currentTime + 0.05, base = performance.now() - ac.currentTime * 1000;
+    const { spans, end } = keyText(x.key.gain, x.text, false, t0, 0.5);
+    x.spans = spans.map(([a, b]) => [base + a * 1000, base + b * 1000]);
+    const [p0, p1] = G.pause;
+    x.nextAt = base + end * 1000 + p0 + Math.random() * (p1 - p0);
+  }
+  // fromKnob — kręci gałka (sama się już obróciła); inne strojenie obraca ją o tyle, ile przesunęło VFO
+  function foxTune(df, fromKnob) {
+    const f = Math.min(BAND[1] + 2000, Math.max(BAND[0] - 2000, G.vfo + df));
+    if (!fromKnob) knobTurn((f - G.vfo) * 360 / KNOB_HZ);
+    G.shift += f - G.vfo;
+    G.vfo = f;
+    el.knob.setAttribute('aria-valuenow', (f / 1000).toFixed(2));
+  }
+  // gałka VFO: przeciąganie dookoła środka — 1 obrót = 2 kHz, przy szybkim kręceniu do 5× więcej (jak w radiu)
+  const KNOB_HZ = 2000;
+  const knob = { a: 0, last: null, t: 0 };
+  const knobAngle = e => {
+    const r = el.knob.getBoundingClientRect();
+    return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI;
+  };
+  function knobTurn(deg) {
+    knob.a += deg;
+    el.knob.style.setProperty('--a', `${knob.a}deg`);
+  }
+  // S-metr paskowy na ekranie gry: 12 segmentów — S1–S9 i trzy ponad S9 — z bezwładnością (szybko w górę, wolniej w dół)
+  const meter = { f: 0 };
+  const METER = ['1', '', '3', '', '5', '', '7', '', '9', '+10', '+20', '+40'];
+  // v – odbierany sygnał (0–1); szum pasma też trochę podnosi pasek
+  function smeter(v, dt) {
+    const floor = 0.015 + 0.05 * S.noise / 100;
+    const want = Math.min(1, 0.06 + 0.9 * Math.sqrt(v + floor * (0.6 + 0.8 * Math.random())));
+    meter.f += (want - meter.f) * (1 - Math.exp(-dt / (want > meter.f ? 0.06 : 0.35)));
+  }
+  function foxLoop(now) {
+    if (!G || G.state !== 'play' || S.mode !== 'fox') return;
+    const dt = Math.min(0.05, (now - G.last) / 1000); // po powrocie do karty gra rusza dalej, bez skoku
+    G.last = now;
+    // na czas: odliczanie do zera; trening bez czasu: czas gry liczony w górę
+    if (G.timed) G.left -= dt; else G.elapsed += dt;
+    if (G.left <= 0) return endRound();
+    // łopatki: stuknięcie przesuwa o kilkadziesiąt Hz, przytrzymanie przyspiesza do 4 kHz/s
+    const dir = (kr[elementOf('R')] ? 1 : 0) - (kr[elementOf('L')] ? 1 : 0);
+    G.hold = dir ? G.hold + dt : 0;
+    if (dir) foxTune(dir * Math.min(4000, 300 + 2500 * G.hold) * dt);
+    const t = ac.currentTime;
+    let rx = 0;
+    for (const x of G.src) {
+      if (!x.osc) continue;
+      if (now >= x.nextAt) foxSend(x);
+      const on = x.spans.some(([a, b]) => now >= a && now < b);
+      // wygładzony poziom do panoramy i S-metra: szybko rośnie, wolno opada (kropek nie da się z niego czytać)
+      x.sm += ((on ? 1 : 0) - x.sm) * (1 - Math.exp(-dt / (on ? 0.02 : 0.15)));
+      const off = x.freq - G.vfo;
+      if (off !== x.setOff || S.tone !== x.setTone) {
+        x.osc.frequency.setTargetAtTime(Math.min(4000, Math.max(20, S.tone + off)), t, 0.01);
+        x.filt.gain.setTargetAtTime(x.level * pass(off), t, 0.01);
+        x.setOff = off;
+        x.setTone = S.tone;
+      }
+      rx += x.sm * x.level * pass(off);
+    }
+    el.led.classList.toggle('on', rx > 0.08);
+    smeter(rx, dt);
+    const sec = Math.ceil(G.timed ? G.left : G.elapsed);
+    if (sec !== G.shown) { G.shown = sec; renderStats(); }
+    foxDraw(now, dt);
+    G.raf = requestAnimationFrame(foxLoop);
+  }
+  function foxCatch(n) {
+    if (!G || G.state !== 'play' || S.mode !== 'fox') return;
+    const dist = x => Math.abs(x.freq - G.vfo);
+    const near = G.src.filter(x => dist(x) <= CATCH).sort((a, b) => dist(a) - dist(b))[0];
+    if (!near) return foxFx(pl() ? 'Tu nic nie ma' : 'Nothing here', C.soft, pl() ? 'dostrój się do sygnału' : 'tune in to a signal');
+    if (near.caught) return foxFx(pl() ? `${near.code} – już znaleziona` : `${near.code} – already found`, C.soft);
+    if (near.kind === 'fox' && near.n === n) {
+      near.caught = true;
+      G.ok++;
+      // 100 pkt + do 50 za dokładne dostrojenie, więcej w dalszych etapach i przy szybszym tempie
+      const pts = Math.round((100 + 50 * (1 - dist(near) / CATCH)) * (1 + (G.stage - 1) / 2) * (S.wpm + S.eff) / 40);
+      G.score += pts;
+      foxFx(`+${pts}`, C.ok, `${near.code}${near.rst ? ' ' + near.rst : ''} ✓`);
+      foxQuiet(near);
+      renderFoxButtons();
+      renderStats();
+      if (G.src.every(x => x.kind !== 'fox' || x.caught)) { if (G.timed) G.left += 30; foxStage(); }
+      return;
+    }
+    if (G.timed) G.left = Math.max(0, G.left - 10);
+    G.wrong++;
+    const why = near.kind === 'twin'
+      ? (pl() ? `${near.code}, ale RST ${near.rst} – na kafelku ${near.fox.rst}` : `${near.code}, but RST ${near.rst} – the tile says ${near.fox.rst}`)
+      : near.kind === 'fox' ? (pl() ? `To nie ${G.src[n - 1].code}` : `That's not ${G.src[n - 1].code}`)
+      : near.kind === 'fake' ? (pl() ? `Obca stacja – to był ${near.code}` : `Another station – that was ${near.code}`)
+      : (pl() ? `To ${near.code} woła CQ` : `${near.code} calling CQ`);
+    foxFx(G.timed ? '−10 s' : '✗', C.bad, why);
+    flash(el.choices, String(n), 'bad');
+    renderStats();
+  }
+  function foxFx(text, color, sub, big) {
+    G.fx.push({ text, color, sub, big, t: performance.now() });
+  }
+  // kafelki: znaki pięciu stacji (znalezione na zielono), od etapu RST_FROM pod znakiem raport
+  function renderFoxButtons() {
+    el.choices.innerHTML = (G && G.src ? G.src.filter(x => x.kind === 'fox') : []).map(x =>
+      `<button type="button" data-ch="${x.n}"${x.caught ? ' class="ok"' : ''}><small>${x.n}${x.caught ? ' ✓' : ''}</small>${x.code}` +
+      (x.rst ? `<span class="r">${x.rst}</span>` : '') + '</button>').join('');
+  }
+  // poziom sygnału w punkcie pasma (0–1): szum + stacje w pobliżu, każdy jako wąski prążek
+  function bandLevel(f, live, floor) {
+    let v = floor * (0.4 + Math.random() * 1.2);
+    for (const x of live) v += x.sm * x.level * Math.exp(-(((f - x.freq) / 45) ** 2));
+    return Math.min(1, v);
+  }
+  function foxDraw(now, dt) {
+    const { ctx, W, H } = G, L = 14, R = W - 14, hz = W / SPAN;
+    const live = G.src.filter(x => x.osc && Math.abs(x.freq - G.vfo) < SPAN), floor = 0.04 + 0.1 * S.noise / 100;
+    ctx.clearRect(0, 0, W, H);
+
+    // wodospad: przesunięcie przy strojeniu, nowe wiersze u góry (ok. 30 px/s)
+    const wf = G.wf, wfc = G.wfc, dpr = wf.width / W;
+    const sx = -G.shift * hz * dpr + G.shiftRem, dx = Math.round(sx);
+    G.shiftRem = sx - dx;
+    G.shift = 0;
+    G.wfAcc += 30 * dt * dpr;
+    const dy = Math.floor(G.wfAcc);
+    G.wfAcc -= dy;
+    if (dx || dy) {
+      wfc.globalCompositeOperation = 'copy';
+      wfc.drawImage(wf, dx, dy);
+      wfc.globalCompositeOperation = 'source-over';
+    }
+    if (dy) {
+      const d = G.row.data, [r, g, b] = G.rgb;
+      for (let i = 0, j = 0; i < wf.width; i++, j += 4) {
+        d[j] = r;
+        d[j + 1] = g;
+        d[j + 2] = b;
+        d[j + 3] = 1.5 * 255 * bandLevel(G.vfo + (i / wf.width - 0.5) * SPAN, live, floor);
+      }
+      for (let y = 0; y < dy; y++) wfc.putImageData(G.row, 0, y);
+    }
+    ctx.drawImage(wf, 0, FY.bot, W, H - FY.bot);
+
+    // przepustowość filtra i środek (VFO)
+    ctx.fillStyle = rgba(C.accent, 0.07);
+    ctx.fillRect(W / 2 - 250 * hz, FY.top, 500 * hz, H - FY.top);
+    ctx.strokeStyle = rgba(C.accent, 0.6);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, FY.top);
+    ctx.lineTo(W / 2, H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // panorama: podziałka co 1 kHz i widmo
+    ctx.strokeStyle = rgba(C.ink, 0.25);
+    ctx.beginPath();
+    for (let k = Math.ceil((G.vfo - SPAN / 2) / 1000) * 1000; k <= G.vfo + SPAN / 2; k += 1000) {
+      const x = W / 2 + (k - G.vfo) * hz;
+      ctx.moveTo(x, FY.top);
+      ctx.lineTo(x, FY.top + 5);
+    }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, FY.bot);
+    for (let x = 0; x <= W; x += 2) ctx.lineTo(x, FY.bot - bandLevel(G.vfo + (x / W - 0.5) * SPAN, live, floor) * (FY.bot - FY.top - 6));
+    ctx.lineTo(W, FY.bot);
+    ctx.closePath();
+    ctx.fillStyle = rgba(C.accent, 0.18);
+    ctx.fill();
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.strokeStyle = rgba(C.ink, 0.15);
+    ctx.beginPath();
+    ctx.moveTo(0, FY.bot + 0.5);
+    ctx.lineTo(W, FY.bot + 0.5);
+    ctx.stroke();
+
+    // nagłówek: VFO i etap
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.font = `800 20px ${C.mono}`;
+    ctx.fillStyle = C.accent;
+    const fq = `${kHz(G.vfo)} kHz`, fw = ctx.measureText(fq).width;
+    ctx.fillText(fq, L, 18);
+    ctx.font = `600 11px ${C.mono}`;
+    ctx.fillStyle = C.soft;
+    ctx.fillText(`VFO · ${pl() ? 'ETAP' : 'STAGE'} ${G.stage}`, L + fw + 12, 19);
+
+    // S-metr: segmenty S1–S9 bursztynowe, ponad S9 czerwone, podpisy nad paskiem
+    const my = FY.meter, mx = L + 14, mw = (R - mx) / METER.length, lit = Math.round(meter.f * METER.length);
+    ctx.font = `800 11px ${C.mono}`;
+    ctx.fillText('S', L, my + 4);
+    ctx.font = `600 8px ${C.mono}`;
+    ctx.textAlign = 'center';
+    METER.forEach((label, i) => {
+      const over = i >= 9;
+      ctx.fillStyle = i < lit ? (over ? C.bad : C.accent) : rgba(C.ink, 0.1);
+      ctx.fillRect(mx + i * mw + 1, my, mw - 2, 8);
+      if (!label) return;
+      ctx.fillStyle = over ? rgba(C.bad, 0.8) : C.soft;
+      ctx.fillText(label, mx + i * mw + mw / 2, my - 6);
+    });
+
+    // pasek pasma: podziałka co 5 kHz, okno panoramy, VFO i znalezione stacje
+    const bx = f => L + (f - BAND[0]) / (BAND[1] - BAND[0]) * (R - L), by = FY.band;
+    ctx.strokeStyle = rgba(C.ink, 0.3);
+    ctx.beginPath();
+    ctx.moveTo(L, by);
+    ctx.lineTo(R, by);
+    for (let k = BAND[0]; k <= BAND[1]; k += 5000) {
+      ctx.moveTo(bx(k), by);
+      ctx.lineTo(bx(k), by + (k % 10000 ? 3 : 5));
+    }
+    ctx.stroke();
+    ctx.font = `500 9px ${C.mono}`;
+    ctx.fillStyle = C.soft;
+    ctx.textAlign = 'center';
+    for (let k = BAND[0]; k <= BAND[1]; k += 10000) ctx.fillText(String(k / 1000), bx(k), by + 12);
+    ctx.fillStyle = rgba(C.accent, 0.3);
+    ctx.fillRect(bx(G.vfo - SPAN / 2), by - 3, bx(G.vfo + SPAN / 2) - bx(G.vfo - SPAN / 2), 6);
+    ctx.fillStyle = C.accent;
+    ctx.beginPath();
+    ctx.moveTo(bx(G.vfo), by - 2);
+    ctx.lineTo(bx(G.vfo) - 5, by - 10);
+    ctx.lineTo(bx(G.vfo) + 5, by - 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.font = `800 11px ${C.mono}`;
+    ctx.fillStyle = C.ok;
+    for (const x of G.src) if (x.caught) ctx.fillText(String(x.n), bx(x.freq), by - 9);
+
+    // komunikaty: punkty, pomyłki, nowy etap
+    G.fx = G.fx.filter(f => now - f.t < 1800);
+    const fy = FY.bot + (H - FY.bot) * 0.4;
+    for (const f of G.fx) {
+      const a = (now - f.t) / 1800, y = fy + (f.big ? -40 : 0) - a * 18;
+      ctx.globalAlpha = 1 - a * a;
+      ctx.fillStyle = f.color;
+      ctx.font = `800 ${f.big ? 34 : 24}px ${C.mono}`;
+      ctx.fillText(f.text, W / 2, y);
+      if (f.sub) {
+        ctx.font = `600 14px ${C.mono}`;
+        ctx.fillStyle = C.ink;
+        ctx.fillText(f.sub, W / 2, y + (f.big ? 30 : 24));
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
   // ---------- widok ----------
   // brak pola znosimy spokojnie: po wdrożeniu przeglądarka może jeszcze chwilę trzymać stary HTML z nowym skryptem
   const out = (name, html) => { const o = root.querySelector(`[data-cw-out="${name}"]`); if (o) o.innerHTML = html; };
@@ -935,8 +1353,9 @@
   function renderStats() {
     const m = MODES[S.mode];
     el.wpm.textContent = S.eff < S.wpm && S.mode !== 'sea' ? `${S.wpm}/${S.eff}` : S.wpm;
-    el.progress.textContent = m.lives ? hearts(G ? G.lives : m.lives) : `${G ? G.n : 0}/${m.len}`;
-    el.streak.textContent = G ? G.streak : 0;
+    el.progress.textContent = m.lives ? hearts(G ? G.lives : m.lives) : m.time ? (G ? clock(G.timed === false ? G.elapsed : G.left) : S.mode === 'fox' && !S.foxTimed ? '∞' : clock(m.time)) : `${G ? G.n : 0}/${m.len}`;
+    // Symulator pasma: zamiast serii liczba znalezionych stacji
+    el.streak.textContent = G ? (S.mode === 'fox' ? G.ok : G.streak) : 0;
     el.score.textContent = G ? G.score : 0;
     el.best.textContent = S.best[S.mode] || 0;
   }
@@ -949,24 +1368,45 @@
     koch: t('<kbd>Space</kbd> replay · <kbd>Esc</kbd> stop', '<kbd>Spacja</kbd> powtórz · <kbd>Esc</kbd> stop'),
     quick: t('<kbd>1</kbd>–<kbd>4</kbd> pick · <kbd>Space</kbd> replay · <kbd>Esc</kbd> stop',
       '<kbd>1</kbd>–<kbd>4</kbd> wybór · <kbd>Spacja</kbd> powtórz · <kbd>Esc</kbd> stop'),
+    fox: t('<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> tune · mouse wheel · <kbd>1</kbd>–<kbd>5</kbd> fox · <kbd>Esc</kbd> stop',
+      '<kbd>Z</kbd> <kbd>←</kbd> <kbd>X</kbd> <kbd>→</kbd> strojenie · kółko myszy · <kbd>1</kbd>–<kbd>5</kbd> lis · <kbd>Esc</kbd> stop'),
   };
   const KEY_NAME = { '.': t('dit', 'kropka'), '-': t('dah', 'kreska') };
   const seaKeys = () => `<kbd>Z</kbd> <kbd>←</kbd> ${KEY_NAME[elementOf('L')]} · <kbd>X</kbd> <kbd>→</kbd> ${KEY_NAME[elementOf('R')]} · <kbd>Esc</kbd> stop`;
   function renderMode() {
-    const m = MODES[S.mode], busy = active(), sea = S.mode === 'sea';
+    const m = MODES[S.mode], busy = active(), sea = S.mode === 'sea', fox = S.mode === 'fox', canvas = sea || fox;
     root.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === S.mode));
     el.form.hidden = !m.typed;
     el.pad.hidden = S.mode !== 'koch';
-    el.choices.hidden = S.mode !== 'quick';
+    // Symulator pasma: znaki stacji są znane dopiero po starcie; przed startem wybór poziomu
+    el.choices.hidden = S.mode !== 'quick' && !(fox && G && G.src);
+    el.foxlevel.hidden = !fox || busy;
+    root.querySelectorAll('[data-foxlevel]').forEach(b => b.setAttribute('aria-pressed', +b.dataset.foxlevel === S.foxLevel));
+    el.foxnote.innerHTML = [
+      t('Starts at stage 1: three-character calls.', 'Start od etapu 1: znaki trzyznakowe.'),
+      t('Starts at stage 3: 4–5 character calls and other stations on the band.', 'Start od etapu 3: znaki 4–5-znakowe i obce stacje na paśmie.'),
+      t('Starts at stage 5: longer calls, weak signals and RST reports – the same call also sends a different report.',
+        'Start od etapu 5: dłuższe znaki, słabe sygnały i raporty RST – ten sam znak nadaje też z innym raportem.'),
+    ][S.foxLevel - 1] + (S.foxTimed ? '' : ' ' + t('Without the clock: practice with no time limit and no penalties – Stop ends it, the score is not a record.',
+      'Bez czasu: trening bez limitu i kar – Stop kończy grę, a wynik nie trafia do rekordów.'));
+    el.foxtimed.checked = S.foxTimed;
+    el.choices.classList.toggle('five', fox);
     el.timer.hidden = S.mode !== 'quick';
-    el.keybox.hidden = !sea;
-    el.field.hidden = !(sea && busy);
-    el.replay.hidden = sea;
-    el.screen.classList.toggle('tall', sea);
+    // Symulator pasma: zamiast łopatek na ekranie i podglądu kluczowania — S-metr i gałka VFO
+    el.keybox.hidden = !canvas;
+    el.keying.parentElement.hidden = fox;
+    pads.L.parentElement.hidden = fox;
+    el.vfo.hidden = !fox;
+    el.field.hidden = !(canvas && busy);
+    el.field.setAttribute('aria-label', fox ? 'Band simulator / Symulator pasma' : "Morse Sea / Morze Morse'a");
+    el.replay.hidden = canvas;
+    el.screen.classList.toggle('tall', canvas);
+    el.screen.classList.toggle('fox', fox);
     el.led.textContent = sea ? 'TX' : 'RX';
-    el.plabel.innerHTML = m.lives ? t('Lives', 'Życia') : t('Round', 'Runda');
+    el.plabel.innerHTML = m.lives ? t('Lives', 'Życia') : m.time ? t('Time', 'Czas') : t('Round', 'Runda');
+    el.slabel.innerHTML = fox ? t('Stations', 'Stacje') : t('Streak', 'Seria');
     el.log.hidden = !m.typed;
-    el.levelbox.hidden = m.typed;
+    el.levelbox.hidden = m.typed || fox;
     el.lvldown.disabled = busy || S.level <= 2;
     el.lvlup.disabled = busy || S.level >= KOCH.length;
     el.levelrange.disabled = busy;
@@ -974,6 +1414,8 @@
     if (!busy) el.timerbar.style.width = '100%';
     el.pad.innerHTML = KOCH.slice(0, S.level).map((c, i) =>
       `<button type="button" data-ch="${c}"${i === S.level - 1 ? ' class="new"' : ''}>${c}</button>`).join('');
+    renderPaddles();
+    if (fox) renderFoxButtons();
   }
 
   // ---------- zdarzenia ----------
@@ -992,7 +1434,9 @@
     idle();
   }));
 
-  el.start.addEventListener('click', () => (active() ? stopRound() : startRound()));
+  // Stop w treningu Symulatora pasma (bez czasu) kończy grę z podsumowaniem; poza tym przerywa rundę
+  const stop = () => (S.mode === 'fox' && G.state === 'play' && !G.timed ? endRound() : stopRound());
+  el.start.addEventListener('click', () => (active() ? stop() : startRound()));
   el.replay.addEventListener('click', () => {
     if (active() && G.state === 'wait') playItem();
     focusGame();
@@ -1017,6 +1461,12 @@
   });
   el.choices.addEventListener('click', e => {
     const b = e.target.closest('button[data-ch]');
+    // Symulator pasma: w grze łapie stację, po grze pozwala posłuchać jej znaku
+    if (b && S.mode === 'fox') {
+      if (active()) foxCatch(+b.dataset.ch);
+      else if (G && G.src && G.src[b.dataset.ch - 1]) play(G.src[b.dataset.ch - 1].code);
+      return el.rig.focus({ preventScroll: true });
+    }
     if (!b || !active()) return;
     answer(b.dataset.ch);
     el.rig.focus({ preventScroll: true });
@@ -1073,7 +1523,81 @@
       if (e.target === serial.port) serialClose(t('Disconnected – the cable was unplugged.', 'Rozłączono – wyjęty kabel.'), 'bad');
     });
   }
-  window.addEventListener('resize', () => { if (G && G.state === 'play' && G.ctx) fitField(); });
+  window.addEventListener('resize', () => {
+    if (!G || G.state !== 'play' || !G.ctx) return;
+    fitField();
+    if (S.mode === 'fox') foxWaterfall();
+  });
+  // Symulator pasma: przeciąganie panoramy i kółko myszy stroją VFO
+  el.field.addEventListener('pointerdown', e => {
+    if (S.mode !== 'fox' || !G || G.state !== 'play') return;
+    e.preventDefault();
+    try { el.field.setPointerCapture(e.pointerId); } catch (err) {}
+    G.drag = e.clientX;
+  });
+  el.field.addEventListener('pointermove', e => {
+    if (S.mode !== 'fox' || !G || G.drag == null) return;
+    foxTune(-(e.clientX - G.drag) * SPAN / G.W);
+    G.drag = e.clientX;
+  });
+  ['pointerup', 'pointercancel'].forEach(n => el.field.addEventListener(n, () => { if (G) G.drag = null; }));
+  el.field.addEventListener('wheel', e => {
+    if (S.mode !== 'fox' || !G || G.state !== 'play') return;
+    e.preventDefault();
+    foxTune(-Math.sign(e.deltaY || e.deltaX) * (e.shiftKey ? 10 : 50));
+  }, { passive: false });
+  // poziom Symulatora pasma (etap startowy), zapamiętany; w trakcie gry ukryty
+  root.querySelectorAll('[data-foxlevel]').forEach(b => b.addEventListener('click', () => {
+    if (active()) return;
+    S.foxLevel = +b.dataset.foxlevel;
+    save();
+    renderMode();
+  }));
+  // gra na czas albo trening bez czasu (zapamiętane)
+  el.foxtimed.addEventListener('change', () => {
+    S.foxTimed = el.foxtimed.checked;
+    save();
+    // po skończonej grze przełącznik przygotowuje nową — znika podsumowanie poprzedniej
+    if (G && !active()) {
+      G = null;
+      el.start.innerHTML = 'Start';
+      idle();
+    }
+    renderMode();
+    renderStats();
+  });
+  // gałka VFO: kręcenie palcem / myszą dookoła środka, kółko myszy nad gałką (50 Hz, z Shift 10 Hz)
+  const foxPlaying = () => S.mode === 'fox' && G && G.state === 'play';
+  el.knob.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    try { el.knob.setPointerCapture(e.pointerId); } catch (err) {}
+    knob.last = knobAngle(e);
+    knob.t = performance.now();
+    el.knob.classList.add('on');
+    el.knob.focus({ preventScroll: true });
+  });
+  el.knob.addEventListener('pointermove', e => {
+    if (knob.last == null) return;
+    const a = knobAngle(e), now = performance.now();
+    let d = a - knob.last;
+    if (d > 180) d -= 360; else if (d < -180) d += 360;
+    // szybciej niż 1 obrót/s → większy krok strojenia (do 5×)
+    const boost = Math.min(5, Math.max(1, Math.abs(d) / Math.max(8, now - knob.t) * 1000 / 360));
+    knob.last = a;
+    knob.t = now;
+    knobTurn(d);
+    if (foxPlaying()) foxTune(d / 360 * KNOB_HZ * boost, true);
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(n => el.knob.addEventListener(n, () => {
+    knob.last = null;
+    el.knob.classList.remove('on');
+  }));
+  el.knob.addEventListener('wheel', e => {
+    e.preventDefault();
+    const d = -Math.sign(e.deltaY || e.deltaX) * (e.shiftKey ? 1.8 : 9);
+    knobTurn(d);
+    if (foxPlaying()) foxTune(d / 360 * KNOB_HZ, true);
+  }, { passive: false });
 
   function setLevel(d) {
     if (active()) return;
@@ -1124,16 +1648,17 @@
   });
 
   document.addEventListener('keydown', e => {
-    // Morze Morse'a: klawisze klucza (także przed startem, do ćwiczeń); strzałki na suwakach zostają suwakom.
+    // Morze Morse'a: klawisze klucza (także przed startem, do ćwiczeń), Symulator pasma: te same klawisze stroją VFO;
+    // strzałki na suwakach zostają suwakom.
     // Sprawdzane przed modyfikatorami, bo lewy/prawy Ctrl też jest łopatką (ESP32 jako klawiatura Bluetooth).
-    const side = S.mode === 'sea' && !e.metaKey && !e.altKey && PADDLE[e.code];
+    const side = (S.mode === 'sea' || S.mode === 'fox') && !e.metaKey && !e.altKey && PADDLE[e.code];
     if (side && !e.target.matches('input, textarea, select')) {
       e.preventDefault();
       if (!e.repeat) paddle(side, true);
       return;
     }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (e.key === 'Escape' && active()) return stopRound();
+    if (e.key === 'Escape' && active()) return stop();
     if (e.target.matches('input[type="text"], textarea, select')) return;
     if (!active()) {
       if (e.key === 'Enter' && !e.target.closest('button, a')) { e.preventDefault(); startRound(); }
@@ -1145,6 +1670,14 @@
       return;
     }
     if (S.mode === 'sea') return;
+    if (S.mode === 'fox') {
+      const n = '12345'.indexOf(e.key) + 1;
+      if (n) {
+        e.preventDefault();
+        foxCatch(n);
+      }
+      return;
+    }
     if (e.key === ' ') {
       e.preventDefault();
       if (G.state === 'wait') playItem();

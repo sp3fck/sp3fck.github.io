@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CW Trainer — SP3FCK</title>
   <meta name="title-pl" content="Trener CW — SP3FCK">
-  <meta name="description" content="A simple Morse code (CW) training game: learn characters with the Koch method, then copy callsigns, CW shortcuts and Q-codes; two arcade games for copying and sending with a paddle.">
+  <meta name="description" content="A simple Morse code (CW) training game: learn characters with the Koch method, then copy callsigns, CW shortcuts and Q-codes; arcade games for copying, sending with a paddle and a band simulator.">
   <meta name="theme-color" content="#0e1418">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -20,8 +20,8 @@
       <div class="wrap">
         <span class="eyebrow">Ham Tools · CW</span>
         <h1><span lang="en">CW trainer</span><span lang="pl">Trener CW</span></h1>
-        <p lang="en">Listen, copy, score. Learn new characters the Koch way, then copy callsigns and the CW shortcuts you hear on the air. Two arcade games test your speed: Quick finger for copying, Morse Sea for sending with a paddle.</p>
-        <p lang="pl">Słuchaj, odbieraj, zbieraj punkty. Ucz się nowych znaków metodą Kocha, potem odbieraj znaki wywoławcze i skróty, które słychać na pasmach. Dwie gry zręcznościowe sprawdzą refleks: Szybki palec w odbiorze, Morze Morse'a w nadawaniu kluczem.</p>
+        <p lang="en">Listen, copy, score. Learn new characters the Koch way, then copy callsigns and the CW shortcuts you hear on the air. Three games test your skills: Quick finger for copying, Morse Sea for sending with a paddle and Band simulator for tuning across the band and recognising stations by ear.</p>
+        <p lang="pl">Słuchaj, odbieraj, zbieraj punkty. Ucz się nowych znaków metodą Kocha, potem odbieraj znaki wywoławcze i skróty, które słychać na pasmach. Trzy gry sprawdzą umiejętności: Szybki palec w odbiorze, Morze Morse'a w nadawaniu kluczem i Symulator pasma w strojeniu po paśmie i rozpoznawaniu stacji na ucho.</p>
       </div>
     </section>
 
@@ -33,6 +33,7 @@
           <button type="button" data-mode="abbr" aria-pressed="false"><span lang="en">CW Shortcuts &amp; Q-codes</span><span lang="pl">Skróty i kody Q</span></button>
           <button type="button" data-mode="quick" aria-pressed="false"><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></button>
           <button type="button" data-mode="sea" aria-pressed="false"><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></button>
+          <button type="button" data-mode="fox" aria-pressed="false"><span lang="en">Band simulator</span><span lang="pl">Symulator pasma</span></button>
         </div>
 
         <div class="cw-layout">
@@ -41,7 +42,7 @@
               <div class="cw-readout">
                 <div><small>WPM</small><b data-cw="wpm">20</b></div>
                 <div><small data-cw="plabel"><span lang="en">Round</span><span lang="pl">Runda</span></small><b data-cw="progress">0/30</b></div>
-                <div><small><span lang="en">Streak</span><span lang="pl">Seria</span></small><b data-cw="streak">0</b></div>
+                <div><small data-cw="slabel"><span lang="en">Streak</span><span lang="pl">Seria</span></small><b data-cw="streak">0</b></div>
                 <div><small><span lang="en">Score</span><span lang="pl">Wynik</span></small><b data-cw="score">0</b></div>
                 <div><small><span lang="en">Best</span><span lang="pl">Rekord</span></small><b data-cw="best">0</b></div>
               </div>
@@ -63,11 +64,28 @@
               </form>
               <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki" translate="no"></div>
               <div class="cw-choices" data-cw="choices" role="group" aria-label="Answers / Odpowiedzi" translate="no" hidden></div>
+              <div class="cw-foxlevel" data-cw="foxlevel" hidden>
+                <span><span lang="en">Level</span><span lang="pl">Poziom</span></span>
+                <div class="tabs" role="group" aria-label="Level / Poziom">
+                  <button type="button" data-foxlevel="1" aria-pressed="true"><span lang="en">Easy</span><span lang="pl">Łatwy</span></button>
+                  <button type="button" data-foxlevel="2" aria-pressed="false"><span lang="en">Medium</span><span lang="pl">Średni</span></button>
+                  <button type="button" data-foxlevel="3" aria-pressed="false"><span lang="en">Hard</span><span lang="pl">Trudny</span></button>
+                </div>
+                <label class="cw-switch"><input type="checkbox" data-cw="foxtimed" role="switch" checked><i></i><span lang="en">Against the clock</span><span lang="pl">Na czas</span></label>
+                <span class="cw-note" data-cw="foxnote"></span>
+              </div>
               <div class="cw-keybox" data-cw="keybox" hidden>
                 <div class="cw-keying" aria-live="polite" translate="no"><span data-cw="keying"></span><b data-cw="decoded"></b></div>
                 <div class="cw-paddles">
                   <button type="button" class="cw-key" data-paddle="L">· <span lang="en">DIT</span><span lang="pl">KROPKA</span><small>Z ←</small></button>
                   <button type="button" class="cw-key" data-paddle="R">− <span lang="en">DAH</span><span lang="pl">KRESKA</span><small>X →</small></button>
+                </div>
+                <div class="cw-vfo" data-cw="vfo" hidden>
+                  <span class="cw-vfo-side">− <small>Z ←</small></span>
+                  <div class="cw-dial">
+                    <div class="cw-knob" data-cw="knob" role="slider" tabindex="0" aria-label="VFO" aria-valuemin="3538" aria-valuemax="3582" aria-valuenow="3560"><i></i></div>
+                  </div>
+                  <span class="cw-vfo-side">+ <small>X →</small></span>
                 </div>
               </div>
 
@@ -157,6 +175,7 @@
                   <div><dt><span lang="en">CW Shortcuts</span><span lang="pl">Skróty</span></dt><dd data-cw-best="abbr">—</dd></div>
                   <div><dt><span lang="en">Quick finger</span><span lang="pl">Szybki palec</span></dt><dd data-cw-best="quick">—</dd></div>
                   <div><dt><span lang="en">Morse Sea</span><span lang="pl">Morze Morse'a</span></dt><dd data-cw-best="sea">—</dd></div>
+                  <div><dt><span lang="en">Band simulator</span><span lang="pl">Symulator pasma</span></dt><dd data-cw-best="fox">—</dd></div>
                 </dl>
               </div>
             </details>
@@ -213,6 +232,7 @@
   <div id="footer-placeholder"></div>
   <script src="assets/js/components.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="data/cw-calls.js"></script>
   <script src="assets/js/cw-trainer.js"></script>
 </body>
 </html>

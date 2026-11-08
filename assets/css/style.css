@@ -378,6 +378,69 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-choices small { position: absolute; top: 6px; left: 8px; font: 600 .7rem/1 var(--mono); color: var(--ink-soft); }
 .cw-choices button.ok { background: color-mix(in srgb, var(--ok) 25%, var(--card-2)); border-color: var(--ok); }
 .cw-choices button.bad { background: color-mix(in srgb, var(--bad) 25%, var(--card-2)); border-color: var(--bad); }
+/* Symulator pasma: pięć stacji w jednym rzędzie (także na telefonie), panoramę przeciąga się palcem lub myszą */
+.cw-choices.five { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.cw-choices.five button { font-size: clamp(.78rem, 2.4vw, 1.1rem); letter-spacing: 0; padding: 22px 2px 14px; }
+.cw-choices.five button .r { display: block; margin-top: 5px; font-size: .78em; color: var(--accent); }
+/* poziom Symulatora pasma (przed startem) */
+.cw-foxlevel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: .9rem; color: var(--ink-soft); }
+.cw .cw-foxlevel .tabs { margin: 0; gap: 6px; }
+.cw-foxlevel .tabs button { padding: 7px 14px; font-size: .85rem; }
+.cw-foxlevel .cw-note { flex-basis: 100%; }
+/* przełącznik (np. gra na czas / bez czasu) */
+.cw-switch { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: .85rem; color: var(--ink-soft); }
+.cw-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.cw-switch i { position: relative; flex: none; width: 36px; height: 20px; border-radius: 10px; background: var(--line); transition: background .2s; }
+.cw-switch i::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--ink-soft); transition: transform .2s, background .2s;
+}
+.cw-switch input:checked + i { background: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.cw-switch input:checked + i::after { transform: translateX(16px); background: var(--accent); }
+.cw-switch input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .cw-switch i, .cw-switch i::after { transition: none; } }
+.cw-screen.fox .cw-sky { touch-action: none; cursor: ew-resize; }
+/* gałka VFO: radełkowany brzeg i wgłębienie na palec obracają się (--a), podziałka wokół stoi */
+.cw-vfo { display: flex; align-items: center; justify-content: center; gap: 22px; padding: 2px 0; }
+.cw-vfo-side { display: grid; justify-items: center; gap: 4px; font: 800 1.3rem/1 var(--mono); color: var(--ink-soft); }
+.cw-vfo-side small { font-size: .7rem; letter-spacing: .1em; opacity: .7; }
+.cw-dial { position: relative; padding: 12px; border-radius: 50%; }
+.cw-dial::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-conic-gradient(color-mix(in srgb, var(--ink-soft) 60%, transparent) 0 1.2deg, transparent 1.2deg 15deg);
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+  mask: radial-gradient(closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
+}
+.cw-knob {
+  --a: 0deg; position: relative; width: 136px; height: 136px; border-radius: 50%; cursor: grab;
+  touch-action: none; user-select: none; -webkit-user-select: none; outline: none;
+  background: repeating-conic-gradient(from var(--a), #2b3840 0 4deg, #151d22 4deg 8deg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .55), inset 0 0 0 1px #0b1115;
+}
+.cw-knob::before {
+  content: ""; position: absolute; inset: 11px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #36444d, #1a232a 72%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, .08), 0 0 0 1px #0b1115;
+}
+.cw-knob i { position: absolute; inset: 11px; border-radius: 50%; transform: rotate(var(--a)); }
+.cw-knob i::before {
+  content: ""; position: absolute; left: 50%; top: 12px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 70%, #26323a, #0d1317 75%); box-shadow: inset 0 3px 5px rgba(0, 0, 0, .7);
+}
+.cw-knob i::after { content: ""; position: absolute; left: 50%; top: 3px; width: 4px; height: 6px; margin-left: -2px; border-radius: 2px; background: var(--accent); }
+.cw-knob.on { cursor: grabbing; }
+/* telefon: niższy ekran gry i mniejsza gałka, żeby ekran, kafelki i gałka zmieściły się naraz */
+@media (max-width: 560px) {
+  .cw-screen.tall.fox { min-height: 250px; margin: 10px 0; }
+  .cw-rig:has(.cw-screen.fox) .cw-readout { grid-template-columns: repeat(4, 1fr); }
+  .cw-rig:has(.cw-screen.fox) .cw-readout div:first-child { display: none; }
+  .cw-rig:has(.cw-screen.fox) .cw-readout div:last-child { grid-column: auto; }
+  .cw-rig:has(.cw-screen.fox) .cw-keys { display: none; }
+  .cw-knob { width: 104px; height: 104px; }
+  .cw-dial { padding: 9px; }
+  .cw-knob i::before { top: 9px; width: 22px; height: 22px; margin-left: -11px; }
+}
+.cw-knob:focus-visible { box-shadow: 0 8px 20px rgba(0, 0, 0, .55), 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .cw-timer { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--line); overflow: hidden; border-radius: 0 0 6px 6px; }
 .cw-timer i { display: block; width: 100%; height: 100%; background: var(--accent); }
 .cw-timer.low i { background: var(--bad); }
