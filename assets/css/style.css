@@ -450,8 +450,9 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-keybox { display: grid; gap: 10px; }
 .cw-keying { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 2.4rem; font-size: 1.3rem; color: var(--accent); }
 .cw-keying b { font: 800 1.7rem/1 var(--mono); color: var(--ink); }
-.cw-keying b.ok { color: var(--ok); }
-.cw-keying b.bad { color: var(--bad); }
+.cw-keying b { white-space: nowrap; }
+.cw-keying b .ok { color: var(--ok); }
+.cw-keying b .bad { color: var(--bad); }
 .cw-paddles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .cw-key {
   display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 26px 0; cursor: pointer;

@@ -7,7 +7,7 @@
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.6.0';
+  const VERSION = '1.6.1';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -254,8 +254,8 @@
     led(dur);
     return dur;
   }
-  // Podsłuch własnego nadawania (Morze Morse'a): stały oscylator, kluczowana tylko głośność
-  function sideTone(len) {
+  // Podsłuch własnego nadawania (Morze Morse'a): stały oscylator, kluczowana tylko głośność; at i len w sekundach zegara dźwięku
+  function sideTone(at, len) {
     audio();
     if (!side) {
       const osc = ac.createOscillator(), g = ac.createGain();
@@ -265,10 +265,9 @@
       side = { osc, g };
     }
     side.osc.frequency.value = S.tone;
-    const now = ac.currentTime;
-    side.g.gain.cancelScheduledValues(now);
-    side.g.gain.setTargetAtTime(0.5, now, 0.0015);
-    side.g.gain.setTargetAtTime(0, now + len, 0.0015);
+    side.g.gain.cancelScheduledValues(at);
+    side.g.gain.setTargetAtTime(0.5, at, 0.0015);
+    side.g.gain.setTargetAtTime(0, at + len, 0.0015);
   }
   function sideOff() {
     if (!side) return;
@@ -530,8 +529,16 @@
   const PADDLE = { KeyZ: 'L', ArrowLeft: 'L', BracketLeft: 'L', ControlLeft: 'L', KeyX: 'R', ArrowRight: 'R', BracketRight: 'R', ControlRight: 'R' };
   const pads = { L: root.querySelector('[data-paddle="L"]'), R: root.querySelector('[data-paddle="R"]') };
   const elementOf = side => (side === 'L') !== S.swap ? '.' : '-';
+  // Czas keyera to plan na zegarze strony (performance.now, ms): każdy element zaczyna się dokładnie po poprzednim,
+  // a ton jest planowany na zegarze dźwięku ze stałym przesunięciem (off, s) ustalanym na początku serii.
+  // O następnym elemencie keyer decyduje z małym wyprzedzeniem (look), więc spóźnione timery (rysowanie gry,
+  // obciążony komputer) nie rozciągają kropek, kresek ani przerw i nie sumują się w opóźnienie.
   // busy – keyer nadaje (element albo przerwa po nim); on – trwa sam element (ton, dioda TX, fale radiowe łódki)
-  const kr = { '.': false, '-': false, busy: false, on: false, cur: '', last: '', mem: '', code: '', timer: 0, gap: 0 };
+  // free – najwcześniejszy start następnego elementu; end – koniec ostatniego elementu; aFree – to samo co free na zegarze dźwięku (s)
+  // out – odczytane znaki pod łopatkami ({ ch, cls })
+  const kr = { '.': false, '-': false, busy: false, on: false, cur: '', last: '', mem: '', code: '', out: [], free: 0, end: -1e9, off: 0, aFree: 0, timer: 0, gap: 0, led: [] };
+  // cisza dłuższa niż odstęp między słowami (5 kropek, zawsze ≥ 2 kropki ponad przerwę między znakami) zaczyna nowy napis
+  const wordGap = () => Math.max(5, S.letterGap + 2);
   function paddle(side, down) {
     const p = elementOf(side);
     if (kr[p] === down || (down && S.mode !== 'sea' && S.mode !== 'fox')) return;
@@ -550,45 +557,61 @@
     let e = kr.mem;
     kr.mem = '';
     if (!e) e = kr['.'] && kr['-'] ? (kr.last === '.' ? '-' : '.') : kr['.'] ? '.' : kr['-'] ? '-' : '';
-    const dit = 1.2 / S.wpm;
+    const dit = 1200 / S.wpm, now = performance.now();
     if (!e) {
       kr.busy = false;
-      // po przerwie 1 kropki między elementami czekamy na resztę ustawionej przerwy (domyślnie razem 2,5 kropki) = koniec litery
-      kr.gap = setTimeout(endLetter, (S.letterGap - 1) * 1000 * dit);
+      // cisza z „Przerwy między znakami” (domyślnie 2,5 kropki) od końca ostatniego elementu = koniec litery
+      kr.gap = setTimeout(endLetter, kr.end + S.letterGap * dit - now);
       return;
     }
-    const len = e === '.' ? dit : 3 * dit;
-    Object.assign(kr, { busy: true, on: true, cur: e, last: e, code: kr.code + e });
-    sideTone(len);
-    el.led.classList.add('on');
+    audio();
+    const len = e === '.' ? dit : 3 * dit, at = Math.max(now, kr.free);
+    // nowa seria (albo spóźniony timer): zegar dźwięku zrównany z zegarem strony; w trakcie serii przesunięcie stałe
+    if (now >= kr.free) kr.off = ac.currentTime - now / 1000;
+    // zegar dźwięku rusza z opóźnieniem (pierwszy dźwięk na stronie) — ton nie może wejść na poprzedni element
+    const ta = Math.max(ac.currentTime, at / 1000 + kr.off, kr.aFree);
+    kr.off = ta - at / 1000;
+    kr.aFree = ta + (len + dit) / 1000;
+    // pierwszy element nowego znaku: po krótkiej przerwie znak dopisze się do napisu, po dłuższej napis znika
+    if (!kr.code && kr.out.length && at - kr.end > wordGap() * dit) {
+      kr.out = [];
+      renderDecoded();
+    }
+    Object.assign(kr, { busy: true, cur: e, last: e, code: kr.code + e, end: at + len, free: at + len + dit });
+    sideTone(ta, len / 1000);
     renderKeying();
-    kr.timer = setTimeout(() => {
-      kr.on = false;
-      el.led.classList.remove('on');
-      kr.timer = setTimeout(keyerNext, 1000 * dit);
-    }, 1000 * len);
+    // dioda TX i fale z anteny łódki w rytm tonu
+    const tx = on => { kr.on = on; el.led.classList.toggle('on', on); };
+    kr.led = [setTimeout(tx, at - now, true), setTimeout(tx, kr.end - now, false)];
+    kr.timer = setTimeout(keyerNext, kr.free - now - Math.min(20, dit / 2));
   }
   function endLetter() {
     const code = kr.code;
     kr.code = '';
     if (!code) return;
     const ch = REV[code] || null;
-    el.decoded.textContent = ch || '?';
-    el.decoded.className = ch ? '' : 'bad';
+    kr.out = [...kr.out, { ch: ch || '?', cls: ch ? '' : 'bad' }].slice(-10);
+    renderDecoded();
     renderKeying();
     if (G && G.state === 'play' && S.mode === 'sea') seaChar(ch);
   }
   function keyerReset() {
-    clearTimeout(kr.timer);
-    clearTimeout(kr.gap);
-    Object.assign(kr, { '.': false, '-': false, busy: false, on: false, cur: '', last: '', mem: '', code: '' });
+    [kr.timer, kr.gap, ...kr.led].forEach(clearTimeout);
+    Object.assign(kr, { '.': false, '-': false, busy: false, on: false, cur: '', last: '', mem: '', code: '', out: [], free: 0, end: -1e9, aFree: 0 });
     sideOff();
     el.led.classList.remove('on');
     Object.values(pads).forEach(b => b.classList.remove('on'));
-    el.decoded.textContent = '';
+    renderDecoded();
     renderKeying();
   }
   const renderKeying = () => { el.keying.innerHTML = kr.code ? codeHtml([kr.code]) : ''; };
+  const renderDecoded = () => { el.decoded.innerHTML = kr.out.map(o => o.cls ? `<span class="${o.cls}">${o.ch}</span>` : o.ch).join(''); };
+  // Morze Morse'a ocenia ostatni odczytany znak: trafiony na zielono, pudło na czerwono
+  function markLast(cls) {
+    const o = kr.out[kr.out.length - 1];
+    if (o) o.cls = cls;
+    renderDecoded();
+  }
   const PAD_LABEL = { '.': `· ${t('DIT', 'KROPKA')}`, '-': `− ${t('DAH', 'KRESKA')}` };
   function renderPaddles() {
     pads.L.innerHTML = `${PAD_LABEL[elementOf('L')]}<small>Z ←</small>`;
@@ -795,11 +818,11 @@
       if (it) it.done = 0;
       G.target = null;
       G.streak = 0;
-      el.decoded.className = 'bad';
+      markLast('bad');
       renderStats();
       return;
     }
-    el.decoded.className = 'ok';
+    markLast('ok');
     it.done++;
     G.target = it;
     if (it.done < it.text.length) return;
