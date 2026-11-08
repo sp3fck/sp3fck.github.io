@@ -48,9 +48,9 @@
 
               <div class="cw-screen" data-cw="screen" aria-live="polite">
                 <canvas class="cw-sky" data-cw="field" hidden aria-label="Morse Sea / Morze Morse'a"></canvas>
-                <span class="cw-led" data-cw="led" aria-hidden="true">RX</span>
-                <div class="cw-glyph" data-cw="glyph">CW</div>
-                <div class="cw-pattern" data-cw="pattern">−·−· ·−−</div>
+                <span class="cw-led" data-cw="led" aria-hidden="true" translate="no">RX</span>
+                <div class="cw-glyph" data-cw="glyph" translate="no">CW</div>
+                <div class="cw-pattern" data-cw="pattern" translate="no">−·−· ·−−</div>
                 <div class="cw-msg" data-cw="msg"></div>
                 <div class="cw-timer" data-cw="timer" hidden><i data-cw="timerbar"></i></div>
               </div>
@@ -61,10 +61,10 @@
                        placeholder="Type what you hear + Enter" data-pl-placeholder="Wpisz, co słyszysz + Enter">
                 <button type="submit" class="btn ghost">Enter</button>
               </form>
-              <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki"></div>
-              <div class="cw-choices" data-cw="choices" role="group" aria-label="Answers / Odpowiedzi" hidden></div>
+              <div class="cw-pad" data-cw="pad" role="group" aria-label="Characters / Znaki" translate="no"></div>
+              <div class="cw-choices" data-cw="choices" role="group" aria-label="Answers / Odpowiedzi" translate="no" hidden></div>
               <div class="cw-keybox" data-cw="keybox" hidden>
-                <div class="cw-keying" aria-live="polite"><span data-cw="keying"></span><b data-cw="decoded"></b></div>
+                <div class="cw-keying" aria-live="polite" translate="no"><span data-cw="keying"></span><b data-cw="decoded"></b></div>
                 <div class="cw-paddles">
                   <button type="button" class="cw-key" data-paddle="L">· <span lang="en">DIT</span><span lang="pl">KROPKA</span><small>Z ←</small></button>
                   <button type="button" class="cw-key" data-paddle="R">− <span lang="en">DAH</span><span lang="pl">KRESKA</span><small>X →</small></button>
@@ -100,6 +100,11 @@
                   </div>
                 </div>
                 <label class="cw-check"><input type="checkbox" data-cw="swap"> <span lang="en">Swap dit and dah (left hand)</span><span lang="pl">Zamień kropkę i kreskę (lewa ręka)</span></label>
+                <label class="cw-field">
+                  <span><span lang="en">Letter gap</span><span lang="pl">Przerwa między znakami</span> <output data-cw-out="letterGap"></output></span>
+                  <input type="range" name="letterGap" min="1.5" max="5" step="0.25">
+                  <span class="cw-note" data-cw="gapinfo"></span>
+                </label>
               </div>
             </details>
 
@@ -135,7 +140,7 @@
                     <button type="button" class="btn ghost" data-cw="lvlup" aria-label="More characters / Więcej znaków">+</button>
                   </div>
                   <span class="cw-level-new" data-cw="levelnew"></span>
-                  <span class="cw-level-set" data-cw="levelset"></span>
+                  <span class="cw-level-set" data-cw="levelset" translate="no"></span>
                 </div>
 
                 <p class="cw-tip" lang="en">Tip: learn at full character speed (20+ WPM) and add Farnsworth spacing instead of slowing the characters down – you learn the sound of each character, not counting dots.</p>
@@ -166,7 +171,7 @@
           <h2><span lang="en">Morse code chart</span><span lang="pl">Alfabet Morse'a</span></h2>
           <span class="status"><span lang="en">Click a character to hear it</span><span lang="pl">Kliknij znak, żeby go usłyszeć</span></span>
         </div>
-        <div class="cw-chart" data-cw-chart></div>
+        <div class="cw-chart" data-cw-chart translate="no"></div>
         <p class="cw-version"><span lang="en">CW trainer</span><span lang="pl">Trener CW</span> <span data-cw-version></span></p>
       </div>
     </section>

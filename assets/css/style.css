@@ -453,7 +453,7 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cw-level { display: flex; align-items: center; gap: 10px; }
 .cw-level .btn { flex: none; padding: 4px 12px; font-family: var(--mono); }
 .cw-level input[type="range"] { flex: 1; min-width: 0; }
-.cw-level-new { font-size: .85rem; color: var(--ink-soft); }
+.cw-level-new, .cw-note { font-size: .85rem; color: var(--ink-soft); }
 .cw-level-new b { font-family: var(--mono); color: var(--ink); }
 .cw-level-set { font: 600 .9rem/1.6 var(--mono); letter-spacing: .08em; color: var(--ink); overflow-wrap: anywhere; }
 .cw-level-set b { color: var(--accent); }

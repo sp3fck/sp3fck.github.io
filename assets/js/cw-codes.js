@@ -49,7 +49,7 @@
         <h2>${t(meta.title)}</h2>
         <p class="hint">${t(meta.hint)}</p>
         <ul class="cw-list">${rows.map(i => `
-          <li><span class="code">${esc(i.code)}</span><span class="mean">${t(i.mean)}${exp(i)}</span></li>`).join('')}
+          <li><span class="code" translate="no">${esc(i.code)}</span><span class="mean">${t(i.mean)}${exp(i)}</span></li>`).join('')}
         </ul></div>`;
     }).join('');
     out.innerHTML = html || `<p class="cw-empty">${t(['Nothing found – try fewer letters.', 'Nic nie znaleziono – spróbuj wpisać mniej liter.'])}</p>`;

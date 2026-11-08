@@ -6,7 +6,7 @@
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.5.0';
+  const VERSION = '1.5.1';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -117,7 +117,7 @@
   const KEY = 'sp3fck-cw';
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, keySource: 'keyboard', fold: {}, best: {} }, saved);
+  const S = Object.assign({ mode: 'koch', wpm: 20, eff: 20, tone: 600, vol: 70, noise: 0, level: 2, swap: false, letterGap: 2.5, keySource: 'keyboard', fold: {}, best: {} }, saved);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, +v || 0));
   // dawniej szum był tylko włącz/wyłącz (qrn: true/false)
   if (saved.qrn && saved.noise == null) S.noise = 50;
@@ -129,8 +129,10 @@
   S.noise = clamp(S.noise, 0, 100);
   S.level = Math.round(clamp(S.level, 2, KOCH.length));
   S.swap = S.swap === true;
+  S.letterGap = Math.round(4 * clamp(S.letterGap, 1.5, 5)) / 4;
   if (!['keyboard', 'arduino', 'esp32'].includes(S.keySource)) S.keySource = 'keyboard';
-  if (!MODES[S.mode]) S.mode = 'koch';
+  // strona zawsze otwiera się na pierwszej zakładce (Koch); reszta ustawień jest pamiętana
+  S.mode = 'koch';
   if (!S.best || typeof S.best !== 'object') S.best = {};
   if (!S.fold || typeof S.fold !== 'object') S.fold = {};
   // „Jonosfera” z wersji roboczych 1.2–1.3 to teraz „Morze Morse'a” — rekord przechodzi pod nową nazwę
@@ -444,7 +446,7 @@
     if (record) S.best[S.mode] = G.score;
     const missed = Object.entries(G.missed).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const missedLine = missed.length
-      ? `<span class="cw-mean">${t('Missed:', 'Pomyłki:')} ${missed.map(([c, n]) => `<b>${c}</b>×${n}`).join(' ')}</span>` : '';
+      ? `<span class="cw-mean">${t('Missed:', 'Pomyłki:')} ${missed.map(([c, n]) => `<b translate="no">${c}</b>×${n}`).join(' ')}</span>` : '';
     if (m.lives) {
       const stats = S.mode === 'sea'
         ? t(`Shot down: <b>${G.ok}</b> · wave <b>${G.wave}</b> · best streak <b>×${G.maxStreak}</b>`,
@@ -485,7 +487,7 @@
   function log(it, got, good) {
     const li = document.createElement('li');
     li.className = good ? 'ok' : 'bad';
-    li.innerHTML = `<span class="n">${G.n}</span><b>${it.text}</b><span>${good ? '✓' : esc(got) || '—'}</span>` +
+    li.innerHTML = `<span class="n">${G.n}</span><b translate="no">${it.text}</b><span translate="no">${good ? '✓' : esc(got) || '—'}</span>` +
       (it.en ? `<span class="m">${t(it.en, it.pl)}</span>` : '');
     el.log.prepend(li);
   }
@@ -499,7 +501,7 @@
   // ---------- klucz podwójny (paddle) z keyerem jambicznym ----------
   // Lewa łopatka = kropki, prawa = kreski (S.swap zamienia je dla leworęcznych), obie naraz (squeeze) = na przemian.
   // Keyer w trybie A z pamięcią: przeciwny element wciśnięty w trakcie nadawania zostanie nadany po bieżącym.
-  // Długości elementów z „Tempa”, litera kończy się po ok. 2,5 kropki ciszy.
+  // Długości elementów z „Tempa”, litera kończy się po ciszy z „Przerwy między znakami” (domyślnie 2,5 kropki).
   // lewy/prawy Ctrl: tak nadaje ESP32 jako klawiatura Bluetooth (i inne interfejsy udające klawiaturę)
   const PADDLE = { KeyZ: 'L', ArrowLeft: 'L', BracketLeft: 'L', ControlLeft: 'L', KeyX: 'R', ArrowRight: 'R', BracketRight: 'R', ControlRight: 'R' };
   const pads = { L: root.querySelector('[data-paddle="L"]'), R: root.querySelector('[data-paddle="R"]') };
@@ -526,8 +528,8 @@
     const dit = 1.2 / S.wpm;
     if (!e) {
       kr.busy = false;
-      // po przerwie 1 kropki między elementami czekamy jeszcze 1,5 kropki — razem 2,5 kropki = koniec litery
-      kr.gap = setTimeout(endLetter, 1500 * dit);
+      // po przerwie 1 kropki między elementami czekamy na resztę ustawionej przerwy (domyślnie razem 2,5 kropki) = koniec litery
+      kr.gap = setTimeout(endLetter, (S.letterGap - 1) * 1000 * dit);
       return;
     }
     const len = e === '.' ? dit : 3 * dit;
@@ -910,7 +912,8 @@
   }
 
   // ---------- widok ----------
-  const out = (name, html) => { root.querySelector(`[data-cw-out="${name}"]`).innerHTML = html; };
+  // brak pola znosimy spokojnie: po wdrożeniu przeglądarka może jeszcze chwilę trzymać stary HTML z nowym skryptem
+  const out = (name, html) => { const o = root.querySelector(`[data-cw-out="${name}"]`); if (o) o.innerHTML = html; };
   function renderSettings() {
     root.querySelector('input[name="eff"]').max = S.wpm;
     inputs.forEach(i => { i.value = S[i.name]; });
@@ -919,6 +922,10 @@
     out('tone', `${S.tone} Hz`);
     out('vol', `${S.vol}%`);
     out('noise', S.noise ? `${S.noise}%` : t('off', 'wył.'));
+    const g = S.letterGap;
+    out('letterGap', `${Math.round(g * 1200 / S.wpm)} ms`);
+    if (el.gapinfo) el.gapinfo.innerHTML = t(`${g} dits at ${S.wpm} WPM · shorter: fast letters don't merge, longer: a letter doesn't split`,
+      `${String(g).replace('.', ',')} ${g % 1 || g < 5 ? 'kropki' : 'kropek'} przy ${S.wpm} WPM · krócej: szybkie znaki się nie sklejają, dłużej: znak się nie rozpada`);
     const ch = KOCH[S.level - 1];
     el.levelnum.textContent = `${S.level} / ${KOCH.length}`;
     el.levelnew.innerHTML = `${t('newest', 'najnowszy')} <b>${ch}</b> <span class="cw-pat">${pattern(ch)}</span>`;
