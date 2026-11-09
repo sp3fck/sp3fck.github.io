@@ -7,7 +7,7 @@
    Ustawienia, poziom Kocha i rekordy są w localStorage (sp3fck-cw). */
 (function () {
   // Wersja trenera (semver), widoczna pod alfabetem — przy każdej zmianie gry podbij
-  const VERSION = '1.7.0';
+  const VERSION = '1.7.1';
   const root = document.querySelector('[data-cw-root]');
   if (!root) return;
   const t = (en, pl) => `<span lang="en">${en}</span><span lang="pl">${pl}</span>`;
@@ -528,7 +528,7 @@
   // Lewa łopatka = kropki, prawa = kreski (S.swap zamienia je dla leworęcznych), obie naraz (squeeze) = na przemian.
   // Keyer w trybie A z pamięcią: przeciwny element wciśnięty w trakcie nadawania zostanie nadany po bieżącym.
   // Długości elementów z „Tempa”, litera kończy się po ciszy z „Przerwy między znakami” (domyślnie 2,5 kropki).
-  // lewy/prawy Ctrl: tak nadaje ESP32 jako klawiatura Bluetooth (i inne interfejsy udające klawiaturę)
+  // strzałki ←/→: tak nadaje ESP32 jako klawiatura Bluetooth „CW Paddle”; lewy/prawy Ctrl: inne interfejsy udające klawiaturę
   const PADDLE = { KeyZ: 'L', ArrowLeft: 'L', BracketLeft: 'L', ControlLeft: 'L', KeyX: 'R', ArrowRight: 'R', BracketRight: 'R', ControlRight: 'R' };
   const pads = { L: root.querySelector('[data-paddle="L"]'), R: root.querySelector('[data-paddle="R"]') };
   const elementOf = side => (side === 'L') !== S.swap ? '.' : '-';
@@ -624,7 +624,7 @@
 
   // ---------- źródła klucza ----------
   // Wszystkie trafiają do paddle(strona, wciśnięta): klawiatura i przyciski na ekranie (wyżej), Arduino przez Web Serial,
-  // ESP32 na razie jako klawiatura BLE (lewy/prawy Ctrl). Urządzenia podają bajt stanu jak szkic klucz/arduino/paddle_uno.ino:
+  // ESP32 na razie jako klawiatura BLE (strzałki ←/→, szkic klucz/esp32/paddle_ble.ino). Urządzenia podają bajt stanu jak szkic klucz/arduino/paddle_uno.ino:
   // bit 1 = styk kropki (tip, lewa łopatka), bit 2 = styk kreski (ring, prawa).
   // Przyszły tryb Web Bluetooth (ESP32 z własną usługą GATT) dostanie w SOURCES własne connect/disconnect i będzie
   // wołać applyState(bajt) z powiadomień charakterystyki stanu — reszta zostaje bez zmian.
@@ -645,8 +645,8 @@
       disconnect: () => serialClose(t('Disconnected.', 'Rozłączono.')),
     },
     esp32: {
-      info: t('ESP32 as a Bluetooth keyboard: pair “CW Paddle” in the system Bluetooth settings – the paddle then sends left <kbd>Ctrl</kbd> (dit) and right <kbd>Ctrl</kbd> (dah), on phones too. The interface is in preparation.',
-        'ESP32 jako klawiatura Bluetooth: sparuj „CW Paddle” w ustawieniach Bluetooth systemu – łopatki wysyłają wtedy lewy <kbd>Ctrl</kbd> (kropka) i prawy <kbd>Ctrl</kbd> (kreska), także na telefonie. Interfejs jest w przygotowaniu.') + ' ' + BUILD,
+      info: t('ESP32 as a Bluetooth keyboard: pair “CW Paddle” in the system Bluetooth settings (no PIN) – the paddle then sends the arrows <kbd>←</kbd> (dit) and <kbd>→</kbd> (dah), on phones too. Nothing to connect here – just send.',
+        'ESP32 jako klawiatura Bluetooth: sparuj „CW Paddle” w ustawieniach Bluetooth systemu (bez PIN-u) – łopatki wysyłają wtedy strzałki <kbd>←</kbd> (kropka) i <kbd>→</kbd> (kreska), także na telefonie. Tu nic nie trzeba łączyć – po prostu nadawaj.') + ' ' + BUILD,
     },
   };
   // bajt stanu z urządzenia → obie łopatki
@@ -1730,13 +1730,15 @@
   document.addEventListener('keydown', e => {
     // Morze Morse'a: klawisze klucza (także przed startem, do ćwiczeń), Symulator pasma: te same klawisze stroją VFO;
     // strzałki na suwakach zostają suwakom.
-    // Sprawdzane przed modyfikatorami, bo lewy/prawy Ctrl też jest łopatką (ESP32 jako klawiatura Bluetooth).
+    // Sprawdzane przed modyfikatorami, bo lewy/prawy Ctrl też jest łopatką (interfejsy udające klawiaturę).
     const side = (S.mode === 'sea' || S.mode === 'fox') && !e.metaKey && !e.altKey && PADDLE[e.code];
     // Symulator pasma na ślepo: w pustym polu na znak strzałki dalej stroją VFO
     const field = e.target.matches('input, textarea, select');
     if (side && (!field || (S.mode === 'fox' && e.target === el.input && !el.input.value && /^Arrow/.test(e.code)))) {
       e.preventDefault();
-      if (!e.repeat) paddle(side, true);
+      // bez sprawdzania e.repeat: Windows traktuje lewy i prawy Ctrl jak jeden klawisz, więc drugi Ctrl wciśnięty
+      // przy trzymanym pierwszym (squeeze z interfejsu na Ctrl) przychodzi jako „powtórzenie”; powtórzenia pomija samo paddle()
+      paddle(side, true);
       return;
     }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
