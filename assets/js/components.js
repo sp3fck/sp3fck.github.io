@@ -10,6 +10,7 @@
     ['q-codes', 'q-codes.html', t('Q Codes &amp; CW Shortcuts', 'Kody Q i skróty CW')],
     ['qrz-builder', 'qrz-builder/', t('QRZ Page Builder', 'Kreator strony QRZ')],
     ['cw-trainer', 'cw-trainer.html', t('CW Trainer', 'Trener CW')],
+    ['iot', 'ham-tools.html#iot', t('IoT Projects', 'Projekty IoT')],
   ];
   const NAV = [
     ['index', 'index.html', 'Home', 'Start'],

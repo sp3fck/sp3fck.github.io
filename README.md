@@ -4,7 +4,8 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
 
 ## Struktura
 
-- `index.html` – strona główna (o mnie z animowanym globem QSO, pasek danych stacji, mapa łączności bez filtrów, najnowsze filmy, pasek galerii)- `ham-tools.html` – przegląd narzędzi; w menu „Ham Tools” jest podmenu:
+- `index.html` – strona główna (o mnie z animowanym globem QSO, pasek danych stacji, najnowsze filmy, pasek galerii)
+- `ham-tools.html` – przegląd narzędzi i sekcja **Projekty IoT** (`#iot`, w podmenu „Ham Tools”): przystawka BT CW – ESP32-C3 SuperMini jako klucz Bluetooth, zdjęcia w `assets/img/iot/`, schemat połączeń jako SVG w HTML; w menu „Ham Tools” jest podmenu:
   - `ham-map.html` – pełna mapa łączności z filtrami i statystykami DXCC/WAZ/ITU
   - `propagation.html` – propagacja (N0NBH/HamQSL) i pogoda (Windy + wyszukiwarka Open-Meteo)
   - `q-codes.html` – ściąga: kody Q, skróty CW, znaki proceduralne i liczby skrócone z wyszukiwarką (dane w `data/cw-codes.js`, logika w `assets/js/cw-codes.js`)
@@ -13,7 +14,7 @@ Statyczna strona (HTML + CSS + vanilla JS) pod GitHub Pages. Dwujęzyczna: domy�
     - prawdziwy klucz (panel „Klucz” na górze ustawień: połączenie i zamiana łopatek; nadaje się w Morzu Morse'a): klawiatura (także lewy/prawy Ctrl), Arduino przez Web Serial (Chrome/Edge), ESP32 jako klawiatura Bluetooth (strzałki)
 - `klucz/` – interfejsy klucza CW do pobrania ze strony trenera: `arduino/` (szkic `paddle_uno.ino` + README PL/EN), `esp32/` (szkic `paddle_ble.ino` – ESP32-C3 SuperMini jako klawiatura Bluetooth „CW Paddle”, strzałki ←/→ – + README PL/EN)
 - `gallery.html`, `youtube.html`, `other.html`, `contact.html`, `privacy.html`, `404.html`
-- `ham-map-embed.html` – sama mapa (ramka na stronie głównej; zoom tylko Ctrl + kółko / dwa palce)
+- `ham-map-embed.html` – sama mapa do osadzenia w ramce (zoom tylko Ctrl + kółko / dwa palce); obecnie nieużywana na stronie
 - `ham-map-qrz.html` – statyczna mapa bez JS do osadzenia na QRZ.com (generowana)
 - `qrz/` – materiały robocze do strony QRZ (`qrz_bio.html` itd.)
 - `assets/js/components.js` – wspólny pasek stacji, header i footer (`<body data-page="...">` = aktywne menu)
