@@ -199,9 +199,83 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .cards p { margin: 0; color: var(--ink-soft); font-size: .95rem; }
 .cards .more { margin-top: auto; padding-top: 10px; color: var(--link); font-weight: 600; font-size: .92rem; }
 
-/* mapa łączności na stronie głównej */
-.map-frame { border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: #060c11; height: clamp(440px, 70vh, 700px); }
-.map-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+/* projekt (Ham Tools → IoT): zdjęcia, opis, schemat połączeń, kroki */
+.project { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(18px, 3vw, 30px); }
+.project-top { display: grid; grid-template-columns: minmax(0, .34fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 36px); align-items: start; }
+.project-photos { display: grid; gap: 12px; }
+.project-photos a { border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--field); }
+.project-photos img { aspect-ratio: 1; object-fit: cover; width: 100%; transition: transform .3s; }
+.project-photos a:hover img { transform: scale(1.04); }
+.project-body { display: flex; flex-direction: column; gap: 12px; }
+.project-body h3 { font-size: clamp(1.3rem, 2.4vw, 1.6rem); margin: 0; }
+.project-body p { margin: 0; color: var(--ink-soft); }
+.project-body p b { color: var(--ink); }
+.project-body .station { margin-top: 4px; }
+.project .tag { font: 600 .72rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.project h4 { font: 600 .76rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+.project-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 36px); align-items: start; }
+@media (max-width: 860px) {
+  .project-top, .project-cols { grid-template-columns: minmax(0, 1fr); }
+  .project-photos { grid-template-columns: 1fr 1fr; }
+}
+
+.wiring { margin: 0; }
+.wiring-scroll { background: var(--field); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; overflow-x: auto; }
+.wiring svg { display: block; width: 100%; max-width: 940px; min-width: 600px; height: auto; margin-inline: auto; }
+.wiring text { font: 12px var(--mono); fill: var(--ink-soft); }
+.wiring .w-t-sm { font-size: 9.5px; }
+.wiring .w-t-chip { font-size: 10px; fill: #8c9aa2; }
+.wiring .w-t-ant { font-size: 9px; fill: #3b3a35; font-weight: 700; }
+.wiring .w-t-board { font-size: 14px; font-weight: 700; fill: var(--ink); }
+.wiring .w-t-dit, .wiring .w-t-dah, .wiring .w-t-gnd { font-weight: 700; }
+.wiring .w-t-dit { fill: var(--accent); }
+.wiring .w-t-dah { fill: var(--link); }
+.wiring .w-t-gnd { fill: #c3ccd2; }
+.wiring .w-wire, .wiring .w-under path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.wiring .w-wire { stroke-width: 4; }
+.wiring .w-under path { stroke: #05090b; stroke-width: 8; }
+.wiring .w-dit { stroke: var(--accent); }
+.wiring .w-dah { stroke: var(--link); }
+.wiring .w-gnd { stroke: #c3ccd2; }
+.wiring .w-cable { fill: #222c32; stroke: #3d4b53; }
+.wiring .w-plug { fill: #2a363d; stroke: #3d4b53; stroke-width: 1.5; }
+.wiring .w-sock { fill: rgba(149, 163, 171, .08); stroke: #6b7a83; stroke-width: 1.5; stroke-dasharray: 5 4; }
+.wiring .w-nut { fill: #3a4850; stroke: #5a6870; }
+.wiring .w-ins { fill: #0b1115; }
+.wiring .w-m-dit { fill: var(--accent); }
+.wiring .w-m-dah { fill: var(--link); }
+.wiring .w-m-gnd { fill: #c3ccd2; }
+.wiring .w-lug { fill: #c9a75a; stroke: #7d6430; }
+.wiring .w-pcb { fill: #13293a; stroke: #2c4f6b; stroke-width: 2; }
+.wiring .w-usb { fill: #9aa5ac; stroke: #5d686f; stroke-width: 1.5; }
+.wiring .w-usb-line { stroke: #5d686f; stroke-width: 2; stroke-linecap: round; }
+.wiring .w-chip { fill: #1b2126; stroke: #3c4850; }
+.wiring .w-chip-dot { fill: #3c4850; }
+.wiring .w-ant { fill: #d8d0bc; }
+.wiring .w-sw { fill: #c8cdd0; }
+.wiring .w-sw-cap { fill: #59636a; }
+.wiring .w-led { fill: #4da3ff; filter: drop-shadow(0 0 4px #4da3ff); }
+.wiring .w-pads circle { fill: #8a7440; stroke: #5f4f2b; stroke-width: 1.5; }
+.wiring .w-pad-on { fill: #e3c47a; stroke-width: 3; }
+.wiring .w-holes circle { fill: #0b1115; }
+.wiring .w-waves path { fill: none; stroke: var(--link); stroke-width: 2.5; stroke-linecap: round; opacity: .8; }
+
+.pins { width: 100%; border-collapse: separate; border-spacing: 0; font-family: var(--mono); font-size: .9rem; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.pins th, .pins td { padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+.pins th { color: var(--accent); text-transform: uppercase; font-size: .72rem; letter-spacing: .1em; font-weight: 600; background: var(--field); }
+.pins tr:last-child td { border-bottom: 0; }
+.pins .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 9px; vertical-align: 0; }
+.sw-dit { background: var(--accent); }
+.sw-dah { background: var(--link); }
+.sw-gnd { background: #c3ccd2; }
+.tips { margin: 16px 0 0; padding-left: 1.2em; color: var(--ink-soft); font-size: .92rem; display: grid; gap: 6px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: step; }
+.steps li { counter-increment: step; position: relative; padding: 12px 14px 12px 52px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r); color: var(--ink-soft); font-size: .92rem; }
+.steps li::before {
+  content: counter(step); position: absolute; left: 14px; top: 12px; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; font: 700 .85rem/1 var(--mono); color: var(--accent-ink); background: var(--accent);
+}
+.steps strong { display: block; color: var(--ink); margin-bottom: 2px; }
 
 /* YouTube */
 .videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; list-style: none; margin: 0; padding: 0; }
