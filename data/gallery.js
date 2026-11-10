@@ -65,6 +65,9 @@ window.SP3FCK_GALLERY = [
     title: ['Special Event Activator Diploma', 'Dyplom aktywatora stacji okolicznościowej'],
     desc: ['Confirmed activations of special event stations', 'Potwierdzone aktywacje stacji okolicznościowych'] },
 
+  { file: 'SP3FCK_QSL_card.jpg', cat: 'station', year: 2026,
+    title: ['My QSL card', 'Moja karta QSL'],
+    desc: ['QSL via the PZK QSL Bureau (OT-32) or direct', 'QSL przez biuro QSL PZK (OT-32) albo direct'] },
   { file: 'IMG_1115_JPEG.jpg', cat: 'station', year: 2025,
     title: ['10 m Hex Loop – home-made', 'Hex Loop na 10 m – własnej roboty'],
     desc: ['My own design, mostly 3D-printed', 'Własny projekt, w większości wydruk 3D'] },
