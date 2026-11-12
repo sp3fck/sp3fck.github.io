@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meshtastic — SP3FCK</title>
+  <meta name="title-pl" content="Meshtastic — SP3FCK">
+  <meta name="description" content="My Meshtastic node: when it was last heard, which gateways receive it and with what signal, plus a few words about the hardware.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="meshtastic">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">LoRa · Mesh</span>
+        <h1>Meshtastic</h1>
+        <p lang="en">My node in the LoRa mesh network – is it on the air, and who can hear it.</p>
+        <p lang="pl">Mój node w sieci mesh LoRa – czy jest w eterze i kto go słyszy.</p>
+      </div>
+    </section>
+
+    <!-- STATUS -->
+    <section class="section" id="mesh">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Status</span><h2 id="mesh-name">MeshtasticSP3FCK</h2></div>
+          <a href="https://lorastats.pl/Node/9254eab8" target="_blank" rel="noopener"><span lang="en">Source: lorastats.pl →</span><span lang="pl">Źródło: lorastats.pl →</span></a>
+        </div>
+
+        <div class="mesh-status" role="status">
+          <span class="mesh-led" aria-hidden="true"></span>
+          <div>
+            <strong id="mesh-state">…</strong>
+            <span id="mesh-seen"></span>
+            <small id="mesh-seen-at"></small>
+          </div>
+        </div>
+        <dl class="station station-strip mesh-strip">
+          <div><dt><span lang="en">Last gateway</span><span lang="pl">Ostatnia bramka</span></dt><dd id="mesh-gw">—</dd></div>
+          <div><dt>SNR</dt><dd id="mesh-snr">—</dd></div>
+          <div><dt><span lang="en">Packets · 24 h</span><span lang="pl">Pakiety · 24 h</span></dt><dd id="mesh-count">—</dd></div>
+          <div><dt><span lang="en">Locator</span><span lang="pl">Lokator</span></dt><dd>JO72SG</dd></div>
+        </dl>
+        <p class="mesh-src">
+          <span lang="en">Data from lorastats.pl, refreshed about every 30 minutes.</span>
+          <span lang="pl">Dane z lorastats.pl, odświeżane co ok. 30 minut.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- KTO MNIE SŁYSZY -->
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow"><span lang="en">Reception</span><span lang="pl">Odbiór</span></span><h2><span lang="en">Who hears me</span><span lang="pl">Kto mnie słyszy</span></h2></div>
+        </div>
+        <div class="mesh-scroll">
+          <table class="pins">
+            <thead>
+              <tr>
+                <th><span lang="en">Gateway</span><span lang="pl">Bramka</span></th>
+                <th><span lang="en">Packets</span><span lang="pl">Pakiety</span></th>
+                <th><span lang="en">Avg SNR</span><span lang="pl">Średni SNR</span></th>
+                <th><span lang="en">Best SNR</span><span lang="pl">Najlepszy SNR</span></th>
+                <th><span lang="en">Hops</span><span lang="pl">Skoki</span></th>
+                <th><span lang="en">Last</span><span lang="pl">Ostatnio</span></th>
+              </tr>
+            </thead>
+            <tbody id="mesh-gateways"></tbody>
+          </table>
+        </div>
+
+        <figure class="mesh-chart">
+          <figcaption><span lang="en">SNR of received packets over time (dB)</span><span lang="pl">SNR odebranych pakietów w czasie (dB)</span></figcaption>
+          <div class="mesh-plot">
+            <svg id="mesh-chart" role="img" aria-label="SNR of received packets over time" data-pl-aria-label="SNR odebranych pakietów w czasie"></svg>
+            <div class="mesh-tip" id="mesh-tip" hidden></div>
+          </div>
+        </figure>
+
+        <details class="mesh-details">
+          <summary><span lang="en">Recent packets</span><span lang="pl">Ostatnie pakiety</span></summary>
+          <div class="mesh-scroll">
+            <table class="pins">
+              <thead>
+                <tr>
+                  <th><span lang="en">Time</span><span lang="pl">Czas</span></th>
+                  <th><span lang="en">Gateway</span><span lang="pl">Bramka</span></th>
+                  <th>SNR</th>
+                  <th><span lang="en">Hops</span><span lang="pl">Skoki</span></th>
+                  <th><span lang="en">Type</span><span lang="pl">Typ</span></th>
+                </tr>
+              </thead>
+              <tbody id="mesh-packets"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- O NODZIE -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow"><span lang="en">Hardware</span><span lang="pl">Sprzęt</span></span><h2><span lang="en">About the node</span><span lang="pl">O nodzie</span></h2></div>
+        </div>
+        <article class="project">
+          <div class="project-top">
+            <div class="project-photos tall" data-lightbox>
+              <a href="assets/img/mesh/heltec-v4.jpg">
+                <img src="assets/img/mesh/heltec-v4.jpg" width="900" height="1200" loading="lazy" alt="Heltec V4 Meshtastic node in a green 3D-printed case with a whip antenna, held in a hand" data-pl-alt="Node Meshtastic Heltec V4 w zielonej obudowie z druku 3D z anteną prętową, trzymany w dłoni">
+                <span class="cap" hidden><span lang="en">Heltec V4 in a 3D-printed case</span><span lang="pl">Heltec V4 w obudowie z druku 3D</span></span>
+              </a>
+            </div>
+            <div class="project-body">
+              <span class="tag">Heltec V4 · LoRa · Meshtastic</span>
+              <h3><span lang="en">Heltec V4 – companion</span><span lang="pl">Heltec V4 – companion</span></h3>
+              <p lang="en">A pocket companion node: a Heltec V4 board powered by a single 18650 cell, in a 3D-printed case.</p>
+              <p lang="pl">Kieszonkowy node companion: płytka Heltec V4 zasilana jednym ogniwem 18650, w obudowie z druku 3D.</p>
+              <dl class="station">
+                <div><dt><span lang="en">Board</span><span lang="pl">Płytka</span></dt><dd>Heltec V4</dd></div>
+                <div><dt><span lang="en">Role</span><span lang="pl">Rola</span></dt><dd>Companion</dd></div>
+                <div><dt><span lang="en">Power</span><span lang="pl">Zasilanie</span></dt><dd><span lang="en">single 18650 cell</span><span lang="pl">pojedyncze ogniwo 18650</span></dd></div>
+                <div><dt><span lang="en">Case</span><span lang="pl">Obudowa</span></dt><dd><span lang="en">3D print</span><span lang="pl">druk 3D</span></dd></div>
+              </dl>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="data/mesh.latest.js"></script>
+  <script src="assets/js/meshtastic.js"></script>
+</body>
+</html>

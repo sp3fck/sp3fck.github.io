@@ -51,6 +51,19 @@ pobiera log z QRZ Logbook API, zapisuje `data/qso.latest.json`, `data/qso.latest
 - Przebudowa strony QRZ lokalnie bez API: `npm install --no-save d3-geo@3 topojson-client@3`, potem `node scripts/qrz-static-page.mjs`.
 - Dane referencyjne (DXCC, strefy CQ/ITU) generuje jednorazowo `scripts/build-ham-reference.mjs`.
 
+## Meshtastic
+
+`meshtastic.html` pokazuje status noda (`9254eab8`), bramki, które go odbierają, wykres SNR i krótki opis sprzętu (zdjęcie w `assets/img/mesh/`).
+
+Workflow `.github/workflows/mesh-sync.yml` (co 30 minut + ręcznie) uruchamia `scripts/mesh-sync.mjs`:
+pobiera z API [lorastats.pl](https://lorastats.pl/API) status noda i raporty odbioru, dopisuje je do `data/mesh.history.json` (pełna historia – API oddaje tylko ostatnie 24 h)
+i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit powstaje tylko wtedy, gdy przybył raport albo zmienił się czas ostatniej aktywności.
+
+- API nie wysyła nagłówków CORS, dlatego strona nie pyta go bezpośrednio z przeglądarki.
+- Pozycji noda nie zapisujemy – na stronie jest tylko lokator.
+- lorastats.pl prosi o nazwę narzędzia i kontakt w nagłówku `User-Agent` (`MESH_AGENT` w workflow) oraz zabrania scrapowania stron HTML – korzystamy wyłącznie z API.
+- Lokalnie: `node scripts/mesh-sync.mjs` (bez zależności, Node 22+).
+
 ## Lokalny podgląd
 
 ```powershell
