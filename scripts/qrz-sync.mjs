@@ -16,6 +16,13 @@ const HOME_LOCATOR = process.env.HOME_LOCATOR || "JO72SG";
 // The map shows HF only (160m-10m); VHF/UHF contacts (6m, 2m, 70cm...) are dropped at sync time.
 const HF_MIN_METERS = 10;
 
+// Optional: LoTW confirmations (the only ones that count for DXCC) are merged into the QRZ log.
+const LOTW_USERNAME = process.env.LOTW_USERNAME;
+const LOTW_PASSWORD = process.env.LOTW_PASSWORD;
+const LOTW_REPORT_ENDPOINT = "https://lotw.arrl.org/lotwuser/lotwreport.adi";
+// LoTW itself pairs two logs when their times are within 30 minutes.
+const LOTW_MATCH_WINDOW_MS = 30 * 60 * 1000;
+
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
   parseTagValue: true,
@@ -40,6 +47,9 @@ async function main() {
   normalized = normalized.filter((qso) => isHfBand(qso.band));
   normalized.sort((a, b) => String(b.datetime).localeCompare(String(a.datetime)));
 
+  const outputPath = path.join(process.cwd(), "data", "qso.latest.json");
+  await applyLotwConfirmations(normalized, outputPath);
+
   const payload = {
     updatedAt: new Date().toISOString(),
     source,
@@ -47,7 +57,6 @@ async function main() {
     qsos: normalized
   };
 
-  const outputPath = path.join(process.cwd(), "data", "qso.latest.json");
   const outputJsPath = path.join(process.cwd(), "data", "qso.latest.js");
   const outputQrzHtmlPath = path.join(process.cwd(), "ham-map-qrz.html");
   await fs.writeFile(outputPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
@@ -61,6 +70,98 @@ async function main() {
     console.warn("No QSO records returned by API for current fetch options. Wrote empty dataset.");
   }
   console.log(`Wrote ${normalized.length} QSO entries to ${outputPath}, ${outputJsPath} and ${outputQrzHtmlPath}`);
+}
+
+async function applyLotwConfirmations(qsos, previousPath) {
+  if (!LOTW_USERNAME || !LOTW_PASSWORD) {
+    console.log("LoTW credentials not set; skipping LoTW confirmations.");
+    return;
+  }
+
+  try {
+    const records = await fetchLotwConfirmed();
+    const timesByKey = new Map();
+    for (const rec of records) {
+      const key = lotwKey(rec.call, normalizeBand(rec.band));
+      const time = Date.parse(normalizeDateTime(rec));
+      if (!timesByKey.has(key)) {
+        timesByKey.set(key, []);
+      }
+      timesByKey.get(key).push(time);
+    }
+
+    let matched = 0;
+    for (const qso of qsos) {
+      const times = timesByKey.get(lotwKey(qso.callsign, qso.band)) || [];
+      const time = Date.parse(qso.datetime);
+      qso.lotw = times.some((t) => Math.abs(t - time) <= LOTW_MATCH_WINDOW_MS);
+      if (qso.lotw) {
+        matched += 1;
+      }
+    }
+    console.log(`LoTW: ${records.length} confirmed QSO downloaded, ${matched} matched to the QRZ log.`);
+  } catch (error) {
+    // A LoTW outage must not drop the flags already published: reuse the previous file.
+    console.warn(`LoTW sync failed (${error.message}); keeping LoTW flags from the previous data file.`);
+    const previous = await readPreviousLotwFlags(previousPath);
+    for (const qso of qsos) {
+      if (previous.has(qso.id)) {
+        qso.lotw = previous.get(qso.id);
+      }
+    }
+  }
+}
+
+function lotwKey(callsign, band) {
+  return `${String(callsign || "").toUpperCase()}|${String(band || "").toLowerCase()}`;
+}
+
+async function fetchLotwConfirmed() {
+  const params = new URLSearchParams({
+    login: LOTW_USERNAME,
+    password: LOTW_PASSWORD,
+    qso_query: "1",
+    qso_qsl: "yes",
+    qso_qslsince: "1900-01-01"
+  });
+
+  // The password travels in the query string, so the URL is never logged or put in an error.
+  let res;
+  try {
+    res = await fetch(`${LOTW_REPORT_ENDPOINT}?${params.toString()}`, {
+      headers: { "User-Agent": QRZ_AGENT },
+      signal: AbortSignal.timeout(180_000)
+    });
+  } catch (error) {
+    throw new Error(`request failed: ${error.name}`);
+  }
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+
+  const text = await res.text();
+  // LoTW answers a failed query (bad password, maintenance) with an HTML page instead of ADIF.
+  const headerEnd = text.search(/<eoh>/i);
+  if (headerEnd < 0) {
+    throw new Error("response is not ADIF (wrong login/password or LoTW unavailable)");
+  }
+
+  return parseAdif(text.slice(headerEnd + 5)).filter((rec) => rec.call);
+}
+
+async function readPreviousLotwFlags(previousPath) {
+  const flags = new Map();
+  try {
+    const previous = JSON.parse(await fs.readFile(previousPath, "utf8"));
+    for (const qso of previous.qsos || []) {
+      if (typeof qso.lotw === "boolean") {
+        flags.set(qso.id, qso.lotw);
+      }
+    }
+  } catch {
+    // No previous file: nothing to carry over.
+  }
+  return flags;
 }
 
 async function fetchViaLogbookApi() {

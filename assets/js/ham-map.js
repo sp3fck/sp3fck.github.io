@@ -480,7 +480,8 @@ function computeStats(qsos) {
     unmatched: new Map(),
     zoneCorrected: [],
     longest: null,
-    hasConfirmData: false
+    hasConfirmData: false,
+    hasLotwData: false
   };
 
   for (const qso of qsos) {
@@ -492,6 +493,9 @@ function computeStats(qsos) {
     }
     if (typeof qso.confirmed === "boolean") {
       stats.hasConfirmData = true;
+    }
+    if (typeof qso.lotw === "boolean") {
+      stats.hasLotwData = true;
     }
     if (qso.zoneCorrected) {
       stats.zoneCorrected.push(qso);
@@ -530,22 +534,28 @@ function computeStats(qsos) {
 function addWorked(map, key, qso, extra = {}) {
   let rec = map.get(key);
   if (!rec) {
-    rec = { key, count: 0, confirmed: false, bands: new Map(), ...extra };
+    rec = { key, count: 0, confirmed: false, lotw: false, bands: new Map(), ...extra };
     map.set(key, rec);
   }
   rec.count += 1;
   if (qso.confirmed) {
     rec.confirmed = true;
   }
+  if (qso.lotw) {
+    rec.lotw = true;
+  }
   if (qso.band) {
     let bandRec = rec.bands.get(qso.band);
     if (!bandRec) {
-      bandRec = { count: 0, confirmed: false };
+      bandRec = { count: 0, confirmed: false, lotw: false };
       rec.bands.set(qso.band, bandRec);
     }
     bandRec.count += 1;
     if (qso.confirmed) {
       bandRec.confirmed = true;
+    }
+    if (qso.lotw) {
+      bandRec.lotw = true;
     }
   }
   return rec;
@@ -570,6 +580,18 @@ function renderStats(stats) {
     } else {
       confirmedEl.textContent = "-";
       confirmedEl.title = "Confirmation status arrives with the next QRZ log sync.";
+    }
+  }
+
+  const lotwEl = document.getElementById("statDxccLotw");
+  if (lotwEl) {
+    if (stats.hasLotwData) {
+      const lotw = [...stats.dxcc.values()].filter((rec) => rec.lotw).length;
+      lotwEl.innerHTML = `${lotw}<small> / ${stats.dxcc.size}</small>`;
+      lotwEl.title = "Entities with at least one QSO confirmed in LoTW (valid for the DXCC award).";
+    } else {
+      lotwEl.textContent = "-";
+      lotwEl.title = "LoTW confirmations arrive with the next log sync.";
     }
   }
 
@@ -792,8 +814,9 @@ function matrixCell(bandRec, band) {
   if (!bandRec) {
     return `<td class="cell"></td>`;
   }
-  const title = `${band}: ${bandRec.count} QSO${bandRec.confirmed ? ", confirmed" : ""}`;
-  return `<td class="cell on${bandRec.confirmed ? " conf" : ""}" style="--band:${bandColor(band)}" title="${escapeHtml(title)}">${bandRec.count}</td>`;
+  const status = bandRec.lotw ? ", confirmed in LoTW" : bandRec.confirmed ? ", confirmed" : "";
+  const title = `${band}: ${bandRec.count} QSO${status}`;
+  return `<td class="cell on${bandRec.confirmed || bandRec.lotw ? " conf" : ""}${bandRec.lotw ? " lotw" : ""}" style="--band:${bandColor(band)}" title="${escapeHtml(title)}">${bandRec.count}</td>`;
 }
 
 function renderMissing(stats) {

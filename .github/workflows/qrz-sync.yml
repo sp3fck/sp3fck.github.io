@@ -40,6 +40,9 @@ jobs:
           QRZ_API_KEY: ${{ secrets.QRZ_API_KEY }}
           QRZ_API_ENDPOINT: https://logbook.qrz.com/api
           QRZ_AGENT: SP3FCK-HamMap/1.0
+          # Opcjonalne: bez nich sync działa jak dotąd, tylko bez potwierdzeń LoTW.
+          LOTW_USERNAME: ${{ secrets.LOTW_USERNAME }}
+          LOTW_PASSWORD: ${{ secrets.LOTW_PASSWORD }}
           HOME_LOCATOR: JO72SG
         run: |
           echo "Using QRZ_FETCH_OPTIONS=$QRZ_FETCH_OPTIONS"
