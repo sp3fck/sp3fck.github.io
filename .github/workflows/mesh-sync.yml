@@ -1,0 +1,49 @@
+name: Meshtastic Node Sync
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "11,41 * * * *" # co 30 minut; GitHub potrafi opóźnić start o kilka–kilkanaście minut
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mesh-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+
+      - name: Fetch node status and reception reports
+        env:
+          MESH_NODE_ID: 9254eab8
+          # lorastats.pl prosi o nazwę narzędzia i kontakt w User-Agent — uzupełnij, jeśli chcesz się przedstawić.
+          MESH_AGENT: static-site-mesh-sync/1.0
+        run: node scripts/mesh-sync.mjs
+
+      - name: Commit changes
+        run: |
+          git add data/mesh.history.json data/mesh.latest.js
+          if git diff --cached --quiet; then
+            echo "No changes in mesh data files"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: update mesh data"
+          git pull --rebase
+          git push

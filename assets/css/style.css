@@ -268,6 +268,36 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .sw-dit { background: var(--accent); }
 .sw-dah { background: var(--link); }
 .sw-gnd { background: #c3ccd2; }
+
+/* Meshtastic */
+.project-photos.tall img { aspect-ratio: 3 / 4; }
+.mesh-status { display: flex; align-items: center; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r) var(--r) 0 0; border-bottom: 0; padding: 20px 22px; }
+.mesh-status > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.mesh-status strong { font: 700 1.5rem/1.1 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+.mesh-status small { color: var(--ink-soft); font: .82rem var(--mono); flex-basis: 100%; }
+.mesh-led { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--ink-soft); opacity: .6; }
+#mesh.is-active .mesh-led { background: #6fcf8f; opacity: 1; box-shadow: 0 0 12px #6fcf8f; }
+#mesh.is-active .mesh-status strong { color: var(--ink); }
+.station.mesh-strip { border-radius: 0 0 var(--r) var(--r); }
+.mesh-src { margin: 12px 0 0; color: var(--ink-soft); font-size: .85rem; }
+.mesh-scroll { overflow-x: auto; }
+.mesh-scroll .pins { min-width: 560px; background: var(--card); }
+.mesh-chart { margin: 28px 0 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 16px 8px; }
+.mesh-chart figcaption { font: 600 .76rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.mesh-plot { position: relative; }
+.mesh-plot svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mc-grid { stroke: var(--line); stroke-width: 1; }
+.mc-axis { fill: var(--ink-soft); font: 11px var(--mono); }
+.mc-dot { fill: var(--accent); stroke: var(--card); stroke-width: 2; }
+.mc-hit { fill: transparent; cursor: pointer; outline: none; }
+.mc-hit:focus-visible { stroke: var(--link); stroke-width: 2; }
+.mesh-tip { position: absolute; transform: translate(-50%, -100%); display: grid; gap: 2px; background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font: .78rem/1.3 var(--mono); color: var(--ink-soft); white-space: nowrap; pointer-events: none; box-shadow: var(--shadow); }
+.mesh-tip[hidden] { display: none; }
+.mesh-tip b { color: var(--ink); font-size: .9rem; }
+.mesh-details { margin-top: 20px; }
+.mesh-details summary { cursor: pointer; color: var(--link); font-weight: 600; margin-bottom: 12px; }
+.mesh-scroll .pins th, .mesh-scroll .pins td { white-space: nowrap; }
+@media (max-width: 560px) { .mc-axis { font-size: 22px; } }
 .tips { margin: 16px 0 0; padding-left: 1.2em; color: var(--ink-soft); font-size: .92rem; display: grid; gap: 6px; }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: step; }
 .steps li { counter-increment: step; position: relative; padding: 12px 14px 12px 52px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r); color: var(--ink-soft); font-size: .92rem; }
