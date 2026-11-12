@@ -47,6 +47,7 @@ pobiera log z QRZ Logbook API, zapisuje `data/qso.latest.json`, `data/qso.latest
 
 - Mapa pokazuje **tylko KF (160–10 m)** – łączności UKF (6 m, 2 m, 70 cm…) są odrzucane już w `scripts/qrz-sync.mjs`.
 - Sekret repo: `QRZ_API_KEY` (wymagany), opcjonalnie `QRZ_FETCH_OPTIONS`.
+- Opcjonalne sekrety `LOTW_USERNAME` i `LOTW_PASSWORD`: sync dociąga potwierdzenia z LoTW i oznacza QSO polem `lotw` (kafelek „DXCC confirmed (LoTW)" i mocniej wypełnione komórki macierzy).
 - Przebudowa strony QRZ lokalnie bez API: `npm install --no-save d3-geo@3 topojson-client@3`, potem `node scripts/qrz-static-page.mjs`.
 - Dane referencyjne (DXCC, strefy CQ/ITU) generuje jednorazowo `scripts/build-ham-reference.mjs`.
 

@@ -533,6 +533,10 @@ body.embed-mode .table-panel {
   font-weight: 700;
 }
 
+.matrix .cell.lotw {
+  background: color-mix(in srgb, var(--band) 60%, transparent);
+}
+
 .matrix tr.needed th,
 .matrix tr.needed td {
   color: var(--muted);

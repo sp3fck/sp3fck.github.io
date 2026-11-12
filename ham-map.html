@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#0e1418">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/ham-map.css?v=20261027">
+  <link rel="stylesheet" href="assets/css/ham-map.css?v=20261112">
   <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
 </head>
 <body data-page="ham-map">
@@ -144,6 +144,10 @@
           <p class="stat-label">DXCC confirmed</p>
           <p class="stat-value" id="statDxccConfirmed">-</p>
         </article>
+        <article class="stat-card">
+          <p class="stat-label">DXCC confirmed (LoTW)</p>
+          <p class="stat-value" id="statDxccLotw">-</p>
+        </article>
         <article class="stat-card accent">
           <p class="stat-label">WAZ (CQ zones)</p>
           <p class="stat-value" id="statWaz">0</p>
@@ -225,7 +229,7 @@
       <div class="table-wrap matrix-wrap">
         <table class="matrix" id="dxccMatrix"></table>
       </div>
-      <p class="hint">Numbers are QSO counts per band. A ringed cell is confirmed (LoTW, QSL card or QRZ), shown once the log sync provides confirmation data.</p>
+      <p class="hint">Numbers are QSO counts per band. A ringed cell is confirmed (LoTW, QSL card or QRZ); a solid cell is confirmed in LoTW, so it counts for the DXCC award.</p>
     </section>
 
     <section class="panel">
@@ -323,6 +327,6 @@
   <script src="data/cq-zones.js?v=20261027"></script>
   <script src="data/itu-zones.js?v=20261027"></script>
   <script src="data/qso.latest.js"></script>
-  <script src="assets/js/ham-map.js?v=20261027" defer></script>
+  <script src="assets/js/ham-map.js?v=20261112" defer></script>
 </body>
 </html>
