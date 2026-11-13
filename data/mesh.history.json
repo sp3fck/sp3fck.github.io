@@ -2,13 +2,21 @@
  "node": {
   "id": "9254eab8",
   "shortName": "sp3f",
-  "longName": "MeshtasticSP3FCK",
-  "lastSeen": "2026-11-12T11:27:53Z"
+  "longName": "SP3FCK_companion",
+  "lastSeen": "2026-11-13T16:44:17Z"
  },
  "gateways": {
   "ba6a7018": {
    "shortName": "FSW4",
    "longName": "ZdzichuFSW4"
+  },
+  "7c5cbf28": {
+   "shortName": "BR-1",
+   "longName": "Tomek Brody - ATK10"
+  },
+  "da5ed84c": {
+   "shortName": "3ZGG",
+   "longName": "ZG serwisowy"
   }
  },
  "reports": [
@@ -155,7 +163,23 @@
    "snr": -5.25,
    "hops": 0,
    "type": "position"
+  },
+  {
+   "t": "2026-11-13T16:44:17Z",
+   "gw": "7c5cbf28",
+   "id": "9a9aaefb",
+   "snr": 10.75,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-13T16:44:18Z",
+   "gw": "da5ed84c",
+   "id": "9a9aaefb",
+   "snr": -8,
+   "hops": 2,
+   "type": "nodeinfo"
   }
  ],
- "updated": "2026-11-12T14:10:44Z"
+ "updated": "2026-11-13T17:22:46Z"
 }
