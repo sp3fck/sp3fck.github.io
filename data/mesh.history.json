@@ -17,6 +17,10 @@
   "da5ed84c": {
    "shortName": "3ZGG",
    "longName": "ZG serwisowy"
+  },
+  "db528cc4": {
+   "shortName": "SCHL",
+   "longName": "SCH_Node_Lezyca"
   }
  },
  "reports": [
@@ -179,7 +183,47 @@
    "snr": -8,
    "hops": 2,
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-13T22:33:15Z",
+   "gw": "da5ed84c",
+   "id": "0e7ddbba",
+   "snr": -7.75,
+   "hops": 2,
+   "type": "0"
+  },
+  {
+   "t": "2026-11-13T22:33:16Z",
+   "gw": "7c5cbf28",
+   "id": "0e7ddbba",
+   "snr": 10,
+   "hops": 2,
+   "type": "0"
+  },
+  {
+   "t": "2026-11-13T22:33:17Z",
+   "gw": "db528cc4",
+   "id": "0e7ddbba",
+   "snr": -8.75,
+   "hops": 3,
+   "type": "0"
+  },
+  {
+   "t": "2026-11-13T22:34:29Z",
+   "gw": "da5ed84c",
+   "id": "584338f2",
+   "snr": -7.5,
+   "hops": 2,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-13T22:34:30Z",
+   "gw": "7c5cbf28",
+   "id": "584338f2",
+   "snr": 9.25,
+   "hops": 3,
+   "type": "traceroute"
   }
  ],
- "updated": "2026-11-13T17:22:46Z"
+ "updated": "2026-11-13T22:51:33Z"
 }
