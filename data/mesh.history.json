@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-13T16:44:17Z"
+  "lastSeen": "2026-11-14T00:47:07Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -223,7 +223,15 @@
    "snr": 9.25,
    "hops": 3,
    "type": "traceroute"
+  },
+  {
+   "t": "2026-11-14T00:21:13Z",
+   "gw": "7c5cbf28",
+   "id": "a30a8495",
+   "snr": 9.5,
+   "hops": 2,
+   "type": "nodeinfo"
   }
  ],
- "updated": "2026-11-13T22:51:33Z"
+ "updated": "2026-11-14T03:09:38Z"
 }
