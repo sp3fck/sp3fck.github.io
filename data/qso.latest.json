@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-13T06:04:07.049Z",
+  "updatedAt": "2026-11-14T05:51:43.810Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -1052,7 +1052,7 @@
       "cqz": 14,
       "ituz": 37,
       "cont": "EU",
-      "confirmed": false,
+      "confirmed": true,
       "lotw": false
     },
     {
@@ -3371,7 +3371,7 @@
       "cqz": 14,
       "ituz": 37,
       "cont": "EU",
-      "confirmed": false,
+      "confirmed": true,
       "lotw": false
     },
     {
@@ -44759,7 +44759,7 @@
       "ituz": 28,
       "cont": "EU",
       "confirmed": true,
-      "lotw": false
+      "lotw": true
     },
     {
       "id": "2025-08-17T08:24:00.000Z-SP4WEL-40m-SSB",
