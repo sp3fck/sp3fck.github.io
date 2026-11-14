@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-14T16:12:43Z"
+  "lastSeen": "2026-11-14T19:01:42Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -257,5 +257,5 @@
    "type": "text"
   }
  ],
- "updated": "2026-11-14T16:44:09Z"
+ "updated": "2026-11-14T21:25:40Z"
 }
