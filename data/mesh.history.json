@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-15T06:26:18Z"
+  "lastSeen": "2026-11-15T15:26:18Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -495,7 +495,47 @@
    "snr": -6,
    "hops": 0,
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T14:06:45Z",
+   "gw": "ba6a7018",
+   "id": "e563fb69",
+   "snr": -9.25,
+   "hops": 0,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-15T14:07:30Z",
+   "gw": "ba6a7018",
+   "id": "929cbc59",
+   "snr": -9,
+   "hops": 0,
+   "type": "0"
+  },
+  {
+   "t": "2026-11-15T14:28:25Z",
+   "gw": "ba6a7018",
+   "id": "5e5b1b38",
+   "snr": -10,
+   "hops": 0,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-15T14:28:26Z",
+   "gw": "ba6a7018",
+   "id": "7e0c5dbb",
+   "snr": -10.25,
+   "hops": 0,
+   "type": "5"
+  },
+  {
+   "t": "2026-11-15T14:29:07Z",
+   "gw": "ba6a7018",
+   "id": "7864c030",
+   "snr": 6.75,
+   "hops": 1,
+   "type": "traceroute"
   }
  ],
- "updated": "2026-11-15T08:26:38Z"
+ "updated": "2026-11-15T15:52:15Z"
 }
