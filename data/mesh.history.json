@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-15T00:26:17Z"
+  "lastSeen": "2026-11-15T06:26:18Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -37,6 +37,14 @@
   "c464e761": {
    "shortName": "FCM6",
    "longName": "🏢 Forcom Gajowa 6 Poz"
+  },
+  "7c5b1420": {
+   "shortName": "FZG0",
+   "longName": "FZG0~ KR BoryDolnoslaskie Szprotawa"
+  },
+  "b2a796a8": {
+   "shortName": "FZG1",
+   "longName": "FZG1~WOJTEK BoryDolnoslaskie TBD"
   }
  },
  "reports": [
@@ -335,7 +343,159 @@
    "snr": -7.5,
    "hops": 3,
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T01:37:25Z",
+   "gw": "ba6a7018",
+   "id": "4e59d26d",
+   "snr": -5.5,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:08:49Z",
+   "gw": "ba6a7018",
+   "id": "3cd0c2cc",
+   "snr": -7.25,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:08:50Z",
+   "gw": "0f927e21",
+   "id": "3cd0c2cc",
+   "snr": -9.25,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:08:50Z",
+   "gw": "da5ed84c",
+   "id": "3cd0c2cc",
+   "snr": -5,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:08:51Z",
+   "gw": "7c5cbf28",
+   "id": "3cd0c2cc",
+   "snr": 10.5,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:08:51Z",
+   "gw": "db528cc4",
+   "id": "3cd0c2cc",
+   "snr": 1,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T03:26:17Z",
+   "gw": "ba6a7018",
+   "id": "70e682df",
+   "snr": -6.5,
+   "hops": 0,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T03:26:19Z",
+   "gw": "0f927e21",
+   "id": "70e682df",
+   "snr": -7.25,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T03:26:19Z",
+   "gw": "7c5cbf28",
+   "id": "70e682df",
+   "snr": 10.5,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T03:26:19Z",
+   "gw": "da5ed84c",
+   "id": "70e682df",
+   "snr": -4.25,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T03:26:19Z",
+   "gw": "db528cc4",
+   "id": "70e682df",
+   "snr": 1,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T04:30:59Z",
+   "gw": "ba6a7018",
+   "id": "6f58c325",
+   "snr": -5,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:00Z",
+   "gw": "7c5b1420",
+   "id": "6f58c325",
+   "snr": -9.75,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:01Z",
+   "gw": "0f927e21",
+   "id": "6f58c325",
+   "snr": -8,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:01Z",
+   "gw": "7c5cbf28",
+   "id": "6f58c325",
+   "snr": 11.25,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:01Z",
+   "gw": "da5ed84c",
+   "id": "6f58c325",
+   "snr": -2.25,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:01Z",
+   "gw": "db528cc4",
+   "id": "6f58c325",
+   "snr": 0.75,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T04:31:01Z",
+   "gw": "b2a796a8",
+   "id": "6f58c325",
+   "snr": 5.25,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T06:26:18Z",
+   "gw": "ba6a7018",
+   "id": "d1d4539f",
+   "snr": -6,
+   "hops": 0,
+   "type": "nodeinfo"
   }
  ],
- "updated": "2026-11-15T01:18:44Z"
+ "updated": "2026-11-15T08:26:38Z"
 }
