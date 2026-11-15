@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-15T15:26:18Z"
+  "lastSeen": "2026-11-15T18:26:19Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -535,7 +535,31 @@
    "snr": 6.75,
    "hops": 1,
    "type": "traceroute"
+  },
+  {
+   "t": "2026-11-15T15:26:18Z",
+   "gw": "ba6a7018",
+   "id": "b490b1f0",
+   "snr": -7.75,
+   "hops": 0,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T16:23:23Z",
+   "gw": "ba6a7018",
+   "id": "ed7b95f1",
+   "snr": -8.5,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-15T18:26:19Z",
+   "gw": "ba6a7018",
+   "id": "b27a69fa",
+   "snr": -5.75,
+   "hops": 0,
+   "type": "nodeinfo"
   }
  ],
- "updated": "2026-11-15T15:52:15Z"
+ "updated": "2026-11-15T21:00:18Z"
 }
