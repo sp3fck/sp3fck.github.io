@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-14T19:01:42Z"
+  "lastSeen": "2026-11-15T00:26:17Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -21,6 +21,22 @@
   "db528cc4": {
    "shortName": "SCHL",
    "longName": "SCH_Node_Lezyca"
+  },
+  "0f927e21": {
+   "shortName": "ZG_A",
+   "longName": "ZG_Aleks"
+  },
+  "4357eb1c": {
+   "shortName": "pnt",
+   "longName": "peanut 🥜 GoW | FW+"
+  },
+  "b2a7033c": {
+   "shortName": "GLPM",
+   "longName": "GLGL_PMI"
+  },
+  "c464e761": {
+   "shortName": "FCM6",
+   "longName": "🏢 Forcom Gajowa 6 Poz"
   }
  },
  "reports": [
@@ -255,7 +271,71 @@
    "snr": -7.75,
    "hops": 2,
    "type": "text"
+  },
+  {
+   "t": "2026-11-15T00:26:17Z",
+   "gw": "ba6a7018",
+   "id": "860bfe22",
+   "snr": 10,
+   "hops": 1,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:19Z",
+   "gw": "0f927e21",
+   "id": "860bfe22",
+   "snr": -8.25,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:19Z",
+   "gw": "4357eb1c",
+   "id": "860bfe22",
+   "snr": 0,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:20Z",
+   "gw": "b2a7033c",
+   "id": "860bfe22",
+   "snr": -4.75,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:20Z",
+   "gw": "db528cc4",
+   "id": "860bfe22",
+   "snr": -1.25,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:20Z",
+   "gw": "7c5cbf28",
+   "id": "860bfe22",
+   "snr": 10.25,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:20Z",
+   "gw": "da5ed84c",
+   "id": "860bfe22",
+   "snr": -6.75,
+   "hops": 2,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-15T00:26:22Z",
+   "gw": "c464e761",
+   "id": "860bfe22",
+   "snr": -7.5,
+   "hops": 3,
+   "type": "nodeinfo"
   }
  ],
- "updated": "2026-11-14T21:25:40Z"
+ "updated": "2026-11-15T01:18:44Z"
 }
