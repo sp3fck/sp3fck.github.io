@@ -53,14 +53,20 @@ pobiera log z QRZ Logbook API, zapisuje `data/qso.latest.json`, `data/qso.latest
 
 ## Meshtastic
 
-`meshtastic.html` pokazuje status noda (`9254eab8`), bramki, które go odbierają, wykres SNR i krótki opis sprzętu (zdjęcie w `assets/img/mesh/`).
+`meshtastic.html` (w menu: **LoRa → Meshtastic**) pokazuje status noda (`9254eab8`), bramki, które go odbierają, wykres SNR,
+graf ścieżek w meshu (którędy pakiety idą do bramek) i krótki opis sprzętu (zdjęcie w `assets/img/mesh/`).
+
+Graf ścieżek składa się z dwóch źródeł: pełnych ścieżek z pakietów traceroute (`routes`) i raportów odbioru – liczby skoków
+oraz ostatniego bajtu ID przekaźnika (`relay`), rozpoznawanego, gdy pasuje do dokładnie jednego znanego noda.
+Odcinki, których sieć nie zgłosiła, są rysowane przerywaną linią. Raporty sprzed zapisu przekaźników (bez pola `relay`) trafiają do grafu tylko wtedy, gdy były odebrane bezpośrednio.
 
 Workflow `.github/workflows/mesh-sync.yml` (co 30 minut + ręcznie) uruchamia `scripts/mesh-sync.mjs`:
 pobiera z API [lorastats.pl](https://lorastats.pl/API) status noda i raporty odbioru, dopisuje je do `data/mesh.history.json` (pełna historia – API oddaje tylko ostatnie 24 h)
 i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit powstaje tylko wtedy, gdy przybył raport albo zmienił się czas ostatniej aktywności.
 
 - API nie wysyła nagłówków CORS, dlatego strona nie pyta go bezpośrednio z przeglądarki.
-- Pozycji noda nie zapisujemy – na stronie jest tylko lokator.
+- Pozycji noda ani treści wiadomości nie zapisujemy – na stronie jest tylko lokator. Ze ścieżek traceroute zapisujemy same ID nodów.
+- Nazwy bramek i przekaźników (`names`) są pobierane raz, przy pierwszym pojawieniu się noda.
 - lorastats.pl prosi o nazwę narzędzia i kontakt w nagłówku `User-Agent` (`MESH_AGENT` w workflow) oraz zabrania scrapowania stron HTML – korzystamy wyłącznie z API.
 - Lokalnie: `node scripts/mesh-sync.mjs` (bez zależności, Node 22+).
 

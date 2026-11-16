@@ -104,8 +104,51 @@
       </div>
     </section>
 
+    <!-- ŚCIEŻKI W MESHU -->
+    <section class="section" id="mesh-paths-section">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Mesh</span><h2><span lang="en">Paths through the mesh</span><span lang="pl">Ścieżki w meshu</span></h2></div>
+        </div>
+        <p class="mesh-lead" lang="en">How my packets reach the gateways that upload them to lorastats.pl: who hears me directly and which nodes pass me on. Hover or tap a node to highlight the paths that go through it.</p>
+        <p class="mesh-lead" lang="pl">Jak moje pakiety docierają do bramek, które wysyłają je do lorastats.pl: kto słyszy mnie bezpośrednio, a kto podaje dalej. Najedź na node albo go stuknij, żeby podświetlić ścieżki, które przez niego biegną.</p>
+
+        <figure class="mesh-chart">
+          <figcaption><span lang="en">Paths of received packets · last 30 days</span><span lang="pl">Ścieżki odebranych pakietów · ostatnie 30 dni</span></figcaption>
+          <ul class="mg-legend">
+            <li><svg viewBox="-11 -7 22 14" aria-hidden="true"><circle class="mg-halo" r="7"/><circle class="mg-me" r="4.5"/></svg><span lang="en">my node</span><span lang="pl">mój node</span></li>
+            <li><svg viewBox="-11 -7 22 14" aria-hidden="true"><rect class="mg-gw" x="-5.5" y="-5.5" width="11" height="11" rx="2"/></svg><span lang="en">gateway (heard me)</span><span lang="pl">bramka (słyszała mnie)</span></li>
+            <li><svg viewBox="-11 -7 22 14" aria-hidden="true"><circle class="mg-relay" r="5"/></svg><span lang="en">relay</span><span lang="pl">przekaźnik</span></li>
+            <li><svg viewBox="0 -7 22 14" aria-hidden="true"><path class="mg-edge" d="M1 0H21" stroke-width="2.5"/></svg><span lang="en">hop · thicker = more packets</span><span lang="pl">skok · grubsza = więcej pakietów</span></li>
+            <li><svg viewBox="0 -7 22 14" aria-hidden="true"><path class="mg-edge is-gap" d="M1 0H21" stroke-width="2.5"/></svg><span lang="en">unreported hops in between</span><span lang="pl">niezgłoszone skoki po drodze</span></li>
+          </ul>
+          <div class="mesh-graph" id="mesh-graph">
+            <svg id="mesh-graph-svg" role="group" aria-label="Paths of my packets through the mesh, from my node through relays to the gateways" data-pl-aria-label="Ścieżki moich pakietów w meshu, od mojego noda przez przekaźniki do bramek"></svg>
+            <div class="mesh-tip" id="mesh-graph-tip" hidden></div>
+          </div>
+        </figure>
+
+        <details class="mesh-details">
+          <summary><span lang="en">Paths as a table</span><span lang="pl">Ścieżki w tabeli</span></summary>
+          <div class="mesh-scroll">
+            <table class="pins">
+              <thead>
+                <tr>
+                  <th><span lang="en">Path</span><span lang="pl">Ścieżka</span></th>
+                  <th><span lang="en">Packets</span><span lang="pl">Pakiety</span></th>
+                  <th><span lang="en">Last</span><span lang="pl">Ostatnio</span></th>
+                </tr>
+              </thead>
+              <tbody id="mesh-paths"></tbody>
+            </table>
+          </div>
+          <p class="mesh-src"><span lang="en">? – a hop the network did not report.</span><span lang="pl">? – skok, którego sieć nie zgłosiła.</span></p>
+        </details>
+      </div>
+    </section>
+
     <!-- O NODZIE -->
-    <section class="section">
+    <section class="section alt">
       <div class="wrap">
         <div class="section-head">
           <div><span class="eyebrow"><span lang="en">Hardware</span><span lang="pl">Sprzęt</span></span><h2><span lang="en">About the node</span><span lang="pl">O nodzie</span></h2></div>
