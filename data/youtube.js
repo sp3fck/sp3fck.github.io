@@ -1,5 +1,8 @@
 /* Filmy YouTube: miniatury w assets/img/youtube/{id}.jpg. Najnowsze pierwsze. Teksty: [EN, PL]. */
 window.SP3FCK_VIDEOS = [
+  { id: 'V4VQ50i-ln8', url: 'https://youtube.com/shorts/V4VQ50i-ln8', date: '2026-11-15',
+    title: ['POTA & LLOTA activation', 'Aktywacja POTA i LLOTA'],
+    desc: ['Autumn activation by the lake with a Xiegu rig', 'Jesienna aktywacja nad jeziorem z Xiegu'] },
   { id: '33rt-8E4B5M', url: 'https://youtube.com/shorts/33rt-8E4B5M', date: '2026-05-31',
     title: ['BOTA activation', 'Aktywacja BOTA'],
     desc: ['Bunkers On The Air', 'Bunkers On The Air – łączności z bunkra'] },
