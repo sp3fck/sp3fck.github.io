@@ -10,12 +10,16 @@
     ['q-codes', 'q-codes.html', t('Q Codes &amp; CW Shortcuts', 'Kody Q i skróty CW')],
     ['qrz-builder', 'qrz-builder/', t('QRZ Page Builder', 'Kreator strony QRZ')],
     ['cw-trainer', 'cw-trainer.html', t('CW Trainer', 'Trener CW')],
-    ['meshtastic', 'meshtastic.html', 'Meshtastic'],
     ['iot', 'ham-tools.html#iot', t('IoT Projects', 'Projekty IoT')],
+  ];
+  // LoRa: na razie Meshtastic, z miejscem na kolejne sieci (np. MeshCom).
+  const LORA = [
+    ['meshtastic', 'meshtastic.html', 'Meshtastic'],
   ];
   const NAV = [
     ['index', 'index.html', 'Home', 'Start'],
     ['ham-tools', 'ham-tools.html', 'Ham Tools', 'Narzędzia', TOOLS],
+    ['lora', 'meshtastic.html', 'LoRa', 'LoRa', LORA],
     ['gallery', 'gallery.html', 'Gallery', 'Galeria'],
     ['youtube', 'youtube.html', 'YouTube', 'YouTube'],
     ['other', 'other.html', 'Other', 'Inne'],
