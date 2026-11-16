@@ -3,7 +3,7 @@
   "id": "9254eab8",
   "shortName": "sp3f",
   "longName": "SP3FCK_companion",
-  "lastSeen": "2026-11-16T06:26:21Z"
+  "lastSeen": "2026-11-16T18:15:26Z"
  },
  "gateways": {
   "ba6a7018": {
@@ -45,6 +45,10 @@
   "b2a796a8": {
    "shortName": "FZG1",
    "longName": "FZG1~WOJTEK BoryDolnoslaskie TBD"
+  },
+  "3351d598": {
+   "shortName": "SECA",
+   "longName": "SenseCap 🍁🧢🍁"
   }
  },
  "reports": [
@@ -591,7 +595,207 @@
    "snr": -9.25,
    "hops": 0,
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T09:26:22Z",
+   "gw": "ba6a7018",
+   "id": "7b542167",
+   "snr": -7.75,
+   "hops": 0,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T11:48:59Z",
+   "gw": "ba6a7018",
+   "id": "6ae27dd8",
+   "snr": -3.75,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T12:26:21Z",
+   "gw": "ba6a7018",
+   "id": "e0becde0",
+   "snr": -4.25,
+   "hops": 0,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T12:26:25Z",
+   "gw": "db528cc4",
+   "id": "e0becde0",
+   "snr": -1.75,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T12:26:25Z",
+   "gw": "da5ed84c",
+   "id": "e0becde0",
+   "snr": -1.5,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T12:26:25Z",
+   "gw": "7c5cbf28",
+   "id": "e0becde0",
+   "snr": 11,
+   "hops": 3,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T12:33:12Z",
+   "gw": "ba6a7018",
+   "id": "8777e9e8",
+   "snr": -2.5,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T13:42:49Z",
+   "gw": "ba6a7018",
+   "id": "2fd00342",
+   "snr": -1,
+   "hops": 0,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:42:52Z",
+   "gw": "db528cc4",
+   "id": "2fd00342",
+   "snr": -3,
+   "hops": 3,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:42:52Z",
+   "gw": "da5ed84c",
+   "id": "2fd00342",
+   "snr": -2,
+   "hops": 3,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:42:52Z",
+   "gw": "7c5cbf28",
+   "id": "2fd00342",
+   "snr": 10.25,
+   "hops": 3,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:43:26Z",
+   "gw": "ba6a7018",
+   "id": "ddbc5f69",
+   "snr": -4.75,
+   "hops": 0,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:43:28Z",
+   "gw": "7c5cbf28",
+   "id": "ddbc5f69",
+   "snr": 10.25,
+   "hops": 3,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:43:29Z",
+   "gw": "da5ed84c",
+   "id": "ddbc5f69",
+   "snr": 1.5,
+   "hops": 3,
+   "type": "traceroute"
+  },
+  {
+   "t": "2026-11-16T13:43:31Z",
+   "gw": "ba6a7018",
+   "id": "4aff97e9",
+   "snr": -0.75,
+   "hops": 0,
+   "type": "0"
+  },
+  {
+   "t": "2026-11-16T15:26:22Z",
+   "gw": "ba6a7018",
+   "id": "038eb2a6",
+   "snr": 10,
+   "hops": 1,
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-16T15:50:46Z",
+   "gw": "ba6a7018",
+   "id": "ff7376c0",
+   "snr": -6.5,
+   "hops": 0,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T15:50:49Z",
+   "gw": "0f927e21",
+   "id": "ff7376c0",
+   "snr": -4.75,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T15:50:49Z",
+   "gw": "7c5cbf28",
+   "id": "ff7376c0",
+   "snr": 12,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T15:50:49Z",
+   "gw": "da5ed84c",
+   "id": "ff7376c0",
+   "snr": 0.5,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T17:12:18Z",
+   "gw": "ba6a7018",
+   "id": "afaa12fc",
+   "snr": 9,
+   "hops": 1,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T18:15:26Z",
+   "gw": "7c5cbf28",
+   "id": "a2728328",
+   "snr": 12.5,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T18:15:26Z",
+   "gw": "da5ed84c",
+   "id": "a2728328",
+   "snr": 0,
+   "hops": 2,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T18:15:27Z",
+   "gw": "7c5b1420",
+   "id": "a2728328",
+   "snr": -7.25,
+   "hops": 3,
+   "type": "position"
+  },
+  {
+   "t": "2026-11-16T18:15:27Z",
+   "gw": "3351d598",
+   "id": "a2728328",
+   "snr": 12.25,
+   "hops": 3,
+   "type": "position"
   }
  ],
- "updated": "2026-11-16T07:56:39Z"
+ "updated": "2026-11-16T18:27:21Z"
 }
