@@ -202,6 +202,7 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 
 /* projekt (Ham Tools → IoT): zdjęcia, opis, schemat połączeń, kroki */
 .project { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: clamp(18px, 3vw, 30px); }
+.project + .project { margin-top: 20px; }
 .project-top { display: grid; grid-template-columns: minmax(0, .34fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 36px); align-items: start; }
 .project-photos { display: grid; gap: 12px; }
 .project-photos a { border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--field); }
@@ -299,6 +300,18 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .mesh-details summary { cursor: pointer; color: var(--link); font-weight: 600; margin-bottom: 12px; }
 .mesh-scroll .pins th, .mesh-scroll .pins td { white-space: nowrap; }
 @media (max-width: 560px) { .mc-axis { font-size: 22px; } }
+/* przełącznik nodów (wybór obejmuje całą stronę) */
+.mesh-switch { position: relative; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.mesh-switch[hidden] { display: none; }
+.mesh-switch button { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2px 10px; min-width: 200px; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 16px; color: var(--ink); font: inherit; cursor: pointer; }
+.mesh-switch button:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.mesh-switch button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.mesh-switch button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.mesh-switch b { font: 600 .95rem/1.2 var(--mono); }
+.mesh-switch small { grid-column: 2; color: var(--ink-soft); font: .72rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.mesh-dot { grid-row: span 2; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-soft); opacity: .6; }
+.mesh-dot.is-on { background: #6fcf8f; opacity: 1; box-shadow: 0 0 8px #6fcf8f; }
+@media (max-width: 560px) { .mesh-switch button { flex: 1 1 100%; } }
 /* graf ścieżek mesh — viewBox w pikselach kontenera, więc tekst ma zawsze 12 px */
 .mesh-lead { color: var(--ink-soft); max-width: 72ch; margin: 0 0 4px; }
 .mesh-graph { position: relative; }

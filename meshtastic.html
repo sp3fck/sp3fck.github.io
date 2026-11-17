@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meshtastic — SP3FCK</title>
   <meta name="title-pl" content="Meshtastic — SP3FCK">
-  <meta name="description" content="My Meshtastic node: when it was last heard, which gateways receive it and with what signal, plus a few words about the hardware.">
+  <meta name="description" content="My Meshtastic nodes: when they were last heard, which gateways receive them and with what signal, how packets travel through the mesh, plus a few words about the hardware.">
   <meta name="theme-color" content="#0e1418">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -20,8 +20,9 @@
       <div class="wrap">
         <span class="eyebrow">LoRa · Mesh</span>
         <h1>Meshtastic</h1>
-        <p lang="en">My node in the LoRa mesh network – is it on the air, and who can hear it.</p>
-        <p lang="pl">Mój node w sieci mesh LoRa – czy jest w eterze i kto go słyszy.</p>
+        <p lang="en">My nodes in the LoRa mesh network – are they on the air, and who can hear them.</p>
+        <p lang="pl">Moje nody w sieci mesh LoRa – czy są w eterze i kto je słyszy.</p>
+        <div class="mesh-switch" id="mesh-switch" role="group" aria-label="Choose a node" data-pl-aria-label="Wybierz node" hidden></div>
       </div>
     </section>
 
@@ -30,7 +31,7 @@
       <div class="wrap">
         <div class="section-head">
           <div><span class="eyebrow">Status</span><h2 id="mesh-name">MeshtasticSP3FCK</h2></div>
-          <a href="https://lorastats.pl/Node/9254eab8" target="_blank" rel="noopener"><span lang="en">Source: lorastats.pl →</span><span lang="pl">Źródło: lorastats.pl →</span></a>
+          <a id="mesh-src-link" href="https://lorastats.pl/Node/9254eab8" target="_blank" rel="noopener"><span lang="en">Source: lorastats.pl →</span><span lang="pl">Źródło: lorastats.pl →</span></a>
         </div>
 
         <div class="mesh-status" role="status">
@@ -110,8 +111,8 @@
         <div class="section-head">
           <div><span class="eyebrow">Mesh</span><h2><span lang="en">Paths through the mesh</span><span lang="pl">Ścieżki w meshu</span></h2></div>
         </div>
-        <p class="mesh-lead" lang="en">How my packets reach the gateways that upload them to lorastats.pl: who hears me directly and which nodes pass me on. Hover or tap a node to highlight the paths that go through it.</p>
-        <p class="mesh-lead" lang="pl">Jak moje pakiety docierają do bramek, które wysyłają je do lorastats.pl: kto słyszy mnie bezpośrednio, a kto podaje dalej. Najedź na node albo go stuknij, żeby podświetlić ścieżki, które przez niego biegną.</p>
+        <p class="mesh-lead" lang="en">How packets from the selected node reach the gateways that upload them to lorastats.pl: who hears it directly and which nodes pass it on. Hover or tap a node to highlight the paths that go through it.</p>
+        <p class="mesh-lead" lang="pl">Jak pakiety wybranego noda docierają do bramek, które wysyłają je do lorastats.pl: kto słyszy go bezpośrednio, a kto podaje dalej. Najedź na node albo go stuknij, żeby podświetlić ścieżki, które przez niego biegną.</p>
 
         <figure class="mesh-chart">
           <figcaption><span lang="en">Paths of received packets · last 30 days</span><span lang="pl">Ścieżki odebranych pakietów · ostatnie 30 dni</span></figcaption>
@@ -147,11 +148,11 @@
       </div>
     </section>
 
-    <!-- O NODZIE -->
+    <!-- O NODACH -->
     <section class="section alt">
       <div class="wrap">
         <div class="section-head">
-          <div><span class="eyebrow"><span lang="en">Hardware</span><span lang="pl">Sprzęt</span></span><h2><span lang="en">About the node</span><span lang="pl">O nodzie</span></h2></div>
+          <div><span class="eyebrow"><span lang="en">Hardware</span><span lang="pl">Sprzęt</span></span><h2><span lang="en">About the nodes</span><span lang="pl">O nodach</span></h2></div>
         </div>
         <article class="project">
           <div class="project-top">
@@ -171,6 +172,29 @@
                 <div><dt><span lang="en">Role</span><span lang="pl">Rola</span></dt><dd>Companion</dd></div>
                 <div><dt><span lang="en">Power</span><span lang="pl">Zasilanie</span></dt><dd><span lang="en">single 18650 cell</span><span lang="pl">pojedyncze ogniwo 18650</span></dd></div>
                 <div><dt><span lang="en">Case</span><span lang="pl">Obudowa</span></dt><dd><span lang="en">3D print</span><span lang="pl">druk 3D</span></dd></div>
+              </dl>
+            </div>
+          </div>
+        </article>
+
+        <article class="project">
+          <div class="project-top">
+            <div class="project-photos tall" data-lightbox>
+              <a href="assets/img/mesh/base-xiao-nrf52840.jpg">
+                <img src="assets/img/mesh/base-xiao-nrf52840.jpg" width="900" height="1200" loading="lazy" alt="Meshtastic base node: a grey IP65 box with a small solar panel on top and a whip antenna, on a desk" data-pl-alt="Bazowy node Meshtastic: szara skrzynka IP65 z małym panelem słonecznym na górze i anteną prętową, na biurku">
+                <span class="cap" hidden><span lang="en">XIAO nRF52840 base in an IP65 box with a solar panel</span><span lang="pl">Baza na XIAO nRF52840 w skrzynce IP65 z panelem słonecznym</span></span>
+              </a>
+            </div>
+            <div class="project-body">
+              <span class="tag">XIAO nRF52840 · Wio-SX1262 · Meshtastic</span>
+              <h3><span lang="en">XIAO nRF52840 – base</span><span lang="pl">XIAO nRF52840 – baza</span></h3>
+              <p lang="en">A solar-powered base node: a Seeed Studio XIAO nRF52840 with a Wio-SX1262 LoRa module, charged by a small solar panel through an HW-373 module into a single 18650 cell, all in an IP65 enclosure.</p>
+              <p lang="pl">Node bazowy zasilany słońcem: Seeed Studio XIAO nRF52840 z modułem LoRa Wio-SX1262, ładowany małym panelem fotowoltaicznym przez moduł HW-373 do jednego ogniwa 18650, całość w obudowie IP65.</p>
+              <dl class="station">
+                <div><dt><span lang="en">Board</span><span lang="pl">Płytka</span></dt><dd>Seeed Studio XIAO nRF52840 + Wio-SX1262</dd></div>
+                <div><dt><span lang="en">Role</span><span lang="pl">Rola</span></dt><dd>Client Base</dd></div>
+                <div><dt><span lang="en">Power</span><span lang="pl">Zasilanie</span></dt><dd><span lang="en">solar panel → HW-373 → 18650 cell</span><span lang="pl">panel fotowoltaiczny → HW-373 → ogniwo 18650</span></dd></div>
+                <div><dt><span lang="en">Case</span><span lang="pl">Obudowa</span></dt><dd><span lang="en">IP65 enclosure</span><span lang="pl">obudowa IP65</span></dd></div>
               </dl>
             </div>
           </div>
