@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-16T13:07:28.013Z",
+  "updatedAt": "2026-11-17T07:29:40.277Z",
   "source": "qrz-logbook-api",
   "homeLocator": "JO72SG",
   "qsos": [
@@ -19443,7 +19443,7 @@
       "ituz": 28,
       "cont": "EU",
       "confirmed": false,
-      "lotw": false
+      "lotw": true
     },
     {
       "id": "2026-03-29T18:38:00.000Z-OK7R-80m-LSB",
