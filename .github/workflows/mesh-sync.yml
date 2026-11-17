@@ -29,7 +29,8 @@ jobs:
 
       - name: Fetch node status and reception reports
         env:
-          MESH_NODE_ID: 9254eab8
+          # Moje nody, w kolejności na stronie: companion (Heltec V4), baza (Client Base).
+          MESH_NODE_IDS: 9254eab8,0e0f16cf
           # lorastats.pl prosi o nazwę narzędzia i kontakt w User-Agent — uzupełnij, jeśli chcesz się przedstawić.
           MESH_AGENT: static-site-mesh-sync/1.0
         run: node scripts/mesh-sync.mjs
