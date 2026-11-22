@@ -53,7 +53,7 @@ pobiera log z QRZ Logbook API, zapisuje `data/qso.latest.json`, `data/qso.latest
 
 ## Meshtastic
 
-`meshtastic.html` (w menu: **LoRa → Meshtastic**) pokazuje moje nody: companion `9254eab8` (SP3FCK_companion) i bazę `0e0f16cf` (SP3FCK_Base).
+`meshtastic.html` (w menu: **LoRa → Meshtastic**) pokazuje moje nody: companion `9254eab8` (SP3FCK_companion) i bazę `e0a76739` (SP3FCK_Base; wcześniej miała ID `0e0f16cf`, jego historia zostaje w `mesh.history.json`).
 Przełącznik na górze strony wybiera node, a status, bramki, graf ścieżek w meshu, wykres SNR i ostatnie pakiety pokazują dane tylko dla niego
 (wybór trafia do adresu jako `?node=<id>`). Na dole jest krótki opis sprzętu (zdjęcie w `assets/img/mesh/`).
 Listę nodów ustawia `MESH_NODE_IDS` w workflow.
