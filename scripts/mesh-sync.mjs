@@ -9,7 +9,7 @@ import path from "node:path";
 
 const API = process.env.MESH_API || "https://lorastats.pl/API/Zach%C3%B3d";
 // Moje nody, w kolejności wyświetlania na stronie (companion, baza).
-const NODE_IDS = (process.env.MESH_NODE_IDS || process.env.MESH_NODE_ID || "9254eab8,0e0f16cf")
+const NODE_IDS = (process.env.MESH_NODE_IDS || process.env.MESH_NODE_ID || "9254eab8,e0a76739")
   .split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
 const AGENT = process.env.MESH_AGENT || "static-site-mesh-sync/1.0";
 const LATEST_DAYS = 30;
