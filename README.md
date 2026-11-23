@@ -75,6 +75,11 @@ i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit pows
 
 ## MeshCore
 
+> **Ukryte.** Companion wrócił do Meshtastic (w MeshCore nie miał łączności), więc strona jest poza menu i ma `noindex`,
+> a `MESHCORE_NODE_KEYS` w workflow jest puste (sync niczego nie pobiera). Żeby wrócić, np. z repeaterem:
+> wpisz jego klucz w `MESHCORE_NODE_KEYS`, dopisz `['meshcore', 'meshcore.html', 'MeshCore']` do `LORA` w `assets/js/components.js`
+> i usuń `<meta name="robots" content="noindex">` z `meshcore.html`. Kod i ostatnie dane (`data/meshcore.latest.js`) zostają.
+
 `meshcore.html` (w menu: **LoRa → MeshCore**) pokazuje status moich nodów MeshCore: kiedy advert ostatnio trafił na mapę, typ noda i parametry radia,
 z linkiem do noda na [mapie MeshCore Polska](https://mapa.meshcorepolska.org) (`?node=<klucz publiczny>`).
 

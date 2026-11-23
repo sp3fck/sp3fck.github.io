@@ -40,7 +40,8 @@ jobs:
         continue-on-error: true
         env:
           # Pełne klucze publiczne nodów MeshCore (64 znaki hex), po przecinku.
-          MESHCORE_NODE_KEYS: a27b781d69ca7c969683f16145cbd685d36287fe268ef069aef8f671cfd36d13
+          # Na razie pusto: companion wrócił do Meshtastic, strona MeshCore jest ukryta. Wpisz klucz nowego noda (np. repeatera), żeby wznowić sync.
+          MESHCORE_NODE_KEYS: ""
           MESH_AGENT: static-site-mesh-sync/1.0
         run: node scripts/meshcore-sync.mjs
 

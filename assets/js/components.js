@@ -12,10 +12,11 @@
     ['cw-trainer', 'cw-trainer.html', t('CW Trainer', 'Trener CW')],
     ['iot', 'ham-tools.html#iot', t('IoT Projects', 'Projekty IoT')],
   ];
-  // LoRa: Meshtastic i MeshCore, z miejscem na kolejne sieci (np. MeshCom).
+  // LoRa: na razie Meshtastic, z miejscem na kolejne sieci.
+  // Strona MeshCore (meshcore.html) jest ukryta, dopóki nie mam noda MeshCore — żeby ją pokazać, dopisz:
+  // ['meshcore', 'meshcore.html', 'MeshCore'],
   const LORA = [
     ['meshtastic', 'meshtastic.html', 'Meshtastic'],
-    ['meshcore', 'meshcore.html', 'MeshCore'],
   ];
   const NAV = [
     ['index', 'index.html', 'Home', 'Start'],
