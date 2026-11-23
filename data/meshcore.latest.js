@@ -1,0 +1,1 @@
+window.MESHCORE_DATA = {"updated":"2026-11-23T08:54:09Z","nodes":{"a27b781d69ca7c969683f16145cbd685d36287fe268ef069aef8f671cfd36d13":{"name":"SP3FCK Companion","type":1,"lastSeen":"2026-11-23T08:49:24Z","firstSeen":"2026-11-23T08:49:24Z","source":"app","radio":{"freq":869.618,"bw":62.5,"sf":8,"cr":8}}}};

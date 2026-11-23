@@ -73,6 +73,22 @@ i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit pows
 - lorastats.pl prosi o nazwę narzędzia i kontakt w nagłówku `User-Agent` (`MESH_AGENT` w workflow) oraz zabrania scrapowania stron HTML – korzystamy wyłącznie z API.
 - Lokalnie: `node scripts/mesh-sync.mjs` (bez zależności, Node 22+).
 
+## MeshCore
+
+`meshcore.html` (w menu: **LoRa → MeshCore**) pokazuje status moich nodów MeshCore: kiedy advert ostatnio trafił na mapę, typ noda i parametry radia,
+z linkiem do noda na [mapie MeshCore Polska](https://mapa.meshcorepolska.org) (`?node=<klucz publiczny>`).
+
+Ten sam workflow `mesh-sync.yml` uruchamia `scripts/meshcore-sync.mjs`: pobiera każdy node z `https://map.meshcore.io/api/v1/nodes/<klucz>`
+i zapisuje `data/meshcore.latest.js` (tylko gdy coś się zmieniło). Listę nodów ustawia `MESHCORE_NODE_KEYS` – pełne klucze publiczne (64 znaki hex).
+Błąd tego kroku nie blokuje zapisu danych Meshtastic.
+
+- Mapa zna node tylko wtedy, gdy ktoś go tam wyśle: companion – ręcznie z aplikacji („wyślij na mapę”), repeatery – także automatycznie przez obserwatorów.
+  Nie ma tu raportów odbioru jak w lorastats.pl.
+- Czas aktywności to `updated_date` (zegar serwera mapy). `last_advert` bywa przesunięty o strefę czasową, więc go nie używamy.
+- Pozycji noda ani linku `meshcore://` (zawiera advert z pozycją) nie zapisujemy.
+- API mapy wysyła CORS tylko dla map.meshcore.dev, dlatego strona nie pyta go bezpośrednio z przeglądarki.
+- Lokalnie: `node scripts/meshcore-sync.mjs` (bez zależności, Node 22+).
+
 ## Lokalny podgląd
 
 ```powershell

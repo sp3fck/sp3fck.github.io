@@ -12,9 +12,10 @@
     ['cw-trainer', 'cw-trainer.html', t('CW Trainer', 'Trener CW')],
     ['iot', 'ham-tools.html#iot', t('IoT Projects', 'Projekty IoT')],
   ];
-  // LoRa: na razie Meshtastic, z miejscem na kolejne sieci (np. MeshCom).
+  // LoRa: Meshtastic i MeshCore, z miejscem na kolejne sieci (np. MeshCom).
   const LORA = [
     ['meshtastic', 'meshtastic.html', 'Meshtastic'],
+    ['meshcore', 'meshcore.html', 'MeshCore'],
   ];
   const NAV = [
     ['index', 'index.html', 'Home', 'Start'],
