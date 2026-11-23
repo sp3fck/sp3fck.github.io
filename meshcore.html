@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeshCore — SP3FCK</title>
+  <meta name="title-pl" content="MeshCore — SP3FCK">
+  <meta name="description" content="My MeshCore nodes: when their advert last reached the MeshCore map, node type and radio settings.">
+  <meta name="theme-color" content="#0e1418">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>try{if(localStorage.getItem('sp3fck-lang')==='pl')document.documentElement.lang='pl'}catch(e){}</script>
+</head>
+<body data-page="meshcore">
+  <a class="skip" href="#main"><span lang="en">Skip to content</span><span lang="pl">Przejdź do treści</span></a>
+  <div id="header-placeholder"></div>
+
+  <main id="main">
+    <section class="page-head">
+      <div class="wrap">
+        <span class="eyebrow">LoRa · Mesh</span>
+        <h1>MeshCore</h1>
+        <p lang="en">My nodes in the MeshCore LoRa network – when they last showed up on the MeshCore map.</p>
+        <p lang="pl">Moje nody w sieci LoRa MeshCore – kiedy ostatnio pojawiły się na mapie MeshCore.</p>
+      </div>
+    </section>
+
+    <!-- STATUS (jeden blok na node, renderuje assets/js/meshcore.js) -->
+    <section class="section" id="meshcore">
+      <div class="wrap">
+        <div id="mc-nodes">
+          <div class="mc-node">
+            <div class="mesh-status" role="status">
+              <span class="mesh-led" aria-hidden="true"></span>
+              <div><strong>…</strong></div>
+            </div>
+          </div>
+        </div>
+        <p class="mesh-src">
+          <span lang="en">Data from the official MeshCore map (map.meshcore.io), refreshed about every 30 minutes. A companion shows up on the map when I send its advert from the app, so “quiet” does not mean it is switched off.</span>
+          <span lang="pl">Dane z oficjalnej mapy MeshCore (map.meshcore.io), odświeżane co ok. 30 minut. Companion pojawia się na mapie, gdy wyślę jego advert z aplikacji, więc „cisza” nie znaczy, że jest wyłączony.</span>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="assets/js/components.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="data/meshcore.latest.js"></script>
+  <script src="assets/js/meshcore.js"></script>
+</body>
+</html>

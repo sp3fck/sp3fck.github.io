@@ -278,8 +278,9 @@ figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
 .mesh-status strong { font: 700 1.5rem/1.1 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
 .mesh-status small { color: var(--ink-soft); font: .82rem var(--mono); flex-basis: 100%; }
 .mesh-led { flex: none; width: 14px; height: 14px; border-radius: 50%; background: var(--ink-soft); opacity: .6; }
-#mesh.is-active .mesh-led { background: #6fcf8f; opacity: 1; box-shadow: 0 0 12px #6fcf8f; }
-#mesh.is-active .mesh-status strong { color: var(--ink); }
+#mesh.is-active .mesh-led, .mc-node.is-active .mesh-led { background: #6fcf8f; opacity: 1; box-shadow: 0 0 12px #6fcf8f; }
+#mesh.is-active .mesh-status strong, .mc-node.is-active .mesh-status strong { color: var(--ink); }
+.mc-node + .mc-node { margin-top: 40px; }
 .station.mesh-strip { border-radius: 0 0 var(--r) var(--r); }
 .mesh-src { margin: 12px 0 0; color: var(--ink-soft); font-size: .85rem; }
 .mesh-scroll { overflow-x: auto; }
