@@ -6,8 +6,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const API = process.env.MESHCORE_API || "https://map.meshcore.io/api/v1/nodes";
-// Pełne klucze publiczne (64 znaki hex), w kolejności wyświetlania na stronie.
-const NODE_KEYS = (process.env.MESHCORE_NODE_KEYS || "a27b781d69ca7c969683f16145cbd685d36287fe268ef069aef8f671cfd36d13")
+// Pełne klucze publiczne (64 znaki hex), w kolejności wyświetlania na stronie. Pusta lista = sync wstrzymany.
+const NODE_KEYS = (process.env.MESHCORE_NODE_KEYS || "")
   .split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
 const AGENT = process.env.MESH_AGENT || "static-site-mesh-sync/1.0";
 const LATEST = path.join("data", "meshcore.latest.js");
@@ -51,6 +51,11 @@ export function pick(n, prev = {}) {
 }
 
 async function main() {
+  // Bez nodów nie ruszamy pliku z danymi — ostatni stan zostaje do czasu, aż pojawi się nowy klucz.
+  if (!NODE_KEYS.length) {
+    console.log("No MeshCore nodes configured (MESHCORE_NODE_KEYS is empty), skipping");
+    return;
+  }
   const bad = NODE_KEYS.filter(k => !KEY_RE.test(k));
   if (bad.length) throw new Error(`Not a 64-hex public key: ${bad.join(", ")}`);
 
