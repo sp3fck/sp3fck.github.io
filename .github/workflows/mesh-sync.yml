@@ -6,7 +6,9 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: "11,41 * * * *" # co 30 minut; GitHub potrafi opóźnić start o kilka–kilkanaście minut
+    # Zapas: GitHub realnie odpala ten harmonogram 3–4 razy na dobę. Co 30 minut workflow wyzwala
+    # Cloudflare Worker (workers/mesh-sync-cron) przez workflow_dispatch.
+    - cron: "11,41 * * * *"
 
 permissions:
   contents: write
