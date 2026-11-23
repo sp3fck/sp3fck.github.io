@@ -4,7 +4,7 @@
    "shortName": "sp3f",
    "longName": "SP3FCK_companion",
    "role": 0,
-   "lastSeen": "2026-11-23T15:39:53Z"
+   "lastSeen": "2026-11-23T15:44:55Z"
   },
   "0e0f16cf": {
    "shortName": "3fro",
@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-23T15:17:41Z"
+   "lastSeen": "2026-11-23T15:54:41Z"
   }
  },
- "updated": "2026-11-23T15:41:41Z",
+ "updated": "2026-11-23T16:11:42Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -34027,6 +34027,86 @@
    "hops": 3,
    "relay": "90",
    "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:55Z",
+   "from": "9254eab8",
+   "gw": "ba6a7018",
+   "id": "be0d980b",
+   "snr": -10.75,
+   "hops": 0,
+   "relay": "b8",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:58Z",
+   "from": "9254eab8",
+   "gw": "7c5cbf28",
+   "id": "be0d980b",
+   "snr": 11.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:58Z",
+   "from": "9254eab8",
+   "gw": "da5ed84c",
+   "id": "be0d980b",
+   "snr": 6.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:59Z",
+   "from": "9254eab8",
+   "gw": "0f927e21",
+   "id": "be0d980b",
+   "snr": 3.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:59Z",
+   "from": "9254eab8",
+   "gw": "db528cc4",
+   "id": "be0d980b",
+   "snr": 6.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:44:59Z",
+   "from": "9254eab8",
+   "gw": "7c5b1420",
+   "id": "be0d980b",
+   "snr": -4.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-23T15:51:32Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "c995dce8",
+   "snr": -10.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T15:54:41Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "816458e9",
+   "snr": -6.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
