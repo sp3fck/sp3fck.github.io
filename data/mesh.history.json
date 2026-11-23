@@ -4,7 +4,7 @@
    "shortName": "sp3f",
    "longName": "SP3FCK_companion",
    "role": 0,
-   "lastSeen": "2026-11-23T17:16:20Z"
+   "lastSeen": "2026-11-23T17:45:03Z"
   },
   "0e0f16cf": {
    "shortName": "3fro",
@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-23T17:15:41Z"
+   "lastSeen": "2026-11-23T17:54:42Z"
   }
  },
- "updated": "2026-11-23T17:41:41Z",
+ "updated": "2026-11-23T18:11:41Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -34237,6 +34237,206 @@
    "hops": 3,
    "relay": "20",
    "type": "position"
+  },
+  {
+   "t": "2026-11-23T17:45:03Z",
+   "from": "9254eab8",
+   "gw": "ba6a7018",
+   "id": "424f800d",
+   "snr": -8.75,
+   "hops": 0,
+   "relay": "b8",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:50:35Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "f9cf64ee",
+   "snr": 10.5,
+   "hops": 1,
+   "relay": "60",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:35Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "f9cf64ee",
+   "snr": 12.5,
+   "hops": 3,
+   "relay": "28",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:35Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "f9cf64ee",
+   "snr": 7.25,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:36Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "f9cf64ee",
+   "snr": 0.5,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:36Z",
+   "from": "e0a76739",
+   "gw": "7c5b1420",
+   "id": "f9cf64ee",
+   "snr": -4,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:37Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "f9cf64ee",
+   "snr": 3.25,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:37Z",
+   "from": "e0a76739",
+   "gw": "0f145928",
+   "id": "f9cf64ee",
+   "snr": -5.5,
+   "hops": 3,
+   "relay": "30",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:37Z",
+   "from": "e0a76739",
+   "gw": "b2a796a8",
+   "id": "f9cf64ee",
+   "snr": -1.75,
+   "hops": 3,
+   "relay": "20",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:50:38Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "f9cf64ee",
+   "snr": -8.75,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:54:42Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "b2dec8ef",
+   "snr": -8,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-23T17:55:31Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "f21ab8f0",
+   "snr": -6,
+   "hops": 0,
+   "relay": "39",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:33Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "f21ab8f0",
+   "snr": 12.5,
+   "hops": 3,
+   "relay": "28",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:33Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "f21ab8f0",
+   "snr": 6.5,
+   "hops": 2,
+   "relay": "e6",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:34Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "f21ab8f0",
+   "snr": 1.5,
+   "hops": 2,
+   "relay": "e6",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:35Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "f21ab8f0",
+   "snr": 3.25,
+   "hops": 2,
+   "relay": "e6",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:35Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "f21ab8f0",
+   "snr": -9,
+   "hops": 3,
+   "relay": "63",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:36Z",
+   "from": "e0a76739",
+   "gw": "f115c8b0",
+   "id": "f21ab8f0",
+   "snr": 10,
+   "hops": 3,
+   "relay": "90",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:36Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "f21ab8f0",
+   "snr": -9.25,
+   "hops": 3,
+   "relay": "63",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-23T17:55:36Z",
+   "from": "e0a76739",
+   "gw": "0f145928",
+   "id": "f21ab8f0",
+   "snr": -3.25,
+   "hops": 3,
+   "relay": "30",
+   "type": "nodeinfo"
   }
  ],
  "routes": [
