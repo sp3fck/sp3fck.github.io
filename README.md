@@ -62,7 +62,7 @@ Graf ścieżek składa się z dwóch źródeł: pełnych ścieżek z pakietów t
 oraz ostatniego bajtu ID przekaźnika (`relay`), rozpoznawanego, gdy pasuje do dokładnie jednego znanego noda.
 Odcinki, których sieć nie zgłosiła, są rysowane przerywaną linią. Raporty sprzed zapisu przekaźników (bez pola `relay`) trafiają do grafu tylko wtedy, gdy były odebrane bezpośrednio.
 
-Workflow `.github/workflows/mesh-sync.yml` (co 30 minut + ręcznie) uruchamia `scripts/mesh-sync.mjs`:
+Workflow `.github/workflows/mesh-sync.yml` (co 30 minut przez Cloudflare Worker, zapasowo harmonogram GitHuba, ręcznie „Run workflow”) uruchamia `scripts/mesh-sync.mjs`:
 pobiera z API [lorastats.pl](https://lorastats.pl/API) status nodów i raporty odbioru (każdy raport ma pole `from` – ID mojego noda), dopisuje je do `data/mesh.history.json` (pełna historia – API oddaje tylko ostatnie 24 h)
 i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit powstaje tylko wtedy, gdy przybył raport albo zmienił się czas ostatniej aktywności.
 
@@ -72,6 +72,26 @@ i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit pows
 - Nazwy bramek i przekaźników (`names`) są pobierane raz, przy pierwszym pojawieniu się noda.
 - lorastats.pl prosi o nazwę narzędzia i kontakt w nagłówku `User-Agent` (`MESH_AGENT` w workflow) oraz zabrania scrapowania stron HTML – korzystamy wyłącznie z API.
 - Lokalnie: `node scripts/mesh-sync.mjs` (bez zależności, Node 22+).
+
+### Wyzwalanie co 30 minut (Cloudflare Worker)
+
+Harmonogram (`schedule`) w GitHub Actions jest „best effort”: w listopadzie 2026 odpalał się 3–4 razy na dobę zamiast 48, z przerwami 4–10 h.
+Dlatego `workers/mesh-sync-cron` (Cloudflare Worker z Cron Trigger `11,41 * * * *`, UTC) co 30 minut wywołuje workflow przez API
+(`POST /repos/sp3fck/sp3fck.github.io/actions/workflows/mesh-sync.yml/dispatches`, `{"ref":"main"}`, odpowiedź 204).
+Harmonogram w workflow zostaje jako zapas. Gdy oba trafią w ten sam czas, `concurrency` nie puści dwóch przebiegów naraz, a drugi nic nie zacommituje.
+Worker nie ma adresu publicznego (`workers_dev = false`) i nie obsługuje zapytań HTTP – działa tylko z harmonogramu.
+
+Wdrożenie (raz, z katalogu `workers/mesh-sync-cron`):
+
+1. Token na GitHubie: Settings → Developer settings → Fine-grained tokens. Repository access: tylko `sp3fck/sp3fck.github.io`,
+   Permissions: **Actions: Read and write**. Ustaw datę ważności i przypomnienie o odnowieniu.
+2. `npx wrangler@4 login` (konto Cloudflare, plan darmowy wystarczy).
+3. `npx wrangler@4 deploy`
+4. `npx wrangler@4 secret put GITHUB_TOKEN` i wklej token (nie trafia do repo ani do `wrangler.toml`).
+5. Po najbliższym :11 albo :41 w Actions powinien pojawić się przebieg z `workflow_dispatch`
+   (`gh run list --workflow mesh-sync.yml --limit 3`). Błędy wywołań widać w Cloudflare: Workers → `sp3fck-mesh-sync-cron` → Logs.
+
+Po wygaśnięciu tokenu wystarczy wygenerować nowy i powtórzyć krok 4.
 
 ## MeshCore
 

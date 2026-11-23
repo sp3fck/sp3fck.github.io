@@ -1,0 +1,20 @@
+# Cloudflare Worker wyzwalający sync mesh co 30 minut. Wdrożenie i sekret: patrz README (sekcja Meshtastic).
+name = "sp3fck-mesh-sync-cron"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+# Bez publicznego adresu — worker działa tylko z harmonogramu.
+workers_dev = false
+preview_urls = false
+
+[triggers]
+# UTC, te same minuty co harmonogram w mesh-sync.yml.
+crons = ["11,41 * * * *"]
+
+[vars]
+GITHUB_REPO = "sp3fck/sp3fck.github.io"
+WORKFLOW = "mesh-sync.yml"
+REF = "main"
+
+[observability]
+enabled = true
