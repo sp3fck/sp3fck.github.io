@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-24T18:45:53Z"
+   "lastSeen": "2026-11-24T19:28:56Z"
   }
  },
- "updated": "2026-11-24T19:11:39Z",
+ "updated": "2026-11-24T19:41:43Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -38257,6 +38257,76 @@
    "hops": 0,
    "relay": "b8",
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-24T19:26:07Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "1e343d45",
+   "snr": -7.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:26:10Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "1e343d45",
+   "snr": 4.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:26:11Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "1e343d45",
+   "snr": 3.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:26:11Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "1e343d45",
+   "snr": 12.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:26:11Z",
+   "from": "e0a76739",
+   "gw": "3351d598",
+   "id": "1e343d45",
+   "snr": -8,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:26:12Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "1e343d45",
+   "snr": 6.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T19:28:56Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "799af146",
+   "snr": -6.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -39951,6 +40021,21 @@
    "id": "c8041544",
    "bat": 58,
    "ch": 0.49,
+   "air": 0.28
+  },
+  {
+   "t": "2026-11-24T19:26:07Z",
+   "from": "e0a76739",
+   "id": "1e343d45",
+   "temp": 3.1,
+   "pres": 1017
+  },
+  {
+   "t": "2026-11-24T19:28:56Z",
+   "from": "e0a76739",
+   "id": "799af146",
+   "bat": 58,
+   "ch": 1.01,
    "air": 0.28
   }
  ]
