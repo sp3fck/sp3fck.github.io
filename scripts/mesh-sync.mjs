@@ -2,8 +2,8 @@
 // API oddaje tylko ostatnie 24 h, więc każdy przebieg dopisuje nowe raporty do historii (bez duplikatów).
 // Pliki są zapisywane tylko wtedy, gdy coś się zmieniło — dzięki temu workflow nie commituje co pół godziny.
 // Do grafu ścieżek zapisujemy też bajt przekaźnika z raportu (ostatni bajt ID noda, który podał pakiet bramce)
-// i ścieżki z pakietów traceroute (same ID nodów).
-// Pozycji nodów ani treści wiadomości (payload pakietów) celowo nie zapisujemy.
+// i ścieżki z pakietów traceroute (same ID nodów). Z pakietów telemetrii zapisujemy same liczby (temperatura, bateria itd.).
+// Pozycji nodów ani treści wiadomości celowo nie zapisujemy.
 import fs from "node:fs/promises";
 import path from "node:path";
 
@@ -19,6 +19,7 @@ const LATEST = path.join("data", "mesh.latest.js");
 
 const PACKET_TYPES = { 1: "text", 3: "position", 4: "nodeinfo", 67: "telemetry", 70: "traceroute", 71: "neighbors" };
 const TRACEROUTE = 70;
+const TELEMETRY_PORT = 67;
 const UNKNOWN_HOP = "ffffffff"; // firmware wpisuje to w ścieżkę, gdy przekaźnik się nie przedstawił
 const NODE_RE = /^[0-9a-f]{8}$/;
 
@@ -68,6 +69,27 @@ export function parsePaths(payload, from) {
     .filter(p => p.length >= 2 && p[0] === from && p.every(x => NODE_RE.test(x)));
 }
 
+// Payload telemetrii lorastats podaje jako tekst, np. "3.6 °C, 1007 hPa" albo "0.32% ChUtil, 0.26% AirUtilTx, 64% Bat".
+// Wyciągamy same liczby; bateria > 100% to w Meshtastic zasilanie zewnętrzne — zapisujemy ją tak, jak przyszła.
+const TELEMETRY = {
+  temp: /(-?\d+(?:\.\d+)?) ?°C/,
+  pres: /(\d+(?:\.\d+)?) ?hPa/,
+  bat: /(\d+(?:\.\d+)?)% ?Bat/,
+  ch: /(\d+(?:\.\d+)?)% ?ChUtil/,
+  air: /(\d+(?:\.\d+)?)% ?AirUtilTx/,
+  v: /(-?\d+(?:\.\d+)?) ?V\b/,
+  ma: /(-?\d+(?:\.\d+)?) ?mA\b/
+};
+export function parseTelemetry(payload) {
+  const text = String(payload ?? "");
+  const out = {};
+  for (const [k, re] of Object.entries(TELEMETRY)) {
+    const m = text.match(re);
+    if (m) out[k] = Number(m[1]);
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 async function readHistory() {
   let h;
   try {
@@ -91,12 +113,13 @@ async function readHistory() {
   delete h.gateways;
   h.reports = (h.reports || []).map(r => ({ t: r.t, from: r.from || legacy, ...r }));
   h.routes = (h.routes || []).map(r => ({ t: r.t, from: r.from || legacy, ...r }));
+  h.telemetry = h.telemetry || [];
   return h;
 }
 
-const snapshot = h => JSON.stringify({ nodes: h.nodes, names: h.names, reports: h.reports, routes: h.routes });
+const snapshot = h => JSON.stringify({ nodes: h.nodes, names: h.names, reports: h.reports, routes: h.routes, telemetry: h.telemetry });
 
-async function syncNode(history, nodeId, known, routes) {
+async function syncNode(history, nodeId, known, routes, tele) {
   const [nodes, reports, packets] = await Promise.all([
     get(`Nodes/JSON?node=${nodeId}`),
     get(`PacketReports/JSON?fromNode=${nodeId}`),
@@ -153,6 +176,18 @@ async function syncNode(history, nodeId, known, routes) {
     for (const trail of paths) if (!seen.has(trail.join(","))) { seen.add(trail.join(",")); route.paths.push(trail); }
     routes.set(key, route);
   }
+
+  // Telemetria: jeden pakiet = jeden pomiar (środowisko, urządzenie albo zasilanie — każdy ma inne pola).
+  for (const p of packets) {
+    if (p.PortNum !== TELEMETRY_PORT) continue;
+    const t = warsawToUtc(p.Time);
+    const vals = parseTelemetry(p.Payload);
+    const key = `${nodeId}|${p.PacketId}`;
+    if (!t || !p.PacketId || !vals || tele.has(key)) continue;
+    const rec = { t, from: nodeId, id: p.PacketId, ...vals };
+    tele.set(key, rec);
+    history.telemetry.push(rec);
+  }
 }
 
 async function main() {
@@ -161,8 +196,10 @@ async function main() {
 
   const known = new Map(history.reports.map(r => [`${r.from}|${r.id}|${r.gw}`, r]));
   const routes = new Map(history.routes.map(r => [`${r.from}|${r.id}`, r]));
-  for (const id of NODE_IDS) await syncNode(history, id, known, routes);
+  const tele = new Map(history.telemetry.map(r => [`${r.from}|${r.id}`, r]));
+  for (const id of NODE_IDS) await syncNode(history, id, known, routes, tele);
   history.reports.sort((a, b) => a.t.localeCompare(b.t));
+  history.telemetry.sort((a, b) => a.t.localeCompare(b.t));
   history.routes = [...routes.values()].sort((a, b) => a.t.localeCompare(b.t));
 
   // Nazwy bramek i przekaźników pobieramy raz — tylko dla tych, których jeszcze nie znamy.
@@ -194,18 +231,21 @@ async function main() {
     nodes: Object.fromEntries(NODE_IDS.filter(id => history.nodes[id]).map(id => [id, history.nodes[id]])),
     names: history.names,
     reports: history.reports.filter(r => r.t >= since && mine.has(r.from)),
-    routes: history.routes.filter(r => r.t >= since && mine.has(r.from))
+    routes: history.routes.filter(r => r.t >= since && mine.has(r.from)),
+    // ID pakietu potrzebne jest tylko w historii (do pomijania duplikatów).
+    telemetry: history.telemetry.filter(r => r.t >= since && mine.has(r.from)).map(({ id, ...r }) => r)
   };
 
-  const { updated, nodes, names, reports: all, routes: allRoutes } = history;
+  const { updated, nodes, names, reports: all, routes: allRoutes, telemetry } = history;
   await fs.mkdir("data", { recursive: true });
-  await fs.writeFile(HISTORY, `${JSON.stringify({ nodes, updated, names, reports: all, routes: allRoutes }, null, 1)}\n`);
+  await fs.writeFile(HISTORY, `${JSON.stringify({ nodes, updated, names, reports: all, routes: allRoutes, telemetry }, null, 1)}\n`);
   await fs.writeFile(LATEST, `window.MESH_DATA = ${JSON.stringify(latest)};\n`);
   for (const id of NODE_IDS) {
     const n = latest.reports.filter(r => r.from === id).length;
-    console.log(`${id} ${nodes[id]?.longName || ""}: ${n} reports in the last ${LATEST_DAYS} days, last seen ${nodes[id]?.lastSeen}`);
+    const tm = latest.telemetry.filter(r => r.from === id).length;
+    console.log(`${id} ${nodes[id]?.longName || ""}: ${n} reports and ${tm} telemetry readings in the last ${LATEST_DAYS} days, last seen ${nodes[id]?.lastSeen}`);
   }
-  console.log(`Saved ${all.length} reports and ${allRoutes.length} traceroutes`);
+  console.log(`Saved ${all.length} reports, ${allRoutes.length} traceroutes and ${telemetry.length} telemetry readings`);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"))) {
