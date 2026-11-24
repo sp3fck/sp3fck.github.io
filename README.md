@@ -54,7 +54,7 @@ pobiera log z QRZ Logbook API, zapisuje `data/qso.latest.json`, `data/qso.latest
 ## Meshtastic
 
 `meshtastic.html` (w menu: **LoRa → Meshtastic**) pokazuje moje nody: companion `9254eab8` (SP3FCK_companion) i bazę `e0a76739` (SP3FCK_Base; wcześniej miała ID `0e0f16cf`, jego historia zostaje w `mesh.history.json`).
-Przełącznik na górze strony wybiera node, a status, bramki, graf ścieżek w meshu, wykres SNR i ostatnie pakiety pokazują dane tylko dla niego
+Przełącznik na górze strony wybiera node, a status, telemetria (ostatnie odczyty i wykresy baterii, temperatury i ciśnienia – tylko gdy node ją wysyła, dziś baza), bramki, graf ścieżek w meshu, wykres SNR i ostatnie pakiety pokazują dane tylko dla niego
 (wybór trafia do adresu jako `?node=<id>`). Na dole jest krótki opis sprzętu (zdjęcie w `assets/img/mesh/`).
 Listę nodów ustawia `MESH_NODE_IDS` w workflow.
 
@@ -63,11 +63,14 @@ oraz ostatniego bajtu ID przekaźnika (`relay`), rozpoznawanego, gdy pasuje do d
 Odcinki, których sieć nie zgłosiła, są rysowane przerywaną linią. Raporty sprzed zapisu przekaźników (bez pola `relay`) trafiają do grafu tylko wtedy, gdy były odebrane bezpośrednio.
 
 Workflow `.github/workflows/mesh-sync.yml` (co 30 minut przez Cloudflare Worker, zapasowo harmonogram GitHuba, ręcznie „Run workflow”) uruchamia `scripts/mesh-sync.mjs`:
-pobiera z API [lorastats.pl](https://lorastats.pl/API) status nodów i raporty odbioru (każdy raport ma pole `from` – ID mojego noda), dopisuje je do `data/mesh.history.json` (pełna historia – API oddaje tylko ostatnie 24 h)
-i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit powstaje tylko wtedy, gdy przybył raport albo zmienił się czas ostatniej aktywności.
+pobiera z API [lorastats.pl](https://lorastats.pl/API) status nodów, raporty odbioru (każdy raport ma pole `from` – ID mojego noda) i pomiary z pakietów telemetrii (`telemetry`),
+dopisuje je do `data/mesh.history.json` (pełna historia – API oddaje tylko ostatnie 24 h)
+i zapisuje `data/mesh.latest.js` (ostatnie 30 dni, czyta to strona). Commit powstaje tylko wtedy, gdy przybył raport lub pomiar albo zmienił się czas ostatniej aktywności;
+czas tego zapisu (`updated`) strona pokazuje jako „ostatnia aktualizacja”.
 
 - API nie wysyła nagłówków CORS, dlatego strona nie pyta go bezpośrednio z przeglądarki.
-- Pozycji nodów ani treści wiadomości nie zapisujemy – na stronie jest tylko lokator. Ze ścieżek traceroute zapisujemy same ID nodów.
+- Pozycji nodów ani treści wiadomości nie zapisujemy – na stronie jest tylko lokator. Ze ścieżek traceroute zapisujemy same ID nodów,
+  a z pakietów telemetrii same liczby (lorastats podaje je jako tekst, np. `3.6 °C, 1007 hPa`; bateria powyżej 100% oznacza w Meshtastic zasilanie zewnętrzne).
 - Link lorastats.pl w postaci `/Node/<liczba>` to wewnętrzny numer serwisu; API przyjmuje go w `Nodes/JSON?node=` i zwraca właściwe ID noda (8 znaków hex), które wpisujemy do `MESH_NODE_IDS`.
 - Nazwy bramek i przekaźników (`names`) są pobierane raz, przy pierwszym pojawieniu się noda.
 - lorastats.pl prosi o nazwę narzędzia i kontakt w nagłówku `User-Agent` (`MESH_AGENT` w workflow) oraz zabrania scrapowania stron HTML – korzystamy wyłącznie z API.
