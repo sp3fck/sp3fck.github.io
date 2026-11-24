@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Meshtastic — SP3FCK</title>
   <meta name="title-pl" content="Meshtastic — SP3FCK">
-  <meta name="description" content="My Meshtastic nodes: when they were last heard, which gateways receive them and with what signal, how packets travel through the mesh, plus a few words about the hardware.">
+  <meta name="description" content="My Meshtastic nodes: when they were last heard, which gateways receive them and with what signal, how packets travel through the mesh, the telemetry they send, plus a few words about the hardware.">
   <meta name="theme-color" content="#0e1418">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -49,9 +49,58 @@
           <div><dt><span lang="en">Locator</span><span lang="pl">Lokator</span></dt><dd>JO72SG</dd></div>
         </dl>
         <p class="mesh-src">
-          <span lang="en">Data from lorastats.pl, refreshed about every 30 minutes.</span>
-          <span lang="pl">Dane z lorastats.pl, odświeżane co ok. 30 minut.</span>
+          <span lang="en">Data from lorastats.pl, refreshed about every 30 minutes</span><span lang="pl">Dane z lorastats.pl, odświeżane co ok. 30 minut</span><span id="mesh-updated"></span>.
         </p>
+
+        <!-- TELEMETRIA (tylko nody, które ją wysyłają) -->
+        <div class="mesh-tele" id="mesh-tele" hidden>
+          <h3><span lang="en">Telemetry</span><span lang="pl">Telemetria</span></h3>
+          <dl class="station station-strip tele-strip">
+            <div><dt><span lang="en">Battery</span><span lang="pl">Bateria</span></dt><dd id="tele-bat">—</dd></div>
+            <div><dt><span lang="en">Voltage</span><span lang="pl">Napięcie</span></dt><dd id="tele-v">—</dd></div>
+            <div><dt><span lang="en">Temperature (node sensor)</span><span lang="pl">Temperatura (czujnik noda)</span></dt><dd id="tele-temp">—</dd></div>
+            <div><dt><span lang="en">Pressure</span><span lang="pl">Ciśnienie</span></dt><dd id="tele-pres">—</dd></div>
+            <div><dt>ChUtil</dt><dd id="tele-ch">—</dd></div>
+            <div><dt>AirUtilTx</dt><dd id="tele-air">—</dd></div>
+          </dl>
+
+          <figure class="mesh-chart">
+            <figcaption><span lang="en">Battery · last 30 days (%)</span><span lang="pl">Bateria · ostatnie 30 dni (%)</span></figcaption>
+            <div class="mesh-plot">
+              <svg id="tele-chart-bat" tabindex="0" role="img" aria-label="Battery level over time" data-pl-aria-label="Poziom baterii w czasie"></svg>
+              <div class="mesh-tip" hidden></div>
+            </div>
+          </figure>
+          <figure class="mesh-chart">
+            <figcaption><span lang="en">Temperature · last 30 days (°C)</span><span lang="pl">Temperatura · ostatnie 30 dni (°C)</span></figcaption>
+            <div class="mesh-plot">
+              <svg id="tele-chart-temp" tabindex="0" role="img" aria-label="Temperature from the node sensor over time" data-pl-aria-label="Temperatura z czujnika noda w czasie"></svg>
+              <div class="mesh-tip" hidden></div>
+            </div>
+          </figure>
+          <figure class="mesh-chart">
+            <figcaption><span lang="en">Pressure · last 30 days (hPa)</span><span lang="pl">Ciśnienie · ostatnie 30 dni (hPa)</span></figcaption>
+            <div class="mesh-plot">
+              <svg id="tele-chart-pres" tabindex="0" role="img" aria-label="Pressure over time" data-pl-aria-label="Ciśnienie w czasie"></svg>
+              <div class="mesh-tip" hidden></div>
+            </div>
+          </figure>
+
+          <details class="mesh-details">
+            <summary><span lang="en">Recent readings</span><span lang="pl">Ostatnie pomiary</span></summary>
+            <div class="mesh-scroll">
+              <table class="pins">
+                <thead>
+                  <tr>
+                    <th><span lang="en">Time</span><span lang="pl">Czas</span></th>
+                    <th><span lang="en">Reading</span><span lang="pl">Odczyt</span></th>
+                  </tr>
+                </thead>
+                <tbody id="tele-rows"></tbody>
+              </table>
+            </div>
+          </details>
+        </div>
       </div>
     </section>
 

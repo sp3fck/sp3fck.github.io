@@ -1,4 +1,4 @@
-/* Strona Meshtastic: przełącznik nodów, kafelek statusu, lista bramek, graf ścieżek, wykres SNR i tabela pakietów.
+/* Strona Meshtastic: przełącznik nodów, kafelek statusu, telemetria, lista bramek, graf ścieżek, wykres SNR i tabela pakietów.
    Dane: window.MESH_DATA z data/mesh.latest.js (workflow mesh-sync.yml, co ok. 30 min, źródło: lorastats.pl).
    Czas w danych jest w UTC; na stronie pokazujemy czas lokalny przeglądarki.
    Przełącznik na górze strony wybiera node — wszystkie sekcje poniżej pokazują dane tylko dla niego. */
@@ -431,6 +431,149 @@
   chart.addEventListener('focusout', hide);
   window.addEventListener('resize', hide);
 
+  // ---- telemetria: kafelki z ostatnimi odczytami, wykresy z 30 dni i tabela pomiarów
+  // Jeden rekord = jeden pakiet: środowisko (temp, pres), urządzenie (bat, ch, air) albo zasilanie (v, ma).
+  const TELE = (D.telemetry || []).map(r => ({ ...r, ms: Date.parse(r.t) })).filter(r => !Number.isNaN(r.ms));
+  const FIELDS = {
+    bat: { d: 0, u: '%', label: ['battery', 'bateria'] },
+    v: { d: 2, u: ' V' },
+    temp: { d: 1, u: ' °C' },
+    pres: { d: 0, u: ' hPa' },
+    ch: { d: 2, u: '%', label: ['ChUtil', 'ChUtil'] },
+    air: { d: 2, u: '%', label: ['AirUtilTx', 'AirUtilTx'] }
+  };
+  // Bateria > 100% to w Meshtastic zasilanie zewnętrzne, a nie poziom naładowania.
+  const fmt = (k, v) => k === 'bat' && v > 100 ? t('external power', 'zasilanie zewn.') : `${num(v, FIELDS[k].d)}${FIELDS[k].u}`;
+  const GAP_MS = 2 * 3600e3; // dłuższa cisza przerywa linię wykresu
+  let tele = [];
+
+  function lineChart(svg) {
+    const tip = svg.parentElement.querySelector('.mesh-tip'), fig = svg.closest('figure');
+    const W = 760, H = 220, L = 46, R = 14, T = 14, B = 34;
+    let pts = [], fmtV, x0, x1, X, Y, at = -1;
+    function draw(points, o) {
+      pts = points;
+      fmtV = o.fmt;
+      hide();
+      fig.hidden = pts.length < 2;
+      if (fig.hidden) { pts = []; svg.innerHTML = ''; return; }
+      x0 = pts[0].ms;
+      x1 = Math.max(pts[pts.length - 1].ms, x0 + 3600e3);
+      let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v));
+      if (hi - lo < o.minSpan) { const mid = (lo + hi) / 2; lo = mid - o.minSpan / 2; hi = mid + o.minSpan / 2; }
+      if (o.max != null && hi > o.max) { lo -= hi - o.max; hi = o.max; }
+      if (o.min != null && lo < o.min) { hi += o.min - lo; lo = o.min; }
+      const step = [1, 2, 5, 10, 20, 50].find(s => (hi - lo) / s <= 5) || 100;
+      lo = Math.floor(lo / step) * step;
+      hi = Math.ceil(hi / step) * step;
+      X = ms => L + (ms - x0) / (x1 - x0) * (W - L - R);
+      Y = v => T + (hi - v) / (hi - lo) * (H - T - B);
+      const r1 = v => Math.round(v * 10) / 10;
+      let s = '';
+      for (let v = lo; v <= hi + 1e-9; v += step) {
+        s += `<line class="mc-grid" x1="${L}" x2="${W - R}" y1="${r1(Y(v))}" y2="${r1(Y(v))}"/>` +
+          `<text class="mc-axis" x="${L - 8}" y="${r1(Y(v)) + 4}" text-anchor="end">${String(v).replace('-', '−')}</text>`;
+      }
+      [0, .5, 1].forEach((f, i) => {
+        const ms = x0 + f * (x1 - x0), d = new Date(ms), od = { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
+        const a = ['start', 'middle', 'end'][i];
+        s += `<text class="mc-axis" lang="en" x="${r1(X(ms))}" y="${H - 10}" text-anchor="${a}">${d.toLocaleString('en-GB', od)}</text>` +
+          `<text class="mc-axis" lang="pl" x="${r1(X(ms))}" y="${H - 10}" text-anchor="${a}">${d.toLocaleString('pl-PL', od)}</text>`;
+      });
+      // Linia przerywa się po ciszy dłuższej niż GAP_MS; pojedynczy pomiar między przerwami rysujemy kropką.
+      let path = '', dots = '';
+      pts.forEach((p, i) => {
+        const joinPrev = i > 0 && p.ms - pts[i - 1].ms <= GAP_MS;
+        const joinNext = i < pts.length - 1 && pts[i + 1].ms - p.ms <= GAP_MS;
+        path += `${joinPrev ? 'L' : 'M'}${r1(X(p.ms))} ${r1(Y(p.v))}`;
+        if (!joinPrev && !joinNext) dots += `<circle class="mc-solo" cx="${r1(X(p.ms))}" cy="${r1(Y(p.v))}" r="2.5"/>`;
+      });
+      s += `<path class="mc-line" d="${path}"/>${dots}` +
+        `<g class="mc-at" style="display:none"><line class="mc-cursor" y1="${T}" y2="${H - B}"/><circle class="mc-dot" r="4.5"/></g>`;
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.innerHTML = s;
+    }
+    function show(i) {
+      if (!pts.length) return;
+      at = Math.max(0, Math.min(pts.length - 1, i));
+      const p = pts[at], x = X(p.ms), y = Y(p.v), g = svg.querySelector('.mc-at');
+      g.style.display = '';
+      g.querySelector('line').setAttribute('x1', x);
+      g.querySelector('line').setAttribute('x2', x);
+      g.querySelector('circle').setAttribute('cx', x);
+      g.querySelector('circle').setAttribute('cy', y);
+      tip.innerHTML = `<b>${fmtV(p.v)}</b><span>${stamp(p.ms)}</span>`;
+      tip.hidden = false;
+      const box = svg.getBoundingClientRect(), half = tip.offsetWidth / 2;
+      tip.style.left = `${Math.min(Math.max(x / W * box.width, half + 4), box.width - half - 4)}px`;
+      tip.style.top = `${y / H * box.height - 8}px`;
+    }
+    function hide() {
+      at = -1;
+      tip.hidden = true;
+      const g = svg.querySelector('.mc-at');
+      if (g) g.style.display = 'none';
+    }
+    // najbliższy pomiar w poziomie od kursora (piksele → współrzędne viewBox → czas)
+    function nearest(e) {
+      const box = svg.getBoundingClientRect();
+      const ms = x0 + ((e.clientX - box.left) / box.width * W - L) / (W - L - R) * (x1 - x0);
+      let best = 0;
+      pts.forEach((p, i) => { if (Math.abs(p.ms - ms) < Math.abs(pts[best].ms - ms)) best = i; });
+      return best;
+    }
+    svg.addEventListener('pointermove', e => { if (pts.length) show(nearest(e)); });
+    svg.addEventListener('pointerdown', e => { if (pts.length) show(nearest(e)); });
+    svg.addEventListener('pointerleave', e => { if (e.pointerType !== 'touch') hide(); });
+    // fokus z klawiatury pokazuje ostatni pomiar; przy kliknięciu punkt wybrał już pointerdown
+    svg.addEventListener('focus', () => { if (at < 0) show(pts.length - 1); });
+    svg.addEventListener('blur', hide);
+    svg.addEventListener('keydown', e => {
+      const last = pts.length - 1, from = at < 0 ? last + 1 : at; // bez wybranego punktu ← zaczyna od ostatniego
+      const moves = { ArrowLeft: from - 1, ArrowRight: Math.min(from + 1, last), Home: 0, End: last };
+      if (!(e.key in moves) || !pts.length) return;
+      e.preventDefault();
+      show(moves[e.key]);
+    });
+    document.addEventListener('pointerdown', e => { if (!svg.contains(e.target)) hide(); });
+    window.addEventListener('resize', hide);
+    return { draw };
+  }
+  const teleCharts = {
+    bat: $('tele-chart-bat') && lineChart($('tele-chart-bat')),
+    temp: $('tele-chart-temp') && lineChart($('tele-chart-temp')),
+    pres: $('tele-chart-pres') && lineChart($('tele-chart-pres'))
+  };
+
+  function renderTeleTiles() {
+    for (const k of Object.keys(FIELDS)) {
+      const el = $(`tele-${k}`);
+      if (!el) continue;
+      let last = null;
+      for (let i = tele.length - 1; i >= 0 && !last; i--) if (tele[i][k] != null) last = tele[i];
+      el.innerHTML = last ? `${fmt(k, last[k])}<small>${ago(last.ms)}</small>` : '—';
+    }
+  }
+  function renderTelemetry() {
+    const box = $('mesh-tele');
+    if (!box) return;
+    tele = TELE.filter(r => r.from === cur);
+    box.hidden = !tele.length;
+    if (!tele.length) return;
+    renderTeleTiles();
+    $('tele-rows').innerHTML = tele.slice(-20).reverse().map(r => `<tr><td>${stamp(r.ms)}</td><td>${Object.keys(FIELDS).filter(k => r[k] != null)
+      .map(k => FIELDS[k].label ? `${t(...FIELDS[k].label)} ${fmt(k, r[k])}` : fmt(k, r[k])).join(' · ')}</td></tr>`).join('');
+    const series = (k, keep = () => true) => tele.filter(r => r[k] != null && keep(r[k])).map(r => ({ ms: r.ms, v: r[k] }));
+    if (teleCharts.bat) teleCharts.bat.draw(series('bat', v => v <= 100), { minSpan: 10, min: 0, max: 100, fmt: v => fmt('bat', v) });
+    if (teleCharts.temp) teleCharts.temp.draw(series('temp'), { minSpan: 5, fmt: v => fmt('temp', v) });
+    if (teleCharts.pres) teleCharts.pres.draw(series('pres'), { minSpan: 5, fmt: v => fmt('pres', v) });
+  }
+
+  // czas ostatniego zapisu danych przez synchronizację (wspólny dla wszystkich nodów)
+  if ($('mesh-updated') && Date.parse(D.updated)) {
+    $('mesh-updated').innerHTML = ` (${t('last update', 'ostatnia aktualizacja')}: ${stamp(Date.parse(D.updated))})`;
+  }
+
   // ---- wybór noda: ?node=<id> w adresie, potem ostatni wybór, potem pierwszy node
   function select(id, byUser) {
     cur = MINE.has(id) ? id : NODES[0].id;
@@ -447,10 +590,11 @@
     }
     refreshSwitch();
     renderNode();
+    renderTelemetry();
     graph.update();
     snrChart();
   }
   buildSwitch();
   select(new URLSearchParams(location.search).get('node') || store.get(), false);
-  setInterval(() => { renderStatus(); refreshSwitch(); }, 60e3);
+  setInterval(() => { renderStatus(); refreshSwitch(); renderTeleTiles(); }, 60e3);
 })();
