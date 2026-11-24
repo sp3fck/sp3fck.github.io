@@ -71,21 +71,24 @@ export function parsePaths(payload, from) {
 
 // Payload telemetrii lorastats podaje jako tekst, np. "3.6 °C, 1007 hPa" albo "0.32% ChUtil, 0.26% AirUtilTx, 64% Bat".
 // Wyciągamy same liczby; bateria > 100% to w Meshtastic zasilanie zewnętrzne — zapisujemy ją tak, jak przyszła.
+// Liczba musi stać sama: kawałek innej liczby (np. "6" z "3,6") odrzucamy — brak odczytu jest lepszy niż zły,
+// bo historia jest trwała i niczego później nie przelicza.
+const NUM = String.raw`(?<![\d.,])([-−]?\d+(?:\.\d+)?)`;
 const TELEMETRY = {
-  temp: /(-?\d+(?:\.\d+)?) ?°C/,
-  pres: /(\d+(?:\.\d+)?) ?hPa/,
-  bat: /(\d+(?:\.\d+)?)% ?Bat/,
-  ch: /(\d+(?:\.\d+)?)% ?ChUtil/,
-  air: /(\d+(?:\.\d+)?)% ?AirUtilTx/,
-  v: /(-?\d+(?:\.\d+)?) ?V\b/,
-  ma: /(-?\d+(?:\.\d+)?) ?mA\b/
+  temp: new RegExp(NUM + " ?°C"),
+  pres: new RegExp(NUM + " ?hPa"),
+  bat: new RegExp(NUM + "% ?Bat"),
+  ch: new RegExp(NUM + "% ?ChUtil"),
+  air: new RegExp(NUM + "% ?AirUtilTx"),
+  v: new RegExp(NUM + String.raw` ?V\b`),
+  ma: new RegExp(NUM + String.raw` ?mA\b`)
 };
 export function parseTelemetry(payload) {
   const text = String(payload ?? "");
   const out = {};
   for (const [k, re] of Object.entries(TELEMETRY)) {
     const m = text.match(re);
-    if (m) out[k] = Number(m[1]);
+    if (m) out[k] = Number(m[1].replace("−", "-"));
   }
   return Object.keys(out).length ? out : null;
 }
