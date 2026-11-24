@@ -19,7 +19,7 @@
    "lastSeen": "2026-11-24T13:11:00Z"
   }
  },
- "updated": "2026-11-24T13:11:39Z",
+ "updated": "2026-11-24T13:41:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -37647,6 +37647,96 @@
    "hops": 0,
    "relay": "39",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:52Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "b0cfc532",
+   "snr": -6.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:52Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "b0cfc532",
+   "snr": 0.25,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:53Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "b0cfc532",
+   "snr": 12.25,
+   "hops": 3,
+   "relay": "28",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:53Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "b0cfc532",
+   "snr": 4,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:53Z",
+   "from": "e0a76739",
+   "gw": "3351d598",
+   "id": "b0cfc532",
+   "snr": -8.75,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:54Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "b0cfc532",
+   "snr": 2.75,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:54Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "b0cfc532",
+   "snr": -10.25,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:54Z",
+   "from": "e0a76739",
+   "gw": "0f145928",
+   "id": "b0cfc532",
+   "snr": -2,
+   "hops": 3,
+   "relay": "30",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-24T13:11:55Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "b0cfc532",
+   "snr": -8.5,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -39178,6 +39268,14 @@
    "id": "aa7bb131",
    "temp": 4.8,
    "pres": 1016
+  },
+  {
+   "t": "2026-11-24T13:11:52Z",
+   "from": "e0a76739",
+   "id": "b0cfc532",
+   "bat": 60,
+   "ch": 0.3,
+   "air": 0.28
   }
  ]
 }
