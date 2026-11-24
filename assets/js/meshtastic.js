@@ -437,6 +437,7 @@
   const FIELDS = {
     bat: { d: 0, u: '%', label: ['battery', 'bateria'] },
     v: { d: 2, u: ' V' },
+    ma: { d: 0, u: ' mA' },
     temp: { d: 1, u: ' °C' },
     pres: { d: 0, u: ' hPa' },
     ch: { d: 2, u: '%', label: ['ChUtil', 'ChUtil'] },
