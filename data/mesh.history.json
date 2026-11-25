@@ -16,10 +16,10 @@
    "shortName": "2dfa",
    "longName": "Siedlce 2dfa",
    "role": 0,
-   "lastSeen": "2026-11-25T17:29:21Z"
+   "lastSeen": "2026-11-25T18:02:06Z"
   }
  },
- "updated": "2026-11-25T17:41:48Z",
+ "updated": "2026-11-25T18:11:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -41112,6 +41112,36 @@
    "hops": 3,
    "relay": "63",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T17:55:41Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "4fb88d8c",
+   "snr": -7,
+   "hops": 0,
+   "relay": "39",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-25T17:55:43Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "6952898d",
+   "snr": -6.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:02:21Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "2165618e",
+   "snr": -7.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -43267,6 +43297,20 @@
    "id": "94ae518b",
    "bat": 50,
    "air": 0.19
+  },
+  {
+   "t": "2026-11-25T17:55:43Z",
+   "from": "e0a76739",
+   "id": "6952898d",
+   "temp": 1.5,
+   "pres": 1014
+  },
+  {
+   "t": "2026-11-25T18:02:21Z",
+   "from": "e0a76739",
+   "id": "2165618e",
+   "bat": 50,
+   "air": 0.05
   }
  ]
 }
