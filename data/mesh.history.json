@@ -4,7 +4,7 @@
    "shortName": "sp3f",
    "longName": "SP3FCK_companion",
    "role": 0,
-   "lastSeen": "2026-11-25T05:11:33Z"
+   "lastSeen": "2026-11-25T09:51:21Z"
   },
   "0e0f16cf": {
    "shortName": "3fro",
@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-25T09:37:32Z"
+   "lastSeen": "2026-11-25T09:46:08Z"
   }
  },
- "updated": "2026-11-25T09:41:48Z",
+ "updated": "2026-11-25T10:11:49Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -40172,6 +40172,26 @@
    "hops": 0,
    "relay": "39",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T09:46:08Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "f982f173",
+   "snr": -4,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T09:51:21Z",
+   "from": "9254eab8",
+   "gw": "ba6a7018",
+   "id": "a9aeb830",
+   "snr": 10.5,
+   "hops": 1,
+   "relay": "60",
+   "type": "nodeinfo"
   }
  ],
  "routes": [
@@ -42155,6 +42175,14 @@
    "id": "902f3d72",
    "temp": 2.6,
    "pres": 1015
+  },
+  {
+   "t": "2026-11-25T09:46:08Z",
+   "from": "e0a76739",
+   "id": "f982f173",
+   "bat": 52,
+   "ch": 1.93,
+   "air": 0.49
   }
  ]
 }
