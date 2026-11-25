@@ -16,10 +16,10 @@
    "shortName": "2dfa",
    "longName": "Siedlce 2dfa",
    "role": 0,
-   "lastSeen": "2026-11-25T19:36:25Z"
+   "lastSeen": "2026-11-25T20:03:32Z"
   }
  },
- "updated": "2026-11-25T19:41:42Z",
+ "updated": "2026-11-25T20:11:41Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -41732,6 +41732,16 @@
    "hops": 3,
    "relay": "e6",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T20:03:32Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "b0532001",
+   "snr": -12.25,
+   "hops": 1,
+   "relay": "b8",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -43945,6 +43955,13 @@
    "bat": 92,
    "ch": 1.6,
    "air": 0.33
+  },
+  {
+   "t": "2026-11-25T20:03:32Z",
+   "from": "e0a76739",
+   "id": "b0532001",
+   "temp": 23.2,
+   "pres": 1015
   }
  ]
 }
