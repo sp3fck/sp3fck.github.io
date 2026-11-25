@@ -16,10 +16,10 @@
    "shortName": "2dfa",
    "longName": "Siedlce 2dfa",
    "role": 0,
-   "lastSeen": "2026-11-25T18:02:06Z"
+   "lastSeen": "2026-11-25T18:32:23Z"
   }
  },
- "updated": "2026-11-25T18:11:39Z",
+ "updated": "2026-11-25T18:41:43Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -41142,6 +41142,96 @@
    "hops": 0,
    "relay": "39",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:25:43Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "0d6dc58f",
+   "snr": -8.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:21Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "b7eb0590",
+   "snr": 8,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:21Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "b7eb0590",
+   "snr": 8,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:22Z",
+   "from": "e0a76739",
+   "gw": "4357eb1c",
+   "id": "b7eb0590",
+   "snr": 0,
+   "hops": 3,
+   "relay": "b8",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:22Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "b7eb0590",
+   "snr": 12,
+   "hops": 3,
+   "relay": "28",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:22Z",
+   "from": "e0a76739",
+   "gw": "b2a7033c",
+   "id": "b7eb0590",
+   "snr": 3.75,
+   "hops": 3,
+   "relay": "b8",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:23Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "b7eb0590",
+   "snr": -8.75,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:24Z",
+   "from": "e0a76739",
+   "gw": "f115c8b0",
+   "id": "b7eb0590",
+   "snr": 9.75,
+   "hops": 3,
+   "relay": "90",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T18:32:24Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "b7eb0590",
+   "snr": -10.5,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -43311,6 +43401,21 @@
    "id": "2165618e",
    "bat": 50,
    "air": 0.05
+  },
+  {
+   "t": "2026-11-25T18:25:43Z",
+   "from": "e0a76739",
+   "id": "0d6dc58f",
+   "temp": 1.4,
+   "pres": 1014
+  },
+  {
+   "t": "2026-11-25T18:32:22Z",
+   "from": "e0a76739",
+   "id": "b7eb0590",
+   "bat": 50,
+   "ch": 0.33,
+   "air": 0.1
   }
  ]
 }
