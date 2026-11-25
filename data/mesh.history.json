@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-25T02:55:37Z"
+   "lastSeen": "2026-11-25T03:24:03Z"
   }
  },
- "updated": "2026-11-25T03:11:38Z",
+ "updated": "2026-11-25T03:41:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -39582,6 +39582,86 @@
    "hops": 0,
    "relay": "39",
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-25T03:18:19Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "860ca55e",
+   "snr": -5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:22Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "860ca55e",
+   "snr": 13.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:22Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "860ca55e",
+   "snr": 6.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:22Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "860ca55e",
+   "snr": -9.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:23Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "860ca55e",
+   "snr": 2.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:23Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "860ca55e",
+   "snr": 11,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:18:23Z",
+   "from": "e0a76739",
+   "gw": "3351d598",
+   "id": "860ca55e",
+   "snr": -8,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T03:24:03Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "ceff895f",
+   "snr": -4.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -41432,6 +41512,21 @@
    "id": "77a5115c",
    "bat": 55,
    "air": 0.16
+  },
+  {
+   "t": "2026-11-25T03:18:19Z",
+   "from": "e0a76739",
+   "id": "860ca55e",
+   "temp": 2.6,
+   "pres": 1015
+  },
+  {
+   "t": "2026-11-25T03:24:03Z",
+   "from": "e0a76739",
+   "id": "ceff895f",
+   "bat": 54,
+   "ch": 0.94,
+   "air": 0.17
   }
  ]
 }
