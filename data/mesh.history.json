@@ -16,10 +16,10 @@
    "shortName": "2dfa",
    "longName": "Siedlce 2dfa",
    "role": 0,
-   "lastSeen": "2026-11-25T15:02:06Z"
+   "lastSeen": "2026-11-25T15:34:16Z"
   }
  },
- "updated": "2026-11-25T15:11:48Z",
+ "updated": "2026-11-25T15:41:40Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -40612,6 +40612,66 @@
    "hops": 0,
    "relay": "39",
    "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-25T15:27:40Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "b3c30184",
+   "snr": -6,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T15:27:42Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "b3c30184",
+   "snr": 7.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T15:27:43Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "b3c30184",
+   "snr": 12.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T15:27:44Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "b3c30184",
+   "snr": 5.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T15:27:44Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "b3c30184",
+   "snr": 6.25,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-25T15:34:16Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "35540585",
+   "snr": -8.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -42708,6 +42768,21 @@
    "bat": 51,
    "ch": 2.16,
    "air": 0.42
+  },
+  {
+   "t": "2026-11-25T15:27:40Z",
+   "from": "e0a76739",
+   "id": "b3c30184",
+   "temp": 1.9,
+   "pres": 1014
+  },
+  {
+   "t": "2026-11-25T15:34:16Z",
+   "from": "e0a76739",
+   "id": "35540585",
+   "bat": 51,
+   "ch": 0.3,
+   "air": 0.33
   }
  ]
 }
