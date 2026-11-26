@@ -13,13 +13,13 @@
    "lastSeen": "2026-11-21T19:06:19Z"
   },
   "e0a76739": {
-   "shortName": "2dfa",
-   "longName": "Siedlce 2dfa",
-   "role": 0,
-   "lastSeen": "2026-11-26T01:36:44Z"
+   "shortName": "3fro",
+   "longName": "SP3FCK_Base",
+   "role": 12,
+   "lastSeen": "2026-11-26T01:55:09Z"
   }
  },
- "updated": "2026-11-26T01:41:39Z",
+ "updated": "2026-11-26T02:11:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -43372,6 +43372,16 @@
    "hops": 3,
    "relay": "20",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T01:55:09Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "8c89310a",
+   "snr": 11.5,
+   "hops": 1,
+   "relay": "60",
+   "type": "nodeinfo"
   }
  ],
  "routes": [
