@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-26T12:16:48Z"
+   "lastSeen": "2026-11-26T13:09:49Z"
   }
  },
- "updated": "2026-11-26T12:41:39Z",
+ "updated": "2026-11-26T13:11:43Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -45772,6 +45772,66 @@
    "hops": 0,
    "relay": "39",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T12:58:00Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "7f13852b",
+   "snr": 2.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T13:09:49Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "24c7cd2c",
+   "snr": 1.5,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T13:09:53Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "24c7cd2c",
+   "snr": 6.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T13:09:53Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "24c7cd2c",
+   "snr": 10.75,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T13:09:53Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "24c7cd2c",
+   "snr": 11.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-26T13:09:53Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "24c7cd2c",
+   "snr": 5.5,
+   "hops": 3,
+   "relay": "e6",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -48575,6 +48635,21 @@
    "bat": 77,
    "ch": 2.67,
    "air": 0.76
+  },
+  {
+   "t": "2026-11-26T12:58:00Z",
+   "from": "e0a76739",
+   "id": "7f13852b",
+   "temp": 3.5,
+   "pres": 1014
+  },
+  {
+   "t": "2026-11-26T13:09:49Z",
+   "from": "e0a76739",
+   "id": "24c7cd2c",
+   "bat": 77,
+   "ch": 2.23,
+   "air": 0.75
   }
  ]
 }
