@@ -16,10 +16,10 @@
    "shortName": "_thc",
    "longName": "TSK TEST",
    "role": 0,
-   "lastSeen": "2026-11-27T06:29:35Z"
+   "lastSeen": "2026-11-27T06:44:35Z"
   }
  },
- "updated": "2026-11-27T06:41:38Z",
+ "updated": "2026-11-27T07:11:47Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -53417,6 +53417,16 @@
    "hops": 3,
    "relay": "e6",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T06:44:35Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "3ee15d5b",
+   "snr": 0,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -57143,6 +57153,14 @@
    "id": "7256c55a",
    "temp": -0.7,
    "pres": 1015
+  },
+  {
+   "t": "2026-11-27T06:44:35Z",
+   "from": "e0a76739",
+   "id": "3ee15d5b",
+   "bat": 73,
+   "ch": 0.32,
+   "air": 0.62
   }
  ]
 }
