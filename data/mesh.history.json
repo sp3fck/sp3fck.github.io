@@ -4,7 +4,7 @@
    "shortName": "sp3f",
    "longName": "SP3FCK_companion",
    "role": 0,
-   "lastSeen": "2026-11-27T05:17:05Z"
+   "lastSeen": "2026-11-27T05:24:18Z"
   },
   "0e0f16cf": {
    "shortName": "3fro",
@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-27T04:56:32Z"
+   "lastSeen": "2026-11-27T05:36:35Z"
   }
  },
- "updated": "2026-11-27T05:20:38Z",
+ "updated": "2026-11-27T05:41:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -53127,6 +53127,126 @@
    "hops": 1,
    "relay": "60",
    "type": "position"
+  },
+  {
+   "t": "2026-11-27T05:22:05Z",
+   "from": "9254eab8",
+   "gw": "ba6a7018",
+   "id": "9b492d4c",
+   "snr": -10.25,
+   "hops": 0,
+   "relay": "b8",
+   "type": "position"
+  },
+  {
+   "t": "2026-11-27T05:24:18Z",
+   "from": "9254eab8",
+   "gw": "ba6a7018",
+   "id": "896d23c8",
+   "snr": -9.5,
+   "hops": 0,
+   "relay": "b8",
+   "type": "text"
+  },
+  {
+   "t": "2026-11-27T05:36:35Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "e9326558",
+   "snr": -2.25,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:35Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "e9326558",
+   "snr": 12,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:36Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "e9326558",
+   "snr": 1,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:36Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "e9326558",
+   "snr": 12.25,
+   "hops": 3,
+   "relay": "28",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:36Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "e9326558",
+   "snr": 11,
+   "hops": 2,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:37Z",
+   "from": "e0a76739",
+   "gw": "b2a796a8",
+   "id": "e9326558",
+   "snr": 3.75,
+   "hops": 3,
+   "relay": "20",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:37Z",
+   "from": "e0a76739",
+   "gw": "0f145928",
+   "id": "e9326558",
+   "snr": -2.75,
+   "hops": 3,
+   "relay": "30",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:37Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "e9326558",
+   "snr": -1.75,
+   "hops": 3,
+   "relay": "90",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:38Z",
+   "from": "e0a76739",
+   "gw": "f115c8b0",
+   "id": "e9326558",
+   "snr": 9.5,
+   "hops": 3,
+   "relay": "90",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-27T05:36:38Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "e9326558",
+   "snr": -7,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -56831,6 +56951,13 @@
    "bat": 74,
    "ch": 2.33,
    "air": 0.56
+  },
+  {
+   "t": "2026-11-27T05:36:35Z",
+   "from": "e0a76739",
+   "id": "e9326558",
+   "temp": -0.6,
+   "pres": 1015
   }
  ]
 }
