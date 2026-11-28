@@ -16,10 +16,10 @@
    "shortName": "9836",
    "longName": "Meshtastic-Adam ",
    "role": 0,
-   "lastSeen": "2026-11-28T04:01:24Z"
+   "lastSeen": "2026-11-28T04:38:25Z"
   }
  },
- "updated": "2026-11-28T04:11:38Z",
+ "updated": "2026-11-28T04:41:41Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -58242,6 +58242,106 @@
    "hops": 1,
    "relay": "60",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:25Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "24b6e997",
+   "snr": 0.75,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:38Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "24b6e997",
+   "snr": 12.25,
+   "hops": 2,
+   "relay": "28",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:38Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "24b6e997",
+   "snr": 10.5,
+   "hops": 1,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:39Z",
+   "from": "e0a76739",
+   "gw": "0f927e21",
+   "id": "24b6e997",
+   "snr": 1.25,
+   "hops": 1,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:39Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "24b6e997",
+   "snr": 11.25,
+   "hops": 1,
+   "relay": "e6",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:39Z",
+   "from": "e0a76739",
+   "gw": "f115c8b0",
+   "id": "24b6e997",
+   "snr": 11.5,
+   "hops": 2,
+   "relay": "90",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:39Z",
+   "from": "e0a76739",
+   "gw": "6c2554d4",
+   "id": "24b6e997",
+   "snr": 11.75,
+   "hops": 2,
+   "relay": "58",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:40Z",
+   "from": "e0a76739",
+   "gw": "a3800080",
+   "id": "24b6e997",
+   "snr": 12.5,
+   "hops": 2,
+   "relay": "f4",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:40Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "24b6e997",
+   "snr": -0.75,
+   "hops": 2,
+   "relay": "90",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T04:38:40Z",
+   "from": "e0a76739",
+   "gw": "d4bd25d8",
+   "id": "24b6e997",
+   "snr": -6,
+   "hops": 3,
+   "relay": "63",
+   "type": "telemetry"
   }
  ],
  "routes": [
@@ -62439,6 +62539,13 @@
    "bat": 75,
    "ch": 2.39,
    "air": 0.71
+  },
+  {
+   "t": "2026-11-28T04:38:25Z",
+   "from": "e0a76739",
+   "id": "24b6e997",
+   "temp": 0.9,
+   "pres": 1027
   }
  ]
 }
