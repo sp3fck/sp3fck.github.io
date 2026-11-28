@@ -16,10 +16,10 @@
    "shortName": "3fro",
    "longName": "SP3FCK_Base",
    "role": 12,
-   "lastSeen": "2026-11-28T13:29:12Z"
+   "lastSeen": "2026-11-28T13:55:17Z"
   }
  },
- "updated": "2026-11-28T13:41:41Z",
+ "updated": "2026-11-28T14:11:39Z",
  "names": {
   "ba6a7018": {
    "shortName": "FSW4",
@@ -62007,6 +62007,106 @@
    "hops": 2,
    "relay": "90",
    "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T13:46:12Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "b51e15b7",
+   "snr": -1,
+   "hops": 0,
+   "relay": "39",
+   "type": "telemetry"
+  },
+  {
+   "t": "2026-11-28T13:55:17Z",
+   "from": "e0a76739",
+   "gw": "ba6a7018",
+   "id": "f27ed5b8",
+   "snr": 1.25,
+   "hops": 0,
+   "relay": "39",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:17Z",
+   "from": "e0a76739",
+   "gw": "7c5cbf28",
+   "id": "f27ed5b8",
+   "snr": 12.75,
+   "hops": 2,
+   "relay": "28",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:17Z",
+   "from": "e0a76739",
+   "gw": "db528cc4",
+   "id": "f27ed5b8",
+   "snr": 11.75,
+   "hops": 1,
+   "relay": "e6",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:18Z",
+   "from": "e0a76739",
+   "gw": "da5ed84c",
+   "id": "f27ed5b8",
+   "snr": 9.75,
+   "hops": 1,
+   "relay": "e6",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:18Z",
+   "from": "e0a76739",
+   "gw": "f115c8b0",
+   "id": "f27ed5b8",
+   "snr": 11.5,
+   "hops": 2,
+   "relay": "90",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:18Z",
+   "from": "e0a76739",
+   "gw": "6c2554d4",
+   "id": "f27ed5b8",
+   "snr": -3.5,
+   "hops": 2,
+   "relay": "5c",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:19Z",
+   "from": "e0a76739",
+   "gw": "169f990b",
+   "id": "f27ed5b8",
+   "snr": -1.25,
+   "hops": 2,
+   "relay": "90",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:20Z",
+   "from": "e0a76739",
+   "gw": "0f145928",
+   "id": "f27ed5b8",
+   "snr": -5.75,
+   "hops": 2,
+   "relay": "30",
+   "type": "nodeinfo"
+  },
+  {
+   "t": "2026-11-28T13:55:23Z",
+   "from": "e0a76739",
+   "gw": "b2a796a8",
+   "id": "f27ed5b8",
+   "snr": 3,
+   "hops": 3,
+   "relay": "a8",
+   "type": "nodeinfo"
   }
  ],
  "routes": [
@@ -66460,6 +66560,14 @@
    "id": "54edc1b6",
    "temp": 0.3,
    "pres": 1029
+  },
+  {
+   "t": "2026-11-28T13:46:12Z",
+   "from": "e0a76739",
+   "id": "b51e15b7",
+   "bat": 82,
+   "ch": 3.47,
+   "air": 0.81
   }
  ]
 }
